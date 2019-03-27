@@ -11,8 +11,8 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Table(name = "examination")
 @Data
-public class examination {
-
+public class Examination {
+//试卷表
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

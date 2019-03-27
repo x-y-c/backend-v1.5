@@ -11,7 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Data
 @Table(name = "authority")
-public class authority {
+public class Authority {
 
     @Id
     @Column(name = "id")

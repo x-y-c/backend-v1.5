@@ -11,7 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Table(name = "test_case")
 @Data
-public class testCase {
+public class TestCase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
