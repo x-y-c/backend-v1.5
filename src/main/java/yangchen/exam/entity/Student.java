@@ -24,6 +24,10 @@ public class Student {
     @Column(name = "name")
     private String name;
 
+    //初始密码为学号
+    @Column(name = "password")
+    private String password;
+
     @Column(name = "major")
     private String major;
 

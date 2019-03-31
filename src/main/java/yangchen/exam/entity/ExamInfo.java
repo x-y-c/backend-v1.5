@@ -19,14 +19,22 @@ public class ExamInfo {
     private Integer id;
 
     @Column(name = "student_number")
-    private Long student_number;
+    private Long studentNumber;
 
+    //学生姓名
+    @Column(name = "student_name")
+    private String studentName;
 
     @Column(name = "created_at")
     private Timestamp createdAt;
 
     @Column(name = "teacher_name")
     private String teacherName;
+
+
+    //该试卷成绩
+    @Column(name = "examination_score")
+    private Integer examinationScore;
 
     @PrePersist
     private void init() {
