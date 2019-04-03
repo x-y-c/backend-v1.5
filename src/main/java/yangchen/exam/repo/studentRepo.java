@@ -3,5 +3,13 @@ package yangchen.exam.repo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import yangchen.exam.entity.Student;
 
-public interface studentRepo extends JpaRepository<Student,Integer> {
+import java.util.List;
+
+public interface studentRepo extends JpaRepository<Student, Integer> {
+
+    Student findByStudentId(Long studentId);
+
+    List<Student> findByGrade(String grade);
+
+
 }

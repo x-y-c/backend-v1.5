@@ -28,9 +28,7 @@ public class Student {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "major")
-    private String major;
-
+    //班级年级合并
     @Column(name = "grade")
     private String grade;
 
