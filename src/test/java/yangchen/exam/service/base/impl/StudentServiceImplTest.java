@@ -60,7 +60,6 @@ private Timestamp createdTime;
         student.setGrade("软工1503");
         student.setName("杨晨");
         student.setPassword("19961012");
-        student.setMajor("软件工程");
         student.setStudentId(2015011446L);
         studentService.addStudent(student);
     }

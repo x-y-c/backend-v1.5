@@ -5,6 +5,9 @@ import yangchen.exam.model.Category;
 
 import java.util.List;
 
+/**
+ * @author yc
+ */
 public interface QuestionService {
 
 

@@ -8,6 +8,9 @@ import yangchen.exam.service.base.studentService;
 
 import java.util.List;
 
+/**
+ * @author yc
+ */
 @Service
 public class StudentServiceImpl implements studentService {
     @Autowired

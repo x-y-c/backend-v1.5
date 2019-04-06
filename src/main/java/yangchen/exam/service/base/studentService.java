@@ -4,6 +4,9 @@ import yangchen.exam.entity.Student;
 
 import java.util.List;
 
+/**
+ * @author yc
+ */
 public interface studentService {
     //通过学号查询学生信息
     Student getStudentByStudentId(Long studentId);

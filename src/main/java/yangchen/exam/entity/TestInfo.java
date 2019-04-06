@@ -8,6 +8,9 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 
 
+/**
+ * @author yc
+ */
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
