@@ -1,6 +1,8 @@
 package yangchen.exam.controller;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,17 +14,21 @@ import yangchen.exam.annotation.UserLoginToken;
 import yangchen.exam.entity.Student;
 import yangchen.exam.entity.Teacher;
 import yangchen.exam.model.JsonResult;
+import yangchen.exam.model.ResultCode;
 import yangchen.exam.model.UserBaseInfo;
 import yangchen.exam.service.base.TeacherService;
 import yangchen.exam.service.base.studentService;
 import yangchen.exam.service.biz.TokenService;
+import yangchen.exam.util.IpUtil;
 import yangchen.exam.util.JavaJWTUtil;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author yc
  */
 @RestController
-@RequestMapping(value = "/user", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
 
     @Autowired
@@ -31,19 +37,25 @@ public class UserController {
     @Autowired
     private TokenService tokenService;
 
-
     @Autowired
     private TeacherService teacherService;
+
+    @Autowired
+    private HttpServletRequest request;
+
+
+    private static Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     @PassToken
     @RequestMapping(value = "student/login", method = RequestMethod.GET)
     public JsonResult login(@RequestParam String studentId, @RequestParam String password) {
         Student student = StudentService.getStudentByStudentId(Long.valueOf(studentId));
+        LOGGER.info("the ip is [{}]", IpUtil.getIpAddr(request));
         if (student == null) {
-            return JsonResult.errorResult("fail", "用户不存在", null);
+            return JsonResult.errorResult(ResultCode.USER_NOT_EXIST, "用户不存在", null);
         }
         if (!student.getPassword().equals(password)) {
-            return JsonResult.errorResult("fail", "密码错误", null);
+            return JsonResult.errorResult(ResultCode.WRONG_PASSWORD, "密码错误", null);
         }
         String token = tokenService.getToken(student);
         UserBaseInfo userBaseInfo = new UserBaseInfo();

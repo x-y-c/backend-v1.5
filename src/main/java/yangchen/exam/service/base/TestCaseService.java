@@ -4,6 +4,9 @@ import yangchen.exam.entity.TestCase;
 
 import java.util.List;
 
+/**
+ * @author YC
+ */
 public interface TestCaseService {
 
     //添加测试用例

@@ -7,6 +7,9 @@ import yangchen.exam.model.Category;
 
 import javax.persistence.*;
 
+/**
+ * @author YC
+ */
 @Entity
 @Data
 @AllArgsConstructor
@@ -18,8 +21,6 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "qid")
-    private Integer qid;
 
     @Column(name = "question_name")
     private String questionName;
@@ -29,4 +30,9 @@ public class Question {
 
     @Column(name = "category")
     private Category category;
+
+    @Column(name = "code")
+    private String code;
 }
+
+
