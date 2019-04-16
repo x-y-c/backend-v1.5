@@ -2,9 +2,7 @@ package yangchen.exam.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import yangchen.exam.entity.Question;
 import yangchen.exam.entity.TestCase;
 import yangchen.exam.model.Category;
@@ -31,22 +29,25 @@ public class QuestionController {
     @Autowired
     private TestInfoService testInfoService;
 
+    @RequestMapping(value = "/create",method = RequestMethod.POST)
     public JsonResult createQuestion(@RequestBody Question question) {
         Question questionResult = questionService.createQuestion(question);
         return JsonResult.succResult(questionResult);
     }
 
-
-    public JsonResult findQuestionByCategory(@RequestBody Category category) {
+    @RequestMapping(value = "/category", method = RequestMethod.GET)
+    public JsonResult findQuestionByCategory(@RequestParam Category category) {
         List<Question> questionByCategory = questionService.findQuestionByCategory(category);
         return JsonResult.succResult(questionByCategory);
     }
 
-    public JsonResult findQuestionById(@RequestBody Integer id) {
+    @RequestMapping(value = "/quesionId",method = RequestMethod.GET)
+    public JsonResult findQuestionById(@RequestParam Integer id) {
         Question questionById = questionService.findQuestionById(id);
         return JsonResult.succResult(questionById);
     }
 
+    @RequestMapping(value = "/remove",method = RequestMethod.POST)
     public JsonResult DeleteQuestionById(@RequestBody Integer id) {
         Boolean aBoolean = questionService.deleteQuestion(id);
         if (aBoolean) {
@@ -55,6 +56,7 @@ public class QuestionController {
         return JsonResult.errorResult("fail", "删除失败", null);
     }
 
+    @RequestMapping(value = "/update",method = RequestMethod.POST)
     public JsonResult updateQuestion(@RequestBody Question question) {
         Question questionResult = questionService.updateQuestion(question);
         return JsonResult.succResult(questionResult);
@@ -68,7 +70,8 @@ public class QuestionController {
      * @param id
      * @return
      */
-    public JsonResult getTestCaseByQuestionId(@RequestBody Integer id) {
+    @RequestMapping(value = "/testInfo",method = RequestMethod.GET)
+    public JsonResult getTestCaseByQuestionId(@RequestParam Integer id) {
         List<TestCase> testCaseByQuestionId = testInfoService.getTestCaseByQuestionId(id);
         return JsonResult.succResult(testCaseByQuestionId);
 
