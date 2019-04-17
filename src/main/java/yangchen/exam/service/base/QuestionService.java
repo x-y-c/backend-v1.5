@@ -28,4 +28,8 @@ public interface QuestionService {
     //通过条件筛选题目 返回list对象
     List<Question> findQuestionByCategory(Category category);
 
+
+    List<Question> findQuestionAll();
+
+
 }

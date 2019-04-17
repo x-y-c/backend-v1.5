@@ -11,5 +11,7 @@ public interface studentRepo extends JpaRepository<Student, Integer> {
 
     List<Student> findByGrade(String grade);
 
+    List<Student> findByMajor(String major);
+
 
 }

@@ -51,4 +51,11 @@ public class QuestionServiceImpl implements QuestionService {
     public List<Question> findQuestionByCategory(Category category) {
         return questionRepo.findByCategory(category);
     }
+
+    @Override
+    public List<Question> findQuestionAll() {
+        return questionRepo.findAll();
+    }
+
+
 }

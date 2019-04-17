@@ -23,5 +23,10 @@ public interface studentService {
 
     Student addStudent(Student student);
 
+    List<Student> getAllStudent();
+
+    //通过专业获取学生列表；
+    List<Student> getStudentByMajor(String major);
+
 
 }

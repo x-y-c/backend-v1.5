@@ -90,5 +90,12 @@ public class QuestionController {
 
     }
 
+    @RequestMapping(value = "/all", method = RequestMethod.GET)
+    public JsonResult getAllQuestion() {
+        List<Question> questionList = questionService.findQuestionAll();
+        return JsonResult.succResult(questionList);
+
+    }
+
 
 }

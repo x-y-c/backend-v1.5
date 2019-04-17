@@ -10,6 +10,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import yangchen.exam.entity.Student;
 import yangchen.exam.service.base.studentService;
 
+import java.util.List;
+
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
@@ -62,5 +64,11 @@ private Timestamp createdTime;
         student.setPassword("19961012");
         student.setStudentId(2015011446L);
         studentService.addStudent(student);
+    }
+
+    @Test
+    public void getAllStudent(){
+        List<Student> allStudent = studentService.getAllStudent();
+        LOGGER.info(allStudent.toString());
     }
 }
