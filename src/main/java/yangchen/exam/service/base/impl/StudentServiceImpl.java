@@ -39,6 +39,9 @@ public class StudentServiceImpl implements studentService {
 
     @Override
     public Student addStudent(Student student) {
+        if (student.getPassword() == null || student.getPassword().length() <= 0) {
+            student.setPassword("123456");
+        }
         return studentRepo.save(student);
     }
 

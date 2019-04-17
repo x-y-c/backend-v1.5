@@ -2,10 +2,8 @@ package yangchen.exam.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import yangchen.exam.entity.Student;
 import yangchen.exam.model.JsonResult;
 import yangchen.exam.service.base.studentService;
 
@@ -29,7 +27,14 @@ public class StudentInfoController {
     }
 
 
+    @RequestMapping(value = "/major", method = RequestMethod.GET)
     public JsonResult getStudentByMajor(@RequestParam String major) {
         return JsonResult.succResult(studentService.getStudentByMajor(major));
+    }
+
+
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    public JsonResult AddStudent(@RequestBody Student student) {
+        return JsonResult.succResult(studentService.addStudent(student));
     }
 }
