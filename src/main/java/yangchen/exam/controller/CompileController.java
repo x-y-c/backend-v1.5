@@ -39,12 +39,6 @@ public class CompileController {
     public JsonResult compileCode(@RequestParam String code) throws IOException {
         Logger.info("before" + "\n" + code);
 
-
-//        String s = StringEscapeUtils.unescapeHtml4(code);
-//        Logger.info("after" + "\n" + s);
-//        String ss = HtmlUtil.stripHtml(s);
-//        Logger.info("afterererer" + "\n" + ss);
-
         String s = HtmlUtil.stripHtml(code);
         String ss = StringEscapeUtils.unescapeHtml4(s);
         ss =ss.replace(">",">"+"\n");
@@ -53,6 +47,34 @@ public class CompileController {
 
         Logger.info(compile);
 //        String compile = null;
+        if (compile == null || !compile.contains("error")) {
+            return JsonResult.succResult("success");
+        }
+        int error = compile.lastIndexOf("error");
+        if (error > 0) {
+            String result = compile.substring(error);
+            return JsonResult.succResult(result);
+        }
+
+        return JsonResult.succResult(compile);
+
+
+    }
+
+
+    /**
+     * 这里给postman测试用，因为postman的发送数据没有传输转码的问题
+     * @param code
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = {"/postman"}, method = RequestMethod.POST)
+    public JsonResult compileCodePostman(@RequestParam String code) throws IOException {
+        Logger.info("before" + "\n" + code);
+        Long submitTime = System.currentTimeMillis();
+        String compile = compileCoreService.compile(code, submitTime);
+
+        Logger.info(compile);
         if (compile == null || !compile.contains("error")) {
             return JsonResult.succResult("success");
         }
