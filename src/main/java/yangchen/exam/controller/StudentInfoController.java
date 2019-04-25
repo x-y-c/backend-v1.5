@@ -37,4 +37,9 @@ public class StudentInfoController {
     public JsonResult AddStudent(@RequestBody Student student) {
         return JsonResult.succResult(studentService.addStudent(student));
     }
+
+
+    public JsonResult updateStudent(@RequestBody Student student) {
+        return JsonResult.succResult(studentService.changeStudentInfo(student));
+    }
 }

@@ -21,12 +21,17 @@ public interface studentService {
     void deleteStudentInfo(Student student);
 
 
+
+    //添加学生
     Student addStudent(Student student);
 
+    //获取全部学生
     List<Student> getAllStudent();
 
     //通过专业获取学生列表；
     List<Student> getStudentByMajor(String major);
+
+
 
 
 }
