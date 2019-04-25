@@ -51,6 +51,9 @@ public class UserController {
     public JsonResult login(@RequestParam String studentId, @RequestParam String password) {
         Student student = StudentService.getStudentByStudentId(Long.valueOf(studentId));
         LOGGER.info("the ip is [{}]", IpUtil.getIpAddr(request));
+
+        String userId = request.getHeader("userId");
+        LOGGER.info("the userId is [{}]", userId);
         if (student == null) {
             return JsonResult.errorResult(ResultCode.USER_NOT_EXIST, "用户不存在", null);
         }
