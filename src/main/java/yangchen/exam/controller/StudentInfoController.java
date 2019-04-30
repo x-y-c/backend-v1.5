@@ -5,12 +5,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import yangchen.exam.entity.Student;
 import yangchen.exam.model.JsonResult;
 import yangchen.exam.service.base.studentService;
+import yangchen.exam.service.excelservice.ExcelService;
 import yangchen.exam.util.UserUtil;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 /**
  * @author YC
@@ -30,6 +33,9 @@ public class StudentInfoController {
     @Autowired
     private HttpServletRequest request;
 
+    @Autowired
+    private ExcelService excelService;
+
     //查询所有学生；
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public JsonResult getAllStudent() {
@@ -47,14 +53,21 @@ public class StudentInfoController {
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public JsonResult AddStudent(@RequestBody Student student) {
-        LOGGER.info("[{}] add student",UserUtil.getUserId(request));
+        LOGGER.info("[{}] add student", UserUtil.getUserId(request));
         return JsonResult.succResult(studentService.addStudent(student));
     }
 
 
-    @RequestMapping(value = "/update",method = RequestMethod.POST)
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
     public JsonResult updateStudent(@RequestBody Student student) {
-        LOGGER.info("[{}] update student",UserUtil.getUserId(request));
+        LOGGER.info("[{}] update student", UserUtil.getUserId(request));
         return JsonResult.succResult(studentService.changeStudentInfo(student));
+    }
+
+
+    @RequestMapping(value = "/upload", method = RequestMethod.POST)
+    public JsonResult uploadStudent(@RequestParam MultipartFile studentList) throws IOException {
+        excelService.excelReader(studentList);
+        return JsonResult.succResult("上传成功");
     }
 }

@@ -91,6 +91,25 @@
         </dependency>
 
 
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.13</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>3.13</version>
+        </dependency>
+
+
+<!--阿里的easyExcel框架-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+            <version>1.0.0-RELEASE</version>
+        </dependency>
+
     </dependencies>
 
     <build>
