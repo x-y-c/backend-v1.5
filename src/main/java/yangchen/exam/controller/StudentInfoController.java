@@ -10,10 +10,12 @@ import yangchen.exam.entity.Student;
 import yangchen.exam.model.JsonResult;
 import yangchen.exam.service.base.studentService;
 import yangchen.exam.service.excelservice.ExcelService;
+import yangchen.exam.service.excelservice.ExcelServiceImpl;
 import yangchen.exam.util.UserUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author YC
@@ -36,7 +38,12 @@ public class StudentInfoController {
     @Autowired
     private ExcelService excelService;
 
-    //查询所有学生；
+    @Autowired
+    private ExcelServiceImpl excelServiceimpl;
+
+    /**
+     * @return 全部学生的信息
+     */
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public JsonResult getAllStudent() {
         LOGGER.info("[{}] 查询全部学生", request.getHeader("userId"));
@@ -67,7 +74,8 @@ public class StudentInfoController {
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public JsonResult uploadStudent(@RequestParam MultipartFile studentList) throws IOException {
-        excelService.excelReader(studentList);
-        return JsonResult.succResult("上传成功");
+        InputStream inputStream = studentList.getInputStream();
+        JsonResult jsonResult = excelServiceimpl.huExcel(inputStream);
+        return jsonResult;
     }
 }

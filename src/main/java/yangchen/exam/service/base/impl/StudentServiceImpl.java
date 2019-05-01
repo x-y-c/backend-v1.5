@@ -3,6 +3,7 @@ package yangchen.exam.service.base.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.Student;
+import yangchen.exam.model.StudentInfo;
 import yangchen.exam.repo.studentRepo;
 import yangchen.exam.service.base.studentService;
 
@@ -42,6 +43,22 @@ public class StudentServiceImpl implements studentService {
         if (student.getPassword() == null || student.getPassword().length() <= 0) {
             student.setPassword("123456");
         }
+        if (student.getEnabled() == null) {
+            student.setEnabled(true);
+        }
+        return studentRepo.save(student);
+    }
+
+    @Override
+    public Student addStudent(StudentInfo studentInfo) {
+        Student student = new Student();
+        student.setName(studentInfo.getName());
+        student.setEnabled(true);
+        student.setStudentId(studentInfo.getStudentId());
+        student.setPassword("123456");
+        student.setMajor(studentInfo.getMajor());
+        student.setGrade(studentInfo.getGrade());
+
         return studentRepo.save(student);
     }
 
