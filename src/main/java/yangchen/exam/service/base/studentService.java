@@ -1,5 +1,6 @@
 package yangchen.exam.service.base;
 
+import org.springframework.data.domain.Page;
 import yangchen.exam.entity.Student;
 import yangchen.exam.model.StudentInfo;
 
@@ -37,11 +38,27 @@ public interface studentService {
 
     Student addStudent(StudentInfo studentInfo);
 
-    //获取全部学生
+    /**
+     * 获取全部学生信息
+     *
+     * @return
+     */
     List<Student> getAllStudent();
 
-    //通过专业获取学生列表；
+    /**
+     * 通过专业获取学生信息
+     * @param major
+     * @return
+     */
     List<Student> getStudentByMajor(String major);
+
+    /**
+     * 分页获取学生信息
+     * @param pageNum
+     * @param pageLimit
+     * @return
+     */
+    Page<Student> getPage(Integer pageNum, Integer pageLimit);
 
 
 }

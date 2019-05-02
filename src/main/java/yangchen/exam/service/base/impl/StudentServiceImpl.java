@@ -1,6 +1,9 @@
 package yangchen.exam.service.base.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.Student;
 import yangchen.exam.model.StudentInfo;
@@ -70,5 +73,11 @@ public class StudentServiceImpl implements studentService {
     @Override
     public List<Student> getStudentByMajor(String major) {
         return studentRepo.findByMajor(major);
+    }
+
+    @Override
+    public Page<Student> getPage(Integer pageNum, Integer pageLimit) {
+        Pageable pageable = PageRequest.of(pageNum - 1, pageLimit);
+        return studentRepo.findAll(pageable);
     }
 }

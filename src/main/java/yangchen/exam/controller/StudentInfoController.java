@@ -50,6 +50,12 @@ public class StudentInfoController {
         return JsonResult.succResult(studentService.getAllStudent());
     }
 
+    @RequestMapping(value = "/page", method = RequestMethod.GET)
+    public JsonResult getPagedStudent(Integer page, Integer pageLimit) {
+        LOGGER.info("[{}]查询分页信息", request.getHeader("userId"));
+        return JsonResult.succResult(studentService.getPage(page, pageLimit));
+    }
+
 
     @RequestMapping(value = "/major", method = RequestMethod.GET)
     public JsonResult getStudentByMajor(@RequestParam String major) {
