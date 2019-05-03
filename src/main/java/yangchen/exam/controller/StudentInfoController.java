@@ -53,6 +53,9 @@ public class StudentInfoController {
     @RequestMapping(value = "/page", method = RequestMethod.GET)
     public JsonResult getPagedStudent(Integer page, Integer pageLimit) {
         LOGGER.info("[{}]查询分页信息", request.getHeader("userId"));
+        if(pageLimit==null){
+            pageLimit=10;
+        }
         return JsonResult.succResult(studentService.getPage(page, pageLimit));
     }
 
