@@ -46,12 +46,25 @@ public class StudentServiceImpl implements studentService {
         if (student.getPassword() == null || student.getPassword().length() <= 0) {
             student.setPassword("123456");
         }
+
+        Student byStudentId = studentRepo.findByStudentId(student.getStudentId());
+        if (byStudentId != null) {
+            byStudentId.setGrade(student.getGrade());
+            byStudentId.setMajor(student.getMajor());
+            return studentRepo.save(byStudentId);
+        }
         if (student.getEnabled() == null) {
             student.setEnabled(true);
         }
         return studentRepo.save(student);
     }
 
+
+    /**
+     * 用在excel处理的部分，excel读取的是 studentInfo
+     * @param studentInfo
+     * @return
+     */
     @Override
     public Student addStudent(StudentInfo studentInfo) {
         Student student = new Student();

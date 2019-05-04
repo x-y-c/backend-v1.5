@@ -74,6 +74,6 @@ public class ExcelServiceImpl {
 
             studentService.addStudent(studentInfo);
         }
-        return JsonResult.succResult("添加成功", all.size()-1d);
+        return JsonResult.succResult("添加成功", all.size()-1);
     }
 }
