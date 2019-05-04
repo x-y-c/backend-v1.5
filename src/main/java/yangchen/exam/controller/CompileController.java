@@ -1,7 +1,8 @@
 package yangchen.exam.controller;
 
 
-import org.apache.commons.text.StringEscapeUtils;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,13 +11,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import yangchen.exam.model.CompileTes;
 import yangchen.exam.model.JsonResult;
 import yangchen.exam.service.biz.CompileCoreService;
-import yangchen.exam.util.HtmlUtil;
-import yangchen.exam.util.UserUtil;
+import yangchen.exam.service.http.IOkhttpService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author yangchen
@@ -30,6 +33,9 @@ public class CompileController {
     private CompileCoreService compileCoreService;
     Logger Logger = LoggerFactory.getLogger(CompileController.class);
 
+
+    @Autowired
+    private IOkhttpService okhttpService;
     @Autowired
     private HttpServletRequest servletRequest;
 
@@ -46,39 +52,67 @@ public class CompileController {
     /*
     //todo 添加代码的持久化，用户每次提交代码，都能够记录用户的提交记录和时间，代码信息 和 编译的结果等；
     * */
-
+//    @RequestMapping(value = {"/", ""}, method = RequestMethod.POST)
+//    public JsonResult compileCode(@RequestParam String code) throws IOException {
+//        Logger.info("before" + "\n" + code);
+//
+//        String s = HtmlUtil.stripHtml(code);
+//        String ss = StringEscapeUtils.unescapeHtml4(s);
+//        ss = ss.replace(">", ">" + "\n");
+//        Long submitTime = System.currentTimeMillis();
+//        String compile = compileCoreService.compile(ss, submitTime);
+//
+//        Logger.info(compile);
+////        String compile = null;
+//        if (compile == null || !compile.contains("error")) {
+//            Logger.info("[{}] compiled code [{}]", UserUtil.getUserId(servletRequest), code);
+//            return JsonResult.succResult("success");
+//        }
+//        int error = compile.lastIndexOf("error");
+//        if (error > 0) {
+//            String result = compile.substring(error);
+//            Logger.info("[{}] compiled code [{}]", UserUtil.getUserId(servletRequest), code);
+//            return JsonResult.succResult(result);
+//        }
+//
+//        Logger.info("[{}] compiled code [{}]", UserUtil.getUserId(servletRequest), code);
+//        return JsonResult.succResult(compile);
+//    }
     @RequestMapping(value = {"/", ""}, method = RequestMethod.POST)
-    public JsonResult compileCode(@RequestParam String code) throws IOException {
-        Logger.info("before" + "\n" + code);
+    public JsonResult comileTest(@RequestParam String code) {
+        Logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!______________" + code + "\n");
 
-        String s = HtmlUtil.stripHtml(code);
-        String ss = StringEscapeUtils.unescapeHtml4(s);
-        ss =ss.replace(">",">"+"\n");
-        Long submitTime = System.currentTimeMillis();
-        String compile = compileCoreService.compile(ss, submitTime);
 
-        Logger.info(compile);
-//        String compile = null;
-        if (compile == null || !compile.contains("error")) {
-            Logger.info("[{}] compiled code [{}]", UserUtil.getUserId(servletRequest),code);
-            return JsonResult.succResult("success");
-        }
-        int error = compile.lastIndexOf("error");
-        if (error > 0) {
-            String result = compile.substring(error);
-            Logger.info("[{}] compiled code [{}]", UserUtil.getUserId(servletRequest),code);
-            return JsonResult.succResult(result);
-        }
+        CompileTes compileTes = new CompileTes();
+        List<String> input = new ArrayList<>();
+        input.add("");
 
-        Logger.info("[{}] compiled code [{}]", UserUtil.getUserId(servletRequest),code);
-        return JsonResult.succResult(compile);
+        compileTes.setInput(input);
 
+        List<String> output = new ArrayList<>();
+        output.add("hello world");
+
+        compileTes.setOutput(output);
+
+        compileTes.setTimeLimit(1000L);
+        compileTes.setJudgeId(1);
+        compileTes.setSrc(code);
+        compileTes.setMemoryLimit(65535L);
+
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.disableHtmlEscaping();
+
+        Gson gson = gsonBuilder.create();
+        String s = gson.toJson(compileTes);
+        String s1 = okhttpService.postJsonBody("http://acm.swust.edu.cn/OnlineJudge/judge.do", s);
+        return JsonResult.succResult(s1);
 
     }
 
 
     /**
      * 这里给postman测试用，因为postman的发送数据没有传输转码的问题
+     *
      * @param code
      * @return
      * @throws IOException
