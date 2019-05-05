@@ -11,5 +11,5 @@ public interface questionRepo extends JpaRepository<Question, Integer> {
 
     Optional<Question> findById(Integer id);
 
-    List<Question> findByCategory(Category category);
+    List<Question> findByCategory(String category);
 }

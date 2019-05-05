@@ -1,10 +1,10 @@
-package yangchen.exam.service.base.impl;
+package yangchen.exam.service.testInfo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.TestCase;
 import yangchen.exam.repo.testCaseRepo;
-import yangchen.exam.service.base.TestCaseService;
+import yangchen.exam.service.testInfo.TestCaseService;
 
 import java.util.List;
 

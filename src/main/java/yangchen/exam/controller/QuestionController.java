@@ -9,8 +9,8 @@ import yangchen.exam.entity.Question;
 import yangchen.exam.entity.TestCase;
 import yangchen.exam.model.Category;
 import yangchen.exam.model.JsonResult;
-import yangchen.exam.service.base.QuestionService;
-import yangchen.exam.service.biz.TestInfoService;
+import yangchen.exam.service.question.QuestionService;
+import yangchen.exam.service.testInfo.TestInfoService;
 import yangchen.exam.util.IpUtil;
 import yangchen.exam.util.UserUtil;
 
@@ -46,7 +46,7 @@ public class QuestionController {
     }
 
     @RequestMapping(value = "/category", method = RequestMethod.GET)
-    public JsonResult findQuestionByCategory(@RequestParam Category category) {
+    public JsonResult findQuestionByCategory(@RequestParam String  category) {
         List<Question> questionByCategory = questionService.findQuestionByCategory(category);
         LOGGER.info("[{}] find question by category, the ip = [{}]",
                 UserUtil.getUserId(httpServletRequest), IpUtil.getIpAddr(httpServletRequest));

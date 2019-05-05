@@ -1,4 +1,4 @@
-package yangchen.exam.service.base;
+package yangchen.exam.service.testInfo;
 
 import yangchen.exam.entity.TestCase;
 

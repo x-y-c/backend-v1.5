@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import yangchen.exam.entity.Student;
 import yangchen.exam.model.JsonResult;
-import yangchen.exam.service.base.studentService;
+import yangchen.exam.service.student.studentService;
 import yangchen.exam.service.excelservice.ExcelService;
 import yangchen.exam.service.excelservice.ExcelServiceImpl;
 import yangchen.exam.util.UserUtil;

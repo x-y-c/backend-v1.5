@@ -16,9 +16,9 @@ import yangchen.exam.entity.Teacher;
 import yangchen.exam.model.JsonResult;
 import yangchen.exam.model.ResultCode;
 import yangchen.exam.model.UserBaseInfo;
-import yangchen.exam.service.base.TeacherService;
-import yangchen.exam.service.base.studentService;
-import yangchen.exam.service.biz.TokenService;
+import yangchen.exam.service.teacher.TeacherService;
+import yangchen.exam.service.student.studentService;
+import yangchen.exam.service.token.TokenService;
 import yangchen.exam.util.IpUtil;
 import yangchen.exam.util.JavaJWTUtil;
 

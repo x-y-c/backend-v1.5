@@ -9,7 +9,7 @@ import yangchen.exam.annotation.PassToken;
 import yangchen.exam.annotation.UserLoginToken;
 import yangchen.exam.entity.Student;
 import yangchen.exam.model.TokenInfo;
-import yangchen.exam.service.base.studentService;
+import yangchen.exam.service.student.studentService;
 import yangchen.exam.util.JavaJWTUtil;
 
 import javax.servlet.http.HttpServletRequest;

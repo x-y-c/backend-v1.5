@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import yangchen.exam.entity.Student;
-import yangchen.exam.service.base.studentService;
+import yangchen.exam.service.student.studentService;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package yangchen.exam.service.biz;
+package yangchen.exam.service.exam;
 
 import yangchen.exam.entity.Examination;
 import yangchen.exam.model.Category;

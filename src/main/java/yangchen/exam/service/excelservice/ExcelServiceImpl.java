@@ -1,5 +1,6 @@
 package yangchen.exam.service.excelservice;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -11,9 +12,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import yangchen.exam.entity.Question;
 import yangchen.exam.model.JsonResult;
 import yangchen.exam.model.StudentInfo;
-import yangchen.exam.service.base.studentService;
+import yangchen.exam.service.question.QuestionService;
+import yangchen.exam.service.student.studentService;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -32,6 +35,9 @@ public class ExcelServiceImpl {
     @Autowired
     private studentService studentService;
 
+
+    @Autowired
+    private QuestionService questionService;
 
     private static Logger LOGGER = LoggerFactory.getLogger(ExcelServiceImpl.class);
 
@@ -74,6 +80,33 @@ public class ExcelServiceImpl {
 
             studentService.addStudent(studentInfo);
         }
-        return JsonResult.succResult("添加成功", all.size()-1);
+
+        return JsonResult.succResult("添加成功", all.size() - 1);
+    }
+
+    public void readerExcelForQuestion(String filePath) {
+        ExcelReader reader = ExcelUtil.getReader(FileUtil.file("D://question.xlsx"));
+        List<List<Object>> all = reader.read();
+        for (int i = 1; i < 10; i++) {
+            List<Object> objects = all.get(i);
+            Question question = new Question();
+            //自定义题号
+            question.setQuestionTitle(objects.get(0).toString());
+            //题目
+            question.setQuestionName(objects.get(1).toString());
+            //阶段
+            question.setCategory(objects.get(2).toString());
+            //知识点
+            question.setKnowledge(objects.get(3).toString());
+            //难度
+            question.setDifficulty(objects.get(4).toString());
+            //题目描述
+            question.setDescription(objects.get(5).toString());
+
+//            questionService.createQuestion(question);
+
+            System.out.println(objects.toString());
+        }
+
     }
 }

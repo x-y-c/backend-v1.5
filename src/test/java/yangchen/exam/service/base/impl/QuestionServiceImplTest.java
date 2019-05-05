@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import yangchen.exam.entity.Question;
 import yangchen.exam.model.Category;
-import yangchen.exam.service.base.QuestionService;
+import yangchen.exam.service.question.QuestionService;
 
 import java.util.List;
 
@@ -27,9 +27,9 @@ public class QuestionServiceImplTest {
     @Autowired
     private QuestionService questionService;
 
-    @Test
-    public void findQuestionByCategory() {
-        List<Question> questionByCategory = questionService.findQuestionByCategory(Category.LINEAR_LIST);
-        LOGGER.info(questionByCategory.toString());
-    }
+//    @Test
+//    public void findQuestionByCategory() {
+//        List<Question> questionByCategory = questionService.findQuestionByCategory(C);
+//        LOGGER.info(questionByCategory.toString());
+//    }
 }

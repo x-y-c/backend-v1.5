@@ -1,4 +1,4 @@
-package yangchen.exam.service.base;
+package yangchen.exam.service.question;
 
 import yangchen.exam.entity.Question;
 import yangchen.exam.model.Category;
@@ -51,7 +51,7 @@ public interface QuestionService {
      * @param category
      * @return
      */
-    List<Question> findQuestionByCategory(Category category);
+    List<Question> findQuestionByCategory(String category);
 
 
     /**

@@ -1,4 +1,4 @@
-package yangchen.exam.service.base.impl;
+package yangchen.exam.service.student;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import yangchen.exam.entity.Student;
 import yangchen.exam.model.StudentInfo;
 import yangchen.exam.repo.studentRepo;
-import yangchen.exam.service.base.studentService;
 
 import java.util.List;
 

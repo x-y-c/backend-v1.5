@@ -1,11 +1,11 @@
-package yangchen.exam.service.base.impl;
+package yangchen.exam.service.question;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.Question;
 import yangchen.exam.model.Category;
 import yangchen.exam.repo.questionRepo;
-import yangchen.exam.service.base.QuestionService;
+import yangchen.exam.service.question.QuestionService;
 
 import java.util.List;
 import java.util.Optional;
@@ -48,7 +48,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public List<Question> findQuestionByCategory(Category category) {
+    public List<Question> findQuestionByCategory(String category) {
         return questionRepo.findByCategory(category);
     }
 

@@ -1,10 +1,9 @@
-package yangchen.exam.service.base.impl;
+package yangchen.exam.service.teacher;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.Teacher;
 import yangchen.exam.repo.teacherRepo;
-import yangchen.exam.service.base.TeacherService;
 
 
 /**

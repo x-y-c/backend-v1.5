@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import yangchen.exam.model.CompileModel;
 import yangchen.exam.model.CompileResult;
 import yangchen.exam.model.JsonResult;
-import yangchen.exam.service.biz.CompileCoreService;
+import yangchen.exam.service.compile.CompileCoreService;
 import yangchen.exam.service.http.IOkhttpService;
 
 import javax.servlet.http.HttpServletRequest;

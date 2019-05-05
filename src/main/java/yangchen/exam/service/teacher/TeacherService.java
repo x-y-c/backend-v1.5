@@ -1,4 +1,4 @@
-package yangchen.exam.service.base;
+package yangchen.exam.service.teacher;
 
 import yangchen.exam.entity.Teacher;
 

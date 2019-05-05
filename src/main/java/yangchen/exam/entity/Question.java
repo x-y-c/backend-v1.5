@@ -43,7 +43,7 @@ public class Question {
      * 类型
      */
     @Column(name = "category")
-    private Category category;
+    private String category;
 
 
     /**

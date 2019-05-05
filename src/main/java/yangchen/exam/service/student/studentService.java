@@ -1,4 +1,4 @@
-package yangchen.exam.service.base;
+package yangchen.exam.service.student;
 
 import org.springframework.data.domain.Page;
 import yangchen.exam.entity.Student;

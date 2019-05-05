@@ -1,4 +1,4 @@
-package yangchen.exam.service.biz;
+package yangchen.exam.service.score;
 
 
 import yangchen.exam.model.ScoreInfo;
