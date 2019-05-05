@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import yangchen.exam.model.CompileTes;
+import yangchen.exam.model.CompileModel;
+import yangchen.exam.model.CompileResult;
 import yangchen.exam.model.JsonResult;
 import yangchen.exam.service.biz.CompileCoreService;
 import yangchen.exam.service.http.IOkhttpService;
@@ -78,34 +79,53 @@ public class CompileController {
 //        Logger.info("[{}] compiled code [{}]", UserUtil.getUserId(servletRequest), code);
 //        return JsonResult.succResult(compile);
 //    }
+
+
+    /**
+     * 更新注释，首先，前端传来的代码，可以不被转义，使用codeMirror组件就可以避免不必要的转义，
+     * 其次，编译项目为了保证安全，不和该项目放在一起，通过http请求来调用，
+     * 第三，从前端收到的代码，json序列化的时候，gson默认会进行转义，这里，使用GsonBuilder ，声明不要做编码转义就可以了；
+     *
+     * @param code
+     * @return
+     */
     @RequestMapping(value = {"/", ""}, method = RequestMethod.POST)
     public JsonResult comileTest(@RequestParam String code) {
         Logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!______________" + code + "\n");
 
-
-        CompileTes compileTes = new CompileTes();
+        CompileModel compileModel = new CompileModel();
         List<String> input = new ArrayList<>();
+
+        //todo 之后完成添加测试用例的方法，现在写成固定的；
         input.add("");
 
-        compileTes.setInput(input);
+        compileModel.setInput(input);
 
         List<String> output = new ArrayList<>();
         output.add("hello world");
 
-        compileTes.setOutput(output);
+        compileModel.setOutput(output);
 
-        compileTes.setTimeLimit(1000L);
-        compileTes.setJudgeId(1);
-        compileTes.setSrc(code);
-        compileTes.setMemoryLimit(65535L);
+        compileModel.setTimeLimit(1000L);
+        compileModel.setJudgeId(1);
+        compileModel.setSrc(code);
+        compileModel.setMemoryLimit(65535L);
 
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.disableHtmlEscaping();
 
         Gson gson = gsonBuilder.create();
-        String s = gson.toJson(compileTes);
+        String s = gson.toJson(compileModel);
         String s1 = okhttpService.postJsonBody("http://acm.swust.edu.cn/OnlineJudge/judge.do", s);
-        return JsonResult.succResult(s1);
+
+        CompileResult compileResult = gson.fromJson(s1, CompileResult.class);
+        Logger.info(compileResult.toString());
+        if (compileResult.getGlobalMsg() == null) {
+
+            return JsonResult.succResult(1);
+        } else {
+            return JsonResult.succResult(compileResult.getGlobalMsg());
+        }
 
     }
 
