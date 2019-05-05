@@ -26,4 +26,10 @@ public class RandomUtilTest {
         }
     }
 
+    @Test
+    public void test2() {
+        LOGGER.info(String.valueOf(RandomUtil.getRandom(1, 20, 10)));
+
+    }
+
 }
