@@ -4,8 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import yangchen.exam.entity.Examination;
 import yangchen.exam.entity.Question;
 import yangchen.exam.entity.Student;
+import yangchen.exam.repo.examinationRepo;
 import yangchen.exam.service.examInfo.ExamGroupService;
 import yangchen.exam.service.examInfo.ExamInfoService;
 import yangchen.exam.service.question.QuestionService;
@@ -35,30 +37,49 @@ public class ExamInfoServiceImpl implements ExamInfoService {
     @Autowired
     private ExamGroupService examGroupService;
 
+    @Autowired
+    private examinationRepo examinationRepo;
+
 
     @Override
-    public void createExamInfo(String category) {
+    public Examination createExamInfo(String category) {
 
         List<Question> questionByCategory = questionService.findQuestionByCategory(category);
+        List<Integer> titleId = new ArrayList<>();
+        StringBuilder titles = new StringBuilder();
 
         //这里其实只创建了一个人的考题，5道，用随机数工具保证不重复；
         Set random = RandomUtil.getRandom(0, questionByCategory.size() - 1, 5);
         for (Object s : random) {
             Question question = questionByCategory.get(Integer.valueOf(String.valueOf(s)));
             LOGGER.info(question.getQuestionName() + question.getCategory());
+            titleId.add(question.getId());
+            titles.append(question.getId());
+            titles.append(",");
         }
+
+        Examination examination = new Examination();
+        examination.setTitleType("小测验");
+        examination.setActive(Boolean.TRUE);
+        examination.setUsed(Boolean.FALSE);
+        examination.setTitleId(titles.toString());
+
+        examinationRepo.save(examination);
+
+        return examination;
 
 
     }
 
     @Override
-    public void createExamInfo(String category, Integer number) {
+    public Examination createExamInfo(String category, Integer number) {
         List<Question> questionList = questionService.findQuestionByCategory(category);
         Set random = RandomUtil.getRandom(0, questionList.size() - 1, number);
         for (Object s : random) {
             Question question = questionList.get(Integer.valueOf(String.valueOf(s)));
             LOGGER.info(question.getQuestionName() + "\n" + question.getCategory());
         }
+        return null;
 
     }
 
@@ -74,8 +95,9 @@ public class ExamInfoServiceImpl implements ExamInfoService {
             studentList.addAll(studentService.getStudentListByGrade(studentGrade));
         }
 
-        for (Student student:studentList){
-
+        for (Student student : studentList) {
+            Examination examination = new Examination();
+            createExamInfo(category, number);
         }
 
 

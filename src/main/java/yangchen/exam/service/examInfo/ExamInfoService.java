@@ -1,5 +1,7 @@
 package yangchen.exam.service.examInfo;
 
+import yangchen.exam.entity.Examination;
+
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -15,7 +17,7 @@ public interface ExamInfoService {
      *
      * @param category
      */
-    void createExamInfo(String category);
+    Examination createExamInfo(String category);
 
 
     /**
@@ -24,13 +26,13 @@ public interface ExamInfoService {
      * @param category
      * @param number
      */
-    void createExamInfo(String category, Integer number);
+    Examination createExamInfo(String category, Integer number);
 
 
     /**
      * @param category  阶段 example ： 阶段3
      * @param number    题数 example： 5
-     * @param grades     班级 example: 软工1501，软工1502
+     * @param grades    班级 example: 软工1501，软工1502
      * @param startTime 开始时间
      * @param endTime   结束时间
      * @param ttl       持续时间

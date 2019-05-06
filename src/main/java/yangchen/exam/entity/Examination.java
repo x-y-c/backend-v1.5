@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "examination")
+@Table(name = "examation")
 @Data
 public class Examination {
 //试卷表
