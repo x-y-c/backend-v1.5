@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.Question;
 import yangchen.exam.entity.Student;
+import yangchen.exam.service.examInfo.ExamGroupService;
 import yangchen.exam.service.examInfo.ExamInfoService;
 import yangchen.exam.service.question.QuestionService;
 import yangchen.exam.service.student.studentService;
@@ -30,6 +31,9 @@ public class ExamInfoServiceImpl implements ExamInfoService {
 
     @Autowired
     private studentService studentService;
+
+    @Autowired
+    private ExamGroupService examGroupService;
 
 
     @Override
@@ -66,10 +70,13 @@ public class ExamInfoServiceImpl implements ExamInfoService {
 
 
         //通过循环获取需要添加的全部学生；
-        for (String studentGrade : grade){
-           studentList.addAll(studentService.getStudentListByGrade(studentGrade));
+        for (String studentGrade : grade) {
+            studentList.addAll(studentService.getStudentListByGrade(studentGrade));
         }
 
+        for (Student student:studentList){
+
+        }
 
 
     }
