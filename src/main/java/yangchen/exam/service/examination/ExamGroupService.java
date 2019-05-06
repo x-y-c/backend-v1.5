@@ -1,4 +1,4 @@
-package yangchen.exam.service.examInfo;
+package yangchen.exam.service.examination;
 
 import yangchen.exam.entity.ExamGroup;
 

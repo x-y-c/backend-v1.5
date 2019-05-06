@@ -1,10 +1,10 @@
-package yangchen.exam.service.examInfo.impl;
+package yangchen.exam.service.examination.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.ExamGroup;
 import yangchen.exam.repo.examGroupRepo;
-import yangchen.exam.service.examInfo.ExamGroupService;
+import yangchen.exam.service.examination.ExamGroupService;
 
 /**
  * @author YC

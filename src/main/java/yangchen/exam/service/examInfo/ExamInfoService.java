@@ -1,45 +1,32 @@
 package yangchen.exam.service.examInfo;
 
-import yangchen.exam.entity.Examination;
-
-import java.sql.Timestamp;
-import java.util.List;
-
 /**
  * @author YC
- * @date 2019/5/5 10:19
+ * @date 2019/5/6 21:23
  * O(∩_∩)O)
+ */
+
+import yangchen.exam.entity.ExamInfo;
+
+/**
+ * 试卷信息，如试卷分配给谁等信息；
  */
 public interface ExamInfoService {
 
     /**
-     * 根据阶段创建题目，默认为5道题；
+     * 添加试卷的分配信息
      *
-     * @param category
+     * @param examInfo
+     * @return
      */
-    Examination createExamInfo(String category);
+    ExamInfo addExamInfo(ExamInfo examInfo);
 
 
     /**
-     * 根据阶段和题目数创建题目，
+     * 通过学号查询试卷的分配情况
      *
-     * @param category
-     * @param number
+     * @param studentId
+     * @return
      */
-    Examination createExamInfo(String category, Integer number);
-
-
-    /**
-     * @param category  阶段 example ： 阶段3
-     * @param number    题数 example： 5
-     * @param grades    班级 example: 软工1501，软工1502
-     * @param startTime 开始时间
-     * @param endTime   结束时间
-     * @param ttl       持续时间
-     * @param desc      考卷描述
-     */
-    void createExam(String category, Integer number, List<String> grades, Timestamp startTime, Timestamp endTime,
-                    Long ttl, String desc);
-
-
+    ExamInfo getExamInfoByStudentId(Long studentId);
 }
