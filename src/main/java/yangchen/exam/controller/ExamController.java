@@ -28,7 +28,7 @@ public class ExamController {
     /**
      * 通过学号查询考试信息；
      * 包括考试题目，时间，等等信息；
-     *
+     *d
      * @param studentId
      * @return
      */
