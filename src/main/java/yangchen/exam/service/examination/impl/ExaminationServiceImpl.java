@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.*;
 import yangchen.exam.model.ExamCreatedParam;
+import yangchen.exam.model.ExaminationDetail;
 import yangchen.exam.repo.examinationRepo;
 import yangchen.exam.service.examInfo.ExamInfoService;
 import yangchen.exam.service.examination.ExamGroupService;
@@ -73,6 +74,15 @@ public class ExaminationServiceImpl implements ExaminationService {
     }
 
     @Override
+    public List<ExaminationDetail> examInfoDetail(Long studentId) {
+        List<ExamInfo> examInfoByStudentId = examInfoService.getExamInfoByStudentId(studentId);
+        List<ExaminationDetail> examinationDetails = new ArrayList<>(examInfoByStudentId.size());
+
+
+        return null;
+    }
+
+    @Override
     public Examination createExamInfo(String category, Integer number) {
         List<Question> questionList = questionService.findQuestionByCategory(category);
         Set random = RandomUtil.getRandom(0, questionList.size() - 1, number);
@@ -112,13 +122,6 @@ public class ExaminationServiceImpl implements ExaminationService {
             Examination examination = createExamInfo(category, number);
 
 
-            //这里是试卷的分配情况，即该id的试卷分配给了谁
-            ExamInfo examInfo = new ExamInfo();
-            examInfo.setStudentName(student.getName());
-            examInfo.setStudentNumber(student.getStudentId());
-            examInfoService.addExamInfo(examInfo);
-
-
             //这里保存考试组的信息，即本次考试的班级，开始结束时间等信息；
             ExamGroup examGroup = new ExamGroup();
             examGroup.setBeginTime(startTime);
@@ -127,7 +130,21 @@ public class ExaminationServiceImpl implements ExaminationService {
             examGroup.setExamTime(ttl);
             examGroup.setDesc("软工专业期中考试");
 
-            examGroupService.addExamGroup(examGroup);
+            ExamGroup examGroup1 = examGroupService.addExamGroup(examGroup);
+
+            //这里是试卷的分配情况，即该id的试卷分配给了谁
+            //数据有冗余，为了查询的方便，
+            //必须先保存组信息，然后，在保存以后，取得组的id；
+            ExamInfo examInfo = new ExamInfo();
+            examInfo.setStudentName(student.getName());
+            examInfo.setStudentNumber(student.getStudentId());
+            examInfo.setDesc(desc);
+            examInfo.setCategory(category);
+            examInfo.setExamStart(startTime);
+            examInfo.setExamEnd(endTime);
+            examInfo.setTtl(ttl);
+            examInfo.setExamGroupId(examGroup1.getId());
+            examInfoService.addExamInfo(examInfo);
         }
 
 

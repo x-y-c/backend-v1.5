@@ -8,6 +8,8 @@ package yangchen.exam.service.examInfo;
 
 import yangchen.exam.entity.ExamInfo;
 
+import java.util.List;
+
 /**
  * 试卷信息，如试卷分配给谁等信息；
  */
@@ -28,5 +30,5 @@ public interface ExamInfoService {
      * @param studentId
      * @return
      */
-    ExamInfo getExamInfoByStudentId(Long studentId);
+    List<ExamInfo> getExamInfoByStudentId(Long studentId);
 }

@@ -2,6 +2,7 @@ package yangchen.exam.service.examination;
 
 import yangchen.exam.entity.Examination;
 import yangchen.exam.model.ExamCreatedParam;
+import yangchen.exam.model.ExaminationDetail;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -23,6 +24,9 @@ public interface ExaminationService {
      * @param category
      */
     Examination createExamInfo(String category);
+
+
+    List<ExaminationDetail> examInfoDetail(Long studentId);
 
 
     /**

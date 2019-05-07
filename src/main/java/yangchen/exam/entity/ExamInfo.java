@@ -33,12 +33,29 @@ public class ExamInfo {
 
 
     @Column(name = "exam_group_id")
-    private Integer  examGroupId;
+    private Integer examGroupId;
 
 
     //该试卷成绩
     @Column(name = "examination_score")
     private Integer examinationScore;
+
+
+    @Column(name = "desc")
+    private String desc;
+
+    @Column(name = "ttl")
+    private Long ttl;
+
+    @Column(name = "category")
+    private String category;
+
+    @Column(name = "exam_start")
+    private Timestamp examStart;
+
+    @Column(name = "exam_end")
+    private Timestamp examEnd;
+
 
     @PrePersist
     private void init() {

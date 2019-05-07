@@ -6,6 +6,8 @@ import yangchen.exam.entity.ExamInfo;
 import yangchen.exam.repo.examInfoRepo;
 import yangchen.exam.service.examInfo.ExamInfoService;
 
+import java.util.List;
+
 /**
  * @author YC
  * @date 2019/5/6 21:37
@@ -24,7 +26,8 @@ public class ExamInfoServiceImpl implements ExamInfoService {
     }
 
     @Override
-    public ExamInfo getExamInfoByStudentId(Long studentId) {
-        return null;
+    public List<ExamInfo> getExamInfoByStudentId(Long studentId) {
+        List<ExamInfo> byStudentNumber = examInfoRepo.findByStudentNumber(studentId);
+        return byStudentNumber;
     }
 }
