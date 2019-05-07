@@ -1,6 +1,7 @@
 package yangchen.exam.service.examination;
 
 import yangchen.exam.entity.Examination;
+import yangchen.exam.model.ExamCreatedParam;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -45,6 +46,8 @@ public interface ExaminationService {
     void createExam(String category, Integer number, List<String> grades, Timestamp startTime, Timestamp endTime,
                     Long ttl, String desc);
 
+
+    void createExam(ExamCreatedParam examCreatedParam);
 
 
     /**

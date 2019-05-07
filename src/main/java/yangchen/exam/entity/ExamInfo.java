@@ -32,6 +32,10 @@ public class ExamInfo {
     private String teacherName;
 
 
+    @Column(name = "exam_group_id")
+    private Integer  examGroupId;
+
+
     //该试卷成绩
     @Column(name = "examination_score")
     private Integer examinationScore;

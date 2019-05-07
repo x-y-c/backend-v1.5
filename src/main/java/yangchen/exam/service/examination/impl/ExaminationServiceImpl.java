@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.*;
+import yangchen.exam.model.ExamCreatedParam;
 import yangchen.exam.repo.examinationRepo;
 import yangchen.exam.service.examInfo.ExamInfoService;
 import yangchen.exam.service.examination.ExamGroupService;
@@ -128,6 +129,26 @@ public class ExaminationServiceImpl implements ExaminationService {
 
             examGroupService.addExamGroup(examGroup);
         }
+
+
+    }
+
+    @Override
+    public void createExam(ExamCreatedParam examCreatedParam) {
+        if (examCreatedParam.getNumber() == null) {
+            examCreatedParam.setNumber(5);
+        }
+        /**
+         *  createExam(String category, Integer number, List<String> grade, Timestamp startTime, Timestamp endTime,
+         *                            Long ttl, String desc) {
+         */
+        createExam(examCreatedParam.getCategory(),
+                examCreatedParam.getNumber(),
+                examCreatedParam.getGrades(),
+                examCreatedParam.getStart(),
+                examCreatedParam.getEnd(),
+                examCreatedParam.getTtl(),
+                examCreatedParam.getDesc());
 
 
     }
