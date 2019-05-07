@@ -3,6 +3,7 @@ package yangchen.exam.service.examInfo.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.ExamInfo;
+import yangchen.exam.model.ExaminationDetail;
 import yangchen.exam.repo.examInfoRepo;
 import yangchen.exam.service.examInfo.ExamInfoService;
 

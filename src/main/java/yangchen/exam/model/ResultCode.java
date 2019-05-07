@@ -22,7 +22,8 @@ public class ResultCode {
      * R0002 密码错误
      * R0003 没有权限
      */
-    public  static String SUCCESS = "A0000";
+    public static String SUCCESS = "A0000";
     public static String USER_NOT_EXIST = "R0001";
-    public  static String WRONG_PASSWORD="R0002";
+    public static String WRONG_PASSWORD = "R0002";
+    public static String WRONG_PARAMS = "R0003";
 }

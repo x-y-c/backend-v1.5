@@ -77,9 +77,17 @@ public class ExaminationServiceImpl implements ExaminationService {
     public List<ExaminationDetail> examInfoDetail(Long studentId) {
         List<ExamInfo> examInfoByStudentId = examInfoService.getExamInfoByStudentId(studentId);
         List<ExaminationDetail> examinationDetails = new ArrayList<>(examInfoByStudentId.size());
+        for (ExamInfo examInfo : examInfoByStudentId) {
+            ExaminationDetail examinationDetail = new ExaminationDetail();
+            examinationDetail.setCategory(examInfo.getCategory());
+            examinationDetail.setDesc(examInfo.getDesc());
+            examinationDetail.setEnd(examInfo.getExamEnd());
+            examinationDetail.setStart(examInfo.getExamStart());
+            examinationDetail.setTtl(examInfo.getTtl());
+            examinationDetails.add(examinationDetail);
+        }
 
-
-        return null;
+        return examinationDetails;
     }
 
     @Override
@@ -108,7 +116,7 @@ public class ExaminationServiceImpl implements ExaminationService {
     @Override
     public void createExam(String category, Integer number, List<String> grade, Timestamp startTime, Timestamp endTime,
                            Long ttl, String desc) {
-        List<Question> questionListByCategory = questionService.findQuestionByCategory(category);
+
         List<Student> studentList = new ArrayList<>();
 
 
@@ -177,11 +185,11 @@ public class ExaminationServiceImpl implements ExaminationService {
 
     @Override
     public List<Examination> getUnUsedExamination() {
-        return null;
+        return examinationRepo.findByUsed(Boolean.FALSE);
     }
 
     @Override
     public List<Examination> getUsedExamination() {
-        return null;
+        return examinationRepo.findByUsed(Boolean.TRUE);
     }
 }

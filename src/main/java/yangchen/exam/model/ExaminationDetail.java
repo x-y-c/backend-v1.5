@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
+
 /**
  * @author YC
  * @date 2019/5/7 17:16
@@ -21,11 +23,11 @@ public class ExaminationDetail {
     /**
      * 显示开始时间；
      */
-    private Long start;
+    private Timestamp start;
     /**
      * 显示结束时间
      */
-    private Long end;
+    private Timestamp end;
     /**
      * 显示描述
      */

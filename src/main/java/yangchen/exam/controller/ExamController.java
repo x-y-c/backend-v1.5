@@ -1,15 +1,29 @@
 package yangchen.exam.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import yangchen.exam.model.ExamCreatedParam;
+import yangchen.exam.model.ExaminationDetail;
 import yangchen.exam.model.JsonResult;
+import yangchen.exam.model.ResultCode;
+import yangchen.exam.service.examination.ExaminationService;
+
+import java.util.List;
 
 /**
  * @author YC
  * @date 2019/5/7 11:35
  * O(∩_∩)O)
  */
+@RequestMapping(value = "/examInfo", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ExamController {
 
+    @Autowired
+    private ExaminationService examinationService;
 
     /**
      * 通过学号查询考试信息；
@@ -18,20 +32,39 @@ public class ExamController {
      * @param studentId
      * @return
      */
-    public JsonResult getExamInfoByStuentId(Long studentId) {
-        return null;
+    @RequestMapping(value = "/detail", method = RequestMethod.GET)
+    public JsonResult getExamInfoByStuentId(@RequestParam Long studentId) {
+        List<ExaminationDetail> examinationDetails = examinationService.examInfoDetail(studentId);
+        return JsonResult.succResult(examinationDetails);
     }
 
 
-    public JsonResult createExam(ExamCreatedParam examCreatedParam) {
-        return null;
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    public JsonResult createExam(@RequestBody ExamCreatedParam examCreatedParam) {
+        if (examCreatedParam.getNumber() == null) {
+            //如果题目没有指定，就是5道题
+            examCreatedParam.setNumber(5);
+        }
+        if (examCreatedParam.getNumber() == null ||
+                examCreatedParam.getCategory() == null ||
+                examCreatedParam.getDesc() == null ||
+                examCreatedParam.getStart() == null ||
+                examCreatedParam.getEnd() == null ||
+                examCreatedParam.getTtl() == null
+        ) {
+            return JsonResult.errorResult(ResultCode.WRONG_PARAMS, "参数不能为空", null);
+        }
+        examinationService.createExam(examCreatedParam);
+        return JsonResult.succResult(null);
     }
 
+    @RequestMapping(value = "/unUsed", method = RequestMethod.GET)
     public JsonResult queryExamUnused() {
-        return null;
+        return JsonResult.succResult(examinationService.getUnUsedExamination());
     }
 
+    @RequestMapping(value = "/used", method = RequestMethod.GET)
     public JsonResult queryExamUsed() {
-        return null;
+        return JsonResult.succResult(examinationService.getUsedExamination());
     }
 }

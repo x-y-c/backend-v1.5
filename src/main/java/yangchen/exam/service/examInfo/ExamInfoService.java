@@ -7,6 +7,7 @@ package yangchen.exam.service.examInfo;
  */
 
 import yangchen.exam.entity.ExamInfo;
+import yangchen.exam.model.ExaminationDetail;
 
 import java.util.List;
 
