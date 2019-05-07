@@ -21,5 +21,5 @@ public class ExamInfoImplTest {
     private ExamInfoService examInfo;
     private static Logger LOGGER = LoggerFactory.getLogger(ExamInfoImplTest.class);
 
-    
+
 }
