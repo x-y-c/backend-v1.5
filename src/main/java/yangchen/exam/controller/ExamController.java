@@ -2,10 +2,7 @@ package yangchen.exam.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import yangchen.exam.model.ExamCreatedParam;
 import yangchen.exam.model.ExaminationDetail;
 import yangchen.exam.model.JsonResult;
@@ -19,6 +16,7 @@ import java.util.List;
  * @date 2019/5/7 11:35
  * O(∩_∩)O)
  */
+@RestController
 @RequestMapping(value = "/examInfo", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ExamController {
 
@@ -33,7 +31,7 @@ public class ExamController {
      * @return
      */
     @RequestMapping(value = "/detail", method = RequestMethod.GET)
-    public JsonResult getExamInfoByStuentId(@RequestParam Long studentId) {
+    public JsonResult getExamInfoByStudentId(@RequestParam Long studentId) {
         List<ExaminationDetail> examinationDetails = examinationService.examInfoDetail(studentId);
         return JsonResult.succResult(examinationDetails);
     }

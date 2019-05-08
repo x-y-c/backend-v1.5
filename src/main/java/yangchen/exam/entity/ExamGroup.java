@@ -19,7 +19,7 @@ public class ExamGroup {
     private Integer id;
 
     //描述 如 期末考试练习
-    @Column(name = "desc")
+    @Column(name = "description")
     private String desc;
     //班级名称
     @Column(name = "class_name")

@@ -16,7 +16,7 @@ public class Examination {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Integer id;
 
     @Column(name = "active")
     private Boolean active;

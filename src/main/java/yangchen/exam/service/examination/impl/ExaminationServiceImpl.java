@@ -134,7 +134,12 @@ public class ExaminationServiceImpl implements ExaminationService {
             ExamGroup examGroup = new ExamGroup();
             examGroup.setBeginTime(startTime);
             examGroup.setEndTime(endTime);
-            examGroup.setClassName(grade.toString());
+            StringBuilder grades = new StringBuilder();
+            for (String g : grade) {
+                grades.append(g);
+                grades.append(",");
+            }
+            examGroup.setClassName(grades.toString());
             examGroup.setExamTime(ttl);
             examGroup.setDesc("软工专业期中考试");
 
@@ -152,6 +157,7 @@ public class ExaminationServiceImpl implements ExaminationService {
             examInfo.setExamEnd(endTime);
             examInfo.setTtl(ttl);
             examInfo.setExamGroupId(examGroup1.getId());
+            examInfo.setExaminationId(examination.getId());
             examInfoService.addExamInfo(examInfo);
         }
 

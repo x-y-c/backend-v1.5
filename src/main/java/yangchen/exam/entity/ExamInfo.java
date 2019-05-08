@@ -36,12 +36,15 @@ public class ExamInfo {
     private Integer examGroupId;
 
 
+    @Column(name = "examination_id")
+    private Integer examinationId;
+
     //该试卷成绩
     @Column(name = "examination_score")
     private Integer examinationScore;
 
 
-    @Column(name = "desc")
+    @Column(name = "description")
     private String desc;
 
     @Column(name = "ttl")
