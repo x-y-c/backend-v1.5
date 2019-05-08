@@ -116,8 +116,8 @@ public class CompileController {
 
         Gson gson = gsonBuilder.create();
         String s = gson.toJson(compileModel);
-        String s1 = okhttpService.postJsonBody("http://acm.swust.edu.cn/OnlineJudge/judge.do", s);
-
+        String s1 = okhttpService.postJsonBody("http://119.3.217.233:8080/judge.do", s);
+Logger.info(s1);
         CompileResult compileResult = gson.fromJson(s1, CompileResult.class);
         Logger.info(compileResult.toString());
         if (compileResult.getGlobalMsg() == null) {
