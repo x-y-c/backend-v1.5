@@ -38,6 +38,8 @@ public interface studentService {
 
     Student addStudent(StudentInfo studentInfo);
 
+    Student changePassword(Long studentId, String password);
+
     /**
      * 获取全部学生信息
      *
@@ -47,6 +49,7 @@ public interface studentService {
 
     /**
      * 通过专业获取学生信息
+     *
      * @param major
      * @return
      */
@@ -54,6 +57,7 @@ public interface studentService {
 
     /**
      * 分页获取学生信息
+     *
      * @param pageNum
      * @param pageLimit
      * @return

@@ -35,6 +35,17 @@ public class StudentServiceImpl implements studentService {
         return studentRepo.save(student);
     }
 
+    public Student changePassword(Long studentId, String password) {
+        Student byStudentId = studentRepo.findByStudentId(studentId);
+        if (byStudentId != null) {
+            byStudentId.setPassword(password);
+            Student save = studentRepo.save(byStudentId);
+            return save;
+        } else {
+            return null;
+        }
+    }
+
     @Override
     public void deleteStudentInfo(Student student) {
         studentRepo.delete(student);
@@ -61,6 +72,7 @@ public class StudentServiceImpl implements studentService {
 
     /**
      * 用在excel处理的部分，excel读取的是 studentInfo
+     *
      * @param studentInfo
      * @return
      */

@@ -8,9 +8,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import yangchen.exam.entity.Student;
 import yangchen.exam.model.JsonResult;
-import yangchen.exam.service.student.studentService;
+import yangchen.exam.model.ResultCode;
 import yangchen.exam.service.excelservice.ExcelService;
 import yangchen.exam.service.excelservice.ExcelServiceImpl;
+import yangchen.exam.service.student.studentService;
 import yangchen.exam.util.UserUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,8 +54,8 @@ public class StudentInfoController {
     @RequestMapping(value = "/page", method = RequestMethod.GET)
     public JsonResult getPagedStudent(Integer page, Integer pageLimit) {
         LOGGER.info("[{}]查询分页信息", request.getHeader("userId"));
-        if(pageLimit==null){
-            pageLimit=10;
+        if (pageLimit == null) {
+            pageLimit = 10;
         }
         return JsonResult.succResult(studentService.getPage(page, pageLimit));
     }
@@ -78,6 +79,24 @@ public class StudentInfoController {
     public JsonResult updateStudent(@RequestBody Student student) {
         LOGGER.info("[{}] update student", UserUtil.getUserId(request));
         return JsonResult.succResult(studentService.changeStudentInfo(student));
+    }
+
+    @RequestMapping(value = "/password", method = RequestMethod.POST)
+    public JsonResult updatePassword(@RequestParam Long studentId, @RequestParam String password) {
+        LOGGER.info("[{}] change password", UserUtil.getUserId(request));
+        Student student = studentService.changePassword(studentId, password);
+        if (student != null) {
+            return JsonResult.succResult(student);
+        } else {
+            return JsonResult.errorResult(ResultCode.USER_NOT_EXIST, "用户不存在", null);
+        }
+    }
+
+
+    @RequestMapping(value = "/info", method = RequestMethod.GET)
+    public JsonResult getStudentInfo(@RequestParam Long studentId) {
+        LOGGER.info("[{}] get [{}] studentInfo", UserUtil.getUserId(request), studentId);
+        return JsonResult.succResult(studentService.getStudentByStudentId(studentId));
     }
 
 
