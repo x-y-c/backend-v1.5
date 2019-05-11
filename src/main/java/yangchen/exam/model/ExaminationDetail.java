@@ -19,6 +19,8 @@ public class ExaminationDetail {
     /**
      * 考试类型，显示阶段信息；给学生显示
      */
+
+    private Integer id;
     private String category;
     /**
      * 显示开始时间；

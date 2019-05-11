@@ -82,6 +82,7 @@ public class ExaminationServiceImpl implements ExaminationService {
         for (ExamInfo examInfo : examInfoByStudentId) {
             ExaminationDetail examinationDetail = new ExaminationDetail();
             examinationDetail.setCategory(examInfo.getCategory());
+            examinationDetail.setId(examInfo.getExaminationId());
             examinationDetail.setDesc(examInfo.getDesc());
             examinationDetail.setEnd(examInfo.getExamEnd());
             examinationDetail.setStart(examInfo.getExamStart());
