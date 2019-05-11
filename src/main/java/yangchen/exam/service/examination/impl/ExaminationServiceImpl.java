@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import yangchen.exam.entity.*;
 import yangchen.exam.model.ExamCreatedParam;
 import yangchen.exam.model.ExaminationDetail;
+import yangchen.exam.model.QuestionDetail;
 import yangchen.exam.repo.examinationRepo;
 import yangchen.exam.service.examInfo.ExamInfoService;
 import yangchen.exam.service.examination.ExamGroupService;
@@ -18,6 +19,7 @@ import yangchen.exam.util.RandomUtil;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -180,8 +182,6 @@ public class ExaminationServiceImpl implements ExaminationService {
                 examCreatedParam.getEnd(),
                 examCreatedParam.getTtl(),
                 examCreatedParam.getDesc());
-
-
     }
 
 
@@ -197,5 +197,25 @@ public class ExaminationServiceImpl implements ExaminationService {
     @Override
     public List<Examination> getUsedExamination() {
         return examinationRepo.findByUsed(Boolean.TRUE);
+    }
+
+    @Override
+    public List<QuestionDetail> getQuestionInfo(Integer id) {
+        Optional<Examination> byId = examinationRepo.findById(id);
+        List<QuestionDetail> result = new ArrayList<>();
+        String titles = byId.get().getTitleId();
+        String[] split = titles.split(",");
+        LOGGER.info(String.valueOf(split.length));
+        LOGGER.info(split[0] + "\n" + split[1] + "\n" + split[2] + "\n");
+        for (String title : split) {
+            Question questionById = questionService.findQuestionById(Integer.valueOf(title));
+            if (questionById != null) {
+                QuestionDetail questionDetail = new QuestionDetail();
+                questionDetail.setQuestion(questionById.getDescription());
+                questionDetail.setTitle(questionById.getQuestionName());
+                result.add(questionDetail);
+            }
+        }
+        return result;
     }
 }

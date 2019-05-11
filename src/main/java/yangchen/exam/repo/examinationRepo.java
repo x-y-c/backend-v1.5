@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import yangchen.exam.entity.Examination;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface examinationRepo extends JpaRepository<Examination, Integer> {
     //通过titleType（试卷阶段查找试卷），返回可能有多个，放在list中；

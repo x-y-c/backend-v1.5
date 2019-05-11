@@ -3,10 +3,7 @@ package yangchen.exam.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import yangchen.exam.model.ExamCreatedParam;
-import yangchen.exam.model.ExaminationDetail;
-import yangchen.exam.model.JsonResult;
-import yangchen.exam.model.ResultCode;
+import yangchen.exam.model.*;
 import yangchen.exam.service.examination.ExaminationService;
 
 import java.util.List;
@@ -26,7 +23,8 @@ public class ExamController {
     /**
      * 通过学号查询考试信息；
      * 包括考试题目，时间，等等信息；
-     *d
+     * d
+     *
      * @param studentId
      * @return
      */
@@ -64,5 +62,18 @@ public class ExamController {
     @RequestMapping(value = "/used", method = RequestMethod.GET)
     public JsonResult queryExamUsed() {
         return JsonResult.succResult(examinationService.getUsedExamination());
+    }
+
+    /**
+     * 通过试卷id获取
+     *
+     * @param id
+     * @return
+     */
+
+    @RequestMapping(value = "/question",method = RequestMethod.GET)
+    public JsonResult getQuestionInfo(Integer id) {
+        List<QuestionDetail> questionInfo = examinationService.getQuestionInfo(id);
+        return JsonResult.succResult(questionInfo);
     }
 }

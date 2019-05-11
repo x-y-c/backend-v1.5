@@ -3,6 +3,7 @@ package yangchen.exam.service.examination;
 import yangchen.exam.entity.Examination;
 import yangchen.exam.model.ExamCreatedParam;
 import yangchen.exam.model.ExaminationDetail;
+import yangchen.exam.model.QuestionDetail;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -67,6 +68,15 @@ public interface ExaminationService {
      * @return
      */
     List<Examination> getUsedExamination();
+
+
+    /**
+     * 通过试卷id获取试卷内容
+     *
+     * @param id
+     * @return
+     */
+    List<QuestionDetail> getQuestionInfo(Integer id);
 
 
 }
