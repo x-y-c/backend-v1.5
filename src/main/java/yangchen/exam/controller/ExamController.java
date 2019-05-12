@@ -3,7 +3,9 @@ package yangchen.exam.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import yangchen.exam.entity.ExamGroup;
 import yangchen.exam.model.*;
+import yangchen.exam.service.examination.ExamGroupService;
 import yangchen.exam.service.examination.ExaminationService;
 
 import java.util.List;
@@ -19,6 +21,9 @@ public class ExamController {
 
     @Autowired
     private ExaminationService examinationService;
+
+    @Autowired
+    private ExamGroupService examGroupService;
 
     /**
      * 通过学号查询考试信息；
@@ -71,9 +76,17 @@ public class ExamController {
      * @return
      */
 
-    @RequestMapping(value = "/question",method = RequestMethod.GET)
+    @RequestMapping(value = "/question", method = RequestMethod.GET)
     public JsonResult getQuestionInfo(Integer id) {
         List<QuestionDetail> questionInfo = examinationService.getQuestionInfo(id);
         return JsonResult.succResult(questionInfo);
+    }
+
+    @RequestMapping(value = "/examination", method = RequestMethod.GET)
+    public JsonResult getExamGroup(Integer id ) {
+        List<ExamGroup> allExamGroup = examGroupService.getAllExamGroup(id);
+        return JsonResult.succResult(allExamGroup);
+
+
     }
 }
