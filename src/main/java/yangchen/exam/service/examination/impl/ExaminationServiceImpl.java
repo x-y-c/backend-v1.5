@@ -214,7 +214,7 @@ public class ExaminationServiceImpl implements ExaminationService {
         String titles = byId.get().getTitleId();
         String[] split = titles.split(",");
         LOGGER.info(String.valueOf(split.length));
-        LOGGER.info(split[0] + "\n" + split[1] + "\n" + split[2] + "\n");
+//        LOGGER.info(split[0] + "\n" + split[1] + "\n" + split[2] + "\n");
         for (String title : split) {
             Question questionById = questionService.findQuestionById(Integer.valueOf(title));
             if (questionById != null) {
