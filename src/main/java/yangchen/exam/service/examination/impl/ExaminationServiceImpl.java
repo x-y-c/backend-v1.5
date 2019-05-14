@@ -129,8 +129,7 @@ public class ExaminationServiceImpl implements ExaminationService {
         }
 
         //这里调用 createExamInfo方法保存试卷题目到数据库
-        for (Student student : studentList) {
-            Examination examination = createExamInfo(category, number);
+
 
 
             //这里保存考试组的信息，即本次考试的班级，开始结束时间等信息；
@@ -144,13 +143,14 @@ public class ExaminationServiceImpl implements ExaminationService {
             }
             examGroup.setClassName(grades.toString());
             examGroup.setExamTime(ttl);
-            examGroup.setDesc("软工专业期中考试");
+            examGroup.setDesc(desc);
 
             ExamGroup examGroup1 = examGroupService.addExamGroup(examGroup);
 
-            //这里是试卷的分配情况，即该id的试卷分配给了谁
-            //数据有冗余，为了查询的方便，
-            //必须先保存组信息，然后，在保存以后，取得组的id；
+
+
+        for (Student student : studentList) {
+            Examination examination = createExamInfo(category, number);
             ExamInfo examInfo = new ExamInfo();
             examInfo.setStudentName(student.getName());
             examInfo.setStudentNumber(student.getStudentId());
@@ -162,10 +162,17 @@ public class ExaminationServiceImpl implements ExaminationService {
             examInfo.setExamGroupId(examGroup1.getId());
             examInfo.setExaminationId(examination.getId());
             examInfoService.addExamInfo(examInfo);
+
+        }
+
+            //这里是试卷的分配情况，即该id的试卷分配给了谁
+            //数据有冗余，为了查询的方便，
+            //必须先保存组信息，然后，在保存以后，取得组的id；
+
         }
 
 
-    }
+
 
     @Override
     public void createExam(ExamCreatedParam examCreatedParam) {
