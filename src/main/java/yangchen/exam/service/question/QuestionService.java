@@ -1,7 +1,6 @@
 package yangchen.exam.service.question;
 
 import yangchen.exam.entity.Question;
-import yangchen.exam.model.Category;
 
 import java.util.List;
 
@@ -62,4 +61,5 @@ public interface QuestionService {
     List<Question> findQuestionAll();
 
 
+    Question getQuestionBy(Integer examinationId, Integer index);
 }

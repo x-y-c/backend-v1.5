@@ -2,10 +2,10 @@ package yangchen.exam.service.question;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import yangchen.exam.entity.Examination;
 import yangchen.exam.entity.Question;
-import yangchen.exam.model.Category;
 import yangchen.exam.repo.questionRepo;
-import yangchen.exam.service.question.QuestionService;
+import yangchen.exam.service.examination.ExaminationService;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +17,9 @@ import java.util.Optional;
 public class QuestionServiceImpl implements QuestionService {
     @Autowired
     private questionRepo questionRepo;
+
+    @Autowired
+    private ExaminationService examinationService;
 
 
     @Override
@@ -57,5 +60,14 @@ public class QuestionServiceImpl implements QuestionService {
         return questionRepo.findAll();
     }
 
+    @Override
+    public Question getQuestionBy(Integer examinationId, Integer index) {
+        Examination examinationById = examinationService.getExaminationById(examinationId);
 
+       //??这里有bug
+
+        String[] split = examinationById.getTitleId().split(",");
+        Optional<Question> byId = questionRepo.findById((Integer.valueOf(split[index - 1])));
+        return byId.get();
+    }
 }

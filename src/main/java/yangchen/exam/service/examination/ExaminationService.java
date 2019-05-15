@@ -78,5 +78,5 @@ public interface ExaminationService {
      */
     List<QuestionDetail> getQuestionInfo(Integer id);
 
-
+    Examination getExaminationById(Integer id);
 }

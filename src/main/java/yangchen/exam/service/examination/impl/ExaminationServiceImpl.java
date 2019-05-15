@@ -131,22 +131,20 @@ public class ExaminationServiceImpl implements ExaminationService {
         //这里调用 createExamInfo方法保存试卷题目到数据库
 
 
+        //这里保存考试组的信息，即本次考试的班级，开始结束时间等信息；
+        ExamGroup examGroup = new ExamGroup();
+        examGroup.setBeginTime(startTime);
+        examGroup.setEndTime(endTime);
+        StringBuilder grades = new StringBuilder();
+        for (String g : grade) {
+            grades.append(g);
+            grades.append(",");
+        }
+        examGroup.setClassName(grades.toString());
+        examGroup.setExamTime(ttl);
+        examGroup.setDesc(desc);
 
-            //这里保存考试组的信息，即本次考试的班级，开始结束时间等信息；
-            ExamGroup examGroup = new ExamGroup();
-            examGroup.setBeginTime(startTime);
-            examGroup.setEndTime(endTime);
-            StringBuilder grades = new StringBuilder();
-            for (String g : grade) {
-                grades.append(g);
-                grades.append(",");
-            }
-            examGroup.setClassName(grades.toString());
-            examGroup.setExamTime(ttl);
-            examGroup.setDesc(desc);
-
-            ExamGroup examGroup1 = examGroupService.addExamGroup(examGroup);
-
+        ExamGroup examGroup1 = examGroupService.addExamGroup(examGroup);
 
 
         for (Student student : studentList) {
@@ -165,13 +163,11 @@ public class ExaminationServiceImpl implements ExaminationService {
 
         }
 
-            //这里是试卷的分配情况，即该id的试卷分配给了谁
-            //数据有冗余，为了查询的方便，
-            //必须先保存组信息，然后，在保存以后，取得组的id；
+        //这里是试卷的分配情况，即该id的试卷分配给了谁
+        //数据有冗余，为了查询的方便，
+        //必须先保存组信息，然后，在保存以后，取得组的id；
 
-        }
-
-
+    }
 
 
     @Override
@@ -225,5 +221,10 @@ public class ExaminationServiceImpl implements ExaminationService {
             }
         }
         return result;
+    }
+
+    @Override
+    public Examination getExaminationById(Integer id) {
+        return examinationRepo.findById(id).get();
     }
 }
