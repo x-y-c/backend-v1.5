@@ -6,6 +6,8 @@ import yangchen.exam.entity.Submit;
 import yangchen.exam.repo.SubmitRepo;
 import yangchen.exam.service.submit.SubmitService;
 
+import java.sql.Timestamp;
+
 /**
  * @author YC
  * @date 2019/5/14 4:46
@@ -19,6 +21,8 @@ public class SubmitServiceImpl implements SubmitService {
 
     @Override
     public Submit addSubmit(Submit submit) {
+
+        submit.setSubmitTime(new Timestamp(System.currentTimeMillis()));
         return submitRepo.save(submit);
     }
 }

@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.Question;
+import yangchen.exam.entity.Submit;
 import yangchen.exam.entity.TestCase;
 import yangchen.exam.model.CompileFront;
 import yangchen.exam.model.CompileModel;
@@ -14,6 +15,7 @@ import yangchen.exam.model.CompileResult;
 import yangchen.exam.model.Result;
 import yangchen.exam.service.http.IOkhttpService;
 import yangchen.exam.service.question.QuestionService;
+import yangchen.exam.service.submit.SubmitService;
 import yangchen.exam.service.testInfo.TestCaseService;
 
 import java.util.ArrayList;
@@ -35,14 +37,19 @@ public class CompileServiceImpl implements CompileService {
     @Autowired
     private IOkhttpService okhttpService;
 
+    @Autowired
+    private SubmitService submitService;
+
     public static Logger LOGGER = LoggerFactory.getLogger(CompileServiceImpl.class);
 
     @Override
     public CompileFront compileCode(Integer examinationId, Integer index, String src) {
+
         double score = 0.0;
         int succCount = 0;
 
         Question questionBy = questionService.getQuestionBy(examinationId, index);
+        submitService.addSubmit( Submit.builder().examinationId(examinationId).questionId(questionBy.getId()).src(src).build());
         List<TestCase> TestCaseList = testCaseService.findByQid(questionBy.getId());
         CompileModel compileModel = new CompileModel();
         List<String> input = new ArrayList<>();
@@ -79,7 +86,7 @@ public class CompileServiceImpl implements CompileService {
                     succCount = succCount + 1;
                 }
             }
-        score = (double)succCount/compileResult.getResult().size();
+            score = (double) succCount / compileResult.getResult().size();
         }
 
 
