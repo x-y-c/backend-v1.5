@@ -67,7 +67,7 @@ public class QuestionServiceImpl implements QuestionService {
        //??这里有bug
 
         String[] split = examinationById.getTitleId().split(",");
-        Optional<Question> byId = questionRepo.findById((Integer.valueOf(split[index - 1])));
+        Optional<Question> byId = questionRepo.findById((Integer.valueOf(split[index])));
         return byId.get();
     }
 }

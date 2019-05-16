@@ -55,7 +55,7 @@ public class CompileServiceImpl implements CompileService {
                 output.add(t.getOutput());
             }
         } else {
-            output.add("");
+            output.add("Hello World\n");
             input.add("");
         }
         compileModel.setInput(input);
@@ -69,6 +69,7 @@ public class CompileServiceImpl implements CompileService {
         gsonBuilder.disableHtmlEscaping();
         Gson gson = gsonBuilder.create();
         String compileModelJson = gson.toJson(compileModel);
+        LOGGER.info(compileModelJson);
         String jsonResult = okhttpService.postJsonBody("http://119.3.217.233:8080/judge.do", compileModelJson);
         LOGGER.info(jsonResult);
         CompileResult compileResult = gson.fromJson(jsonResult, CompileResult.class);
@@ -78,7 +79,7 @@ public class CompileServiceImpl implements CompileService {
                     succCount = succCount + 1;
                 }
             }
-        score = succCount / compileResult.getResult().size();
+        score = (double)succCount/compileResult.getResult().size();
         }
 
 
