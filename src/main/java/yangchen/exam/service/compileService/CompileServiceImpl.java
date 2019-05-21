@@ -89,7 +89,6 @@ public class CompileServiceImpl implements CompileService {
             score = (double) succCount / compileResult.getResult().size();
         }
 
-
         CompileFront compileFront = new CompileFront();
         compileFront.setCompileMsg(compileResult.getGlobalMsg());
 

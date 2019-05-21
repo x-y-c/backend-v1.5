@@ -76,10 +76,15 @@ public class ExamController {
      * @return
      */
 
+    /**
+     * 这里再包装一层，判断试卷是否已经进行作答了，如果作答了，返回一个boolean的值；
+     * @param id
+     * @return
+     */
     @RequestMapping(value = "/question", method = RequestMethod.GET)
     public JsonResult getQuestionInfo(Integer id) {
-        List<QuestionDetail> questionInfo = examinationService.getQuestionInfo(id);
-        return JsonResult.succResult(questionInfo);
+        QuestionResult questionInfoResult = examinationService.getQuestionInfoResult(id);
+        return JsonResult.succResult(questionInfoResult);
     }
 
     @RequestMapping(value = "/examination", method = RequestMethod.GET)

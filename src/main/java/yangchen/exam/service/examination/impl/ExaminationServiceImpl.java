@@ -8,6 +8,7 @@ import yangchen.exam.entity.*;
 import yangchen.exam.model.ExamCreatedParam;
 import yangchen.exam.model.ExaminationDetail;
 import yangchen.exam.model.QuestionDetail;
+import yangchen.exam.model.QuestionResult;
 import yangchen.exam.repo.examinationRepo;
 import yangchen.exam.service.examInfo.ExamInfoService;
 import yangchen.exam.service.examination.ExamGroupService;
@@ -222,6 +223,18 @@ public class ExaminationServiceImpl implements ExaminationService {
         }
         return result;
     }
+
+    @Override
+    public QuestionResult getQuestionInfoResult(Integer id) {
+        Optional<Examination> byId = examinationRepo.findById(id);
+        Examination examination = byId.get();
+        if (examination.getUsed() == Boolean.TRUE) {
+            return QuestionResult.builder().used(1).questionInfo(null).build();
+        } else {
+            return QuestionResult.builder().used(0).questionInfo(getQuestionInfo(id)).build();
+        }
+    }
+
 
     @Override
     public Examination getExaminationById(Integer id) {

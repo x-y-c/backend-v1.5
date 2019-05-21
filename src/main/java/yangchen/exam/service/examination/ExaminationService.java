@@ -4,6 +4,7 @@ import yangchen.exam.entity.Examination;
 import yangchen.exam.model.ExamCreatedParam;
 import yangchen.exam.model.ExaminationDetail;
 import yangchen.exam.model.QuestionDetail;
+import yangchen.exam.model.QuestionResult;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -77,6 +78,15 @@ public interface ExaminationService {
      * @return
      */
     List<QuestionDetail> getQuestionInfo(Integer id);
+
+    /**
+     * 通过试卷id获取试卷内容，并给返回值
+     *
+     * @param id
+     * @return
+     */
+    QuestionResult getQuestionInfoResult(Integer id);
+
 
     Examination getExaminationById(Integer id);
 }
