@@ -240,4 +240,13 @@ public class ExaminationServiceImpl implements ExaminationService {
     public Examination getExaminationById(Integer id) {
         return examinationRepo.findById(id).get();
     }
+
+    @Override
+    public Boolean submitTest(Integer id) {
+
+        Examination examination = examinationRepo.findById(id).get();
+        examination.setUsed(Boolean.TRUE);
+        Examination save = examinationRepo.save(examination);
+        return save != null;
+    }
 }

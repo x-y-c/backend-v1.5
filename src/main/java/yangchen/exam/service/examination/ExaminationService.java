@@ -89,4 +89,7 @@ public interface ExaminationService {
 
 
     Examination getExaminationById(Integer id);
+
+
+    Boolean submitTest(Integer id);
 }

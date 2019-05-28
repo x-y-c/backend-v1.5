@@ -78,6 +78,7 @@ public class ExamController {
 
     /**
      * 这里再包装一层，判断试卷是否已经进行作答了，如果作答了，返回一个boolean的值；
+     *
      * @param id
      * @return
      */
@@ -88,10 +89,15 @@ public class ExamController {
     }
 
     @RequestMapping(value = "/examination", method = RequestMethod.GET)
-    public JsonResult getExamGroup(Integer id ) {
+    public JsonResult getExamGroup(Integer id) {
         List<ExamGroup> allExamGroup = examGroupService.getAllExamGroup(id);
         return JsonResult.succResult(allExamGroup);
-
-
     }
+
+    @RequestMapping(value = "/submit", method = RequestMethod.POST)
+    public JsonResult submitTest(@RequestParam Integer id) {
+        Boolean aBoolean = examinationService.submitTest(id);
+        return JsonResult.succResult(aBoolean);
+    }
+
 }
