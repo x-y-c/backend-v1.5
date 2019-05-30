@@ -35,12 +35,17 @@ public class StudentServiceImpl implements studentService {
         return studentRepo.save(student);
     }
 
-    public Student changePassword(Long studentId, String password) {
+    public Student changePassword(Long studentId, String oldpasswprd,String password) {
         Student byStudentId = studentRepo.findByStudentId(studentId);
         if (byStudentId != null) {
-            byStudentId.setPassword(password);
-            Student save = studentRepo.save(byStudentId);
+            if (byStudentId.getPassword().equals(oldpasswprd)){
+                byStudentId.setPassword(password);
+                Student save = studentRepo.save(byStudentId);
             return save;
+            }else {
+                return null;
+            }
+
         } else {
             return null;
         }

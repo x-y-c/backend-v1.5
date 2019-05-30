@@ -82,9 +82,9 @@ public class StudentInfoController {
     }
 
     @RequestMapping(value = "/password", method = RequestMethod.POST)
-    public JsonResult updatePassword(@RequestParam Long studentId, @RequestParam String password) {
+    public JsonResult updatePassword(@RequestParam Long studentId, @RequestParam String oldpassword,@RequestParam String password) {
         LOGGER.info("[{}] change password", UserUtil.getUserId(request));
-        Student student = studentService.changePassword(studentId, password);
+        Student student = studentService.changePassword(studentId, oldpassword,password);
         if (student != null) {
             return JsonResult.succResult(student);
         } else {
