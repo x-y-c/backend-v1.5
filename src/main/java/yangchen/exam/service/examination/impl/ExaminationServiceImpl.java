@@ -243,7 +243,6 @@ public class ExaminationServiceImpl implements ExaminationService {
 
     @Override
     public Boolean submitTest(Integer id) {
-
         Examination examination = examinationRepo.findById(id).get();
         examination.setUsed(Boolean.TRUE);
         Examination save = examinationRepo.save(examination);

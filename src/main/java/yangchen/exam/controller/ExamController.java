@@ -94,7 +94,7 @@ public class ExamController {
         return JsonResult.succResult(allExamGroup);
     }
 
-    @RequestMapping(value = "/submit", method = RequestMethod.POST)
+    @RequestMapping(value = "/submit", method = RequestMethod.GET)
     public JsonResult submitTest(@RequestParam Integer id) {
         Boolean aBoolean = examinationService.submitTest(id);
         return JsonResult.succResult(aBoolean);
