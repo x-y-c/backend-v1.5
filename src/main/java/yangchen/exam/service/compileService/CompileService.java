@@ -10,6 +10,6 @@ import yangchen.exam.model.CompileResult;
  */
 public interface CompileService {
 
-    CompileFront compileCode(Integer examinationId, Integer index, String src);
+    CompileFront compileCode(Integer examinationId, Integer index, String src,Long studentId);
 
 }
