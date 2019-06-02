@@ -59,7 +59,7 @@ public class CompileController {
      */
     @RequestMapping(value = {"/", ""}, method = RequestMethod.POST)
     public JsonResult compileTest(@RequestParam String code, @RequestParam Integer examinationId, @RequestParam Integer index) {
-        CompileFront compileFront = compileService.compileCode(examinationId, index, code);
+        CompileFront compileFront = compileService.compileCode(examinationId, index, code,201500116L);
         return JsonResult.succResult(compileFront);
 //        Logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!______________" + code + "\n");
 //

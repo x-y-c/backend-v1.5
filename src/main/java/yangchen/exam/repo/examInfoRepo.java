@@ -9,4 +9,6 @@ public interface examInfoRepo extends JpaRepository<ExamInfo, Integer> {
 
     List<ExamInfo> findByStudentNumber(Long studentId);
 
+    ExamInfo findByExaminationId(Integer examinationId);
+
 }

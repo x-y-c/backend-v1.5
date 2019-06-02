@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.Question;
+import yangchen.exam.entity.Score;
 import yangchen.exam.entity.Submit;
 import yangchen.exam.entity.TestCase;
 import yangchen.exam.model.CompileFront;
@@ -15,9 +16,11 @@ import yangchen.exam.model.CompileResult;
 import yangchen.exam.model.Result;
 import yangchen.exam.service.http.IOkhttpService;
 import yangchen.exam.service.question.QuestionService;
+import yangchen.exam.service.score.ScoreService;
 import yangchen.exam.service.submit.SubmitService;
 import yangchen.exam.service.testInfo.TestCaseService;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,16 +43,20 @@ public class CompileServiceImpl implements CompileService {
     @Autowired
     private SubmitService submitService;
 
+    @Autowired
+    private ScoreService scoreService;
+
+
     public static Logger LOGGER = LoggerFactory.getLogger(CompileServiceImpl.class);
 
     @Override
-    public CompileFront compileCode(Integer examinationId, Integer index, String src,Long studentId) {
+    public CompileFront compileCode(Integer examinationId, Integer index, String src, Long studentId) {
 
         double score = 0.0;
         int succCount = 0;
 
         Question questionBy = questionService.getQuestionBy(examinationId, index);
-        submitService.addSubmit( Submit.builder().examinationId(examinationId).questionId(questionBy.getId()).src(src).build());
+        submitService.addSubmit(Submit.builder().examinationId(examinationId).questionId(questionBy.getId()).src(src).build());
         List<TestCase> TestCaseList = testCaseService.findByQid(questionBy.getId());
         CompileModel compileModel = new CompileModel();
         List<String> input = new ArrayList<>();
@@ -88,6 +95,15 @@ public class CompileServiceImpl implements CompileService {
             }
             score = (double) succCount / compileResult.getResult().size();
         }
+
+        Score score1 = new Score();
+        score1.setExaminationId(examinationId);
+        score1.setStudentId(studentId);
+        score = score * 100;
+        score1.setScore((int) Math.round(score));
+        score1.setIndex(index);
+//        score1.setSubmitTime(new Timestamp(System.currentTimeMillis()));
+        scoreService.saveOrUpdate(score1);
 
         CompileFront compileFront = new CompileFront();
         compileFront.setCompileMsg(compileResult.getGlobalMsg());

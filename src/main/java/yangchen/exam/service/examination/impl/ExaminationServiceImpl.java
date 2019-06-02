@@ -14,6 +14,7 @@ import yangchen.exam.service.examInfo.ExamInfoService;
 import yangchen.exam.service.examination.ExamGroupService;
 import yangchen.exam.service.examination.ExaminationService;
 import yangchen.exam.service.question.QuestionService;
+import yangchen.exam.service.score.ScoreService;
 import yangchen.exam.service.student.studentService;
 import yangchen.exam.util.RandomUtil;
 
@@ -46,6 +47,12 @@ public class ExaminationServiceImpl implements ExaminationService {
 
     @Autowired
     private ExamInfoService examInfoService;
+
+    @Autowired
+    private ScoreService scoreService;
+
+    @Autowired
+    private yangchen.exam.repo.examInfoRepo examInfoRepo;
 
 
     @Override
@@ -242,10 +249,19 @@ public class ExaminationServiceImpl implements ExaminationService {
     }
 
     @Override
-    public Boolean submitTest(Integer id) {
+    public Boolean submitTest(Integer id, Long studentId) {
         Examination examination = examinationRepo.findById(id).get();
         examination.setUsed(Boolean.TRUE);
         Examination save = examinationRepo.save(examination);
+        Integer finalScore = 0;
+        List<Score> byExaminationAndStudentId = scoreService.findByExaminationAndStudentId(examination.getId(), 201500116L);
+        for (Score score1 : byExaminationAndStudentId) {
+            finalScore = finalScore + score1.getScore();
+        }
+        finalScore = finalScore / byExaminationAndStudentId.size();
+        ExamInfo examInfoByExaminationId = examInfoService.getExamInfoByExaminationId(examination.getId());
+        examInfoByExaminationId.setExaminationScore(finalScore);
+        examInfoRepo.save(examInfoByExaminationId);
         return save != null;
     }
 }

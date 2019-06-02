@@ -19,6 +19,7 @@ import java.sql.Timestamp;
 @Data
 public class Score {
 
+    @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -29,10 +30,12 @@ public class Score {
     @Column(name = "examination_id")
     private Integer examinationId;
 
-    @Column(name = "submit_time")
-    private Timestamp submitTime;
+//    @Column(name = "submit_time")
+//    private Timestamp submitTime;
 
     @Column(name = "score")
     private Integer score;
 
+    @Column(name = "number")
+    private Integer index;
 }

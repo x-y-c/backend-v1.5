@@ -3,7 +3,6 @@ package yangchen.exam.service.examInfo.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.ExamInfo;
-import yangchen.exam.model.ExaminationDetail;
 import yangchen.exam.repo.examInfoRepo;
 import yangchen.exam.service.examInfo.ExamInfoService;
 
@@ -30,5 +29,10 @@ public class ExamInfoServiceImpl implements ExamInfoService {
     public List<ExamInfo> getExamInfoByStudentId(Long studentId) {
         List<ExamInfo> byStudentNumber = examInfoRepo.findByStudentNumber(studentId);
         return byStudentNumber;
+    }
+
+    @Override
+    public ExamInfo getExamInfoByExaminationId(Integer examinationId) {
+        return examInfoRepo.findByExaminationId(examinationId);
     }
 }

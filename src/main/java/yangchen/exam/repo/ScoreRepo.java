@@ -15,9 +15,11 @@ public interface ScoreRepo extends JpaRepository<Score, Integer> {
      * 通过学号和考试标号查成绩；
      *
      * @param studentId
-     * @param examinataionId
+     * @param examinationId
      * @return
      */
-    List<Score> findByStudentIdAndExaminationId(Long studentId, Integer examinataionId);
-    
+    List<Score> findByStudentIdAndExaminationId(Long studentId, Integer examinationId);
+
+    Score findByStudentIdAndExaminationIdAndIndex(Long stdudentId, Integer examinationId, Integer index);
+
 }
