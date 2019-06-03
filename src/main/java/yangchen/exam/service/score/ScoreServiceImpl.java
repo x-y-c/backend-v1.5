@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.ExamInfo;
 import yangchen.exam.entity.Score;
+import yangchen.exam.model.ScoreAdmin;
 import yangchen.exam.model.ScoreDetail;
 import yangchen.exam.repo.ScoreRepo;
 import yangchen.exam.service.examInfo.ExamInfoService;
@@ -21,6 +22,9 @@ public class ScoreServiceImpl implements ScoreService {
 
     @Autowired
     private ScoreRepo scoreRepo;
+
+    @Autowired
+    private yangchen.exam.repo.studentRepo studentRepo;
 
 
     @Autowired
@@ -43,7 +47,6 @@ public class ScoreServiceImpl implements ScoreService {
 
         if (score1 != null) {
             score1.setScore(score.getScore());
-//            score1.setSubmitTime(score.getSubmitTime());
             return scoreRepo.save(score1);
         } else {
             return scoreRepo.save(score);
@@ -65,4 +68,21 @@ public class ScoreServiceImpl implements ScoreService {
         });
         return result;
     }
+
+    @Override
+    public List<ScoreAdmin> getScoreAdminByExamGroupId(Integer examGroupId) {
+        List<ExamInfo> examInfoByExamGroup = examInfoService.getExamInfoByExamGroup(examGroupId);
+        List<ScoreAdmin> result = new ArrayList<>(examInfoByExamGroup.size());
+        examInfoByExamGroup.forEach(examInfo -> {
+            ScoreAdmin scoreAdmin = new ScoreAdmin();
+            scoreAdmin.setExamDesc(examInfo.getDesc());
+            scoreAdmin.setScore(examInfo.getExaminationScore());
+            scoreAdmin.setStudentName(examInfo.getStudentName());
+            scoreAdmin.setStudentId(examInfo.getStudentNumber());
+            result.add(scoreAdmin);
+        });
+        return result;
+    }
+
+
 }

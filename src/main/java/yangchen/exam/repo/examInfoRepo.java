@@ -11,4 +11,6 @@ public interface examInfoRepo extends JpaRepository<ExamInfo, Integer> {
 
     ExamInfo findByExaminationId(Integer examinationId);
 
+    List<ExamInfo> findByExamGroupId(Integer examGroupId);
+
 }

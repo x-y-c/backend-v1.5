@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import yangchen.exam.model.JsonResult;
+import yangchen.exam.model.ScoreAdmin;
 import yangchen.exam.model.ScoreDetail;
 import yangchen.exam.service.score.ScoreService;
 
@@ -28,6 +29,11 @@ public class ScoreController {
     public JsonResult getScoreList(@RequestParam Long studentId) {
         List<ScoreDetail> scoreDetailByStudentId = scoreService.getScoreDetailByStudentId(studentId);
         return JsonResult.succResult(scoreDetailByStudentId);
+    }
 
+    @GetMapping(value = "/admin")
+    public JsonResult getScoreAdmin(@RequestParam Integer examGroupId) {
+        List<ScoreAdmin> scoreAdminByExamGroupId = scoreService.getScoreAdminByExamGroupId(examGroupId);
+        return JsonResult.succResult(scoreAdminByExamGroupId);
     }
 }

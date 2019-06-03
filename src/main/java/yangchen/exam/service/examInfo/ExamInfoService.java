@@ -33,4 +33,13 @@ public interface ExamInfoService {
     List<ExamInfo> getExamInfoByStudentId(Long studentId);
 
     ExamInfo getExamInfoByExaminationId(Integer examinationId);
+
+
+    /**
+     * 通过examGroup查询信息；
+     *
+     * @param examGroupId
+     * @return
+     */
+    List<ExamInfo> getExamInfoByExamGroup(Integer examGroupId);
 }

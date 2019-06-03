@@ -35,4 +35,9 @@ public class ExamInfoServiceImpl implements ExamInfoService {
     public ExamInfo getExamInfoByExaminationId(Integer examinationId) {
         return examInfoRepo.findByExaminationId(examinationId);
     }
+
+    @Override
+    public List<ExamInfo> getExamInfoByExamGroup(Integer examGroupId) {
+        return examInfoRepo.findByExamGroupId(examGroupId);
+    }
 }
