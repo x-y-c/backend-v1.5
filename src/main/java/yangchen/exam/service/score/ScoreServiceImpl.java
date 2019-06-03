@@ -2,9 +2,13 @@ package yangchen.exam.service.score;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import yangchen.exam.entity.ExamInfo;
 import yangchen.exam.entity.Score;
+import yangchen.exam.model.ScoreDetail;
 import yangchen.exam.repo.ScoreRepo;
+import yangchen.exam.service.examInfo.ExamInfoService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,6 +21,10 @@ public class ScoreServiceImpl implements ScoreService {
 
     @Autowired
     private ScoreRepo scoreRepo;
+
+
+    @Autowired
+    private ExamInfoService examInfoService;
 
     @Override
     public Score saveScore(Score score) {
@@ -41,5 +49,20 @@ public class ScoreServiceImpl implements ScoreService {
             return scoreRepo.save(score);
         }
 
+    }
+
+    @Override
+    public List<ScoreDetail> getScoreDetailByStudentId(Long studentId) {
+        List<ExamInfo> examInfoByStudentId = examInfoService.getExamInfoByStudentId(studentId);
+        List<ScoreDetail> result = new ArrayList<>(examInfoByStudentId.size());
+        examInfoByStudentId.forEach(examInfo -> {
+            if (examInfo.getExaminationScore() != null) {
+                ScoreDetail scoreDetail = new ScoreDetail();
+                scoreDetail.setScore(Double.valueOf(examInfo.getExaminationScore()));
+                scoreDetail.setExamName(examInfo.getDesc());
+                result.add(scoreDetail);
+            }
+        });
+        return result;
     }
 }

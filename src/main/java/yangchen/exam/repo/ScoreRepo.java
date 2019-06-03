@@ -20,6 +20,6 @@ public interface ScoreRepo extends JpaRepository<Score, Integer> {
      */
     List<Score> findByStudentIdAndExaminationId(Long studentId, Integer examinationId);
 
-    Score findByStudentIdAndExaminationIdAndIndex(Long stdudentId, Integer examinationId, Integer index);
+    Score findByStudentIdAndExaminationIdAndIndex(Long studentId, Integer examinationId, Integer index);
 
 }
