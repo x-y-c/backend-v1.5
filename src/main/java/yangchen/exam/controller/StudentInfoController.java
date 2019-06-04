@@ -12,11 +12,18 @@ import yangchen.exam.model.ResultCode;
 import yangchen.exam.service.excelservice.ExcelService;
 import yangchen.exam.service.excelservice.ExcelServiceImpl;
 import yangchen.exam.service.student.studentService;
+import yangchen.exam.util.ExportUtil;
 import yangchen.exam.util.UserUtil;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author YC
@@ -31,7 +38,6 @@ public class StudentInfoController {
     private studentService studentService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StudentInfoController.class);
-
 
     @Autowired
     private HttpServletRequest request;
@@ -60,7 +66,6 @@ public class StudentInfoController {
         return JsonResult.succResult(studentService.getPage(page, pageLimit));
     }
 
-
     @RequestMapping(value = "/major", method = RequestMethod.GET)
     public JsonResult getStudentByMajor(@RequestParam String major) {
         LOGGER.info("[{}] get student By Major", UserUtil.getUserId(request));
@@ -82,9 +87,9 @@ public class StudentInfoController {
     }
 
     @RequestMapping(value = "/password", method = RequestMethod.POST)
-    public JsonResult updatePassword(@RequestParam Long studentId, @RequestParam String oldpassword,@RequestParam String password) {
+    public JsonResult updatePassword(@RequestParam Long studentId, @RequestParam String oldpassword, @RequestParam String password) {
         LOGGER.info("[{}] change password", UserUtil.getUserId(request));
-        Student student = studentService.changePassword(studentId, oldpassword,password);
+        Student student = studentService.changePassword(studentId, oldpassword, password);
         if (student != null) {
             return JsonResult.succResult(student);
         } else {
@@ -92,18 +97,46 @@ public class StudentInfoController {
         }
     }
 
-
     @RequestMapping(value = "/info", method = RequestMethod.GET)
     public JsonResult getStudentInfo(@RequestParam Long studentId) {
         LOGGER.info("[{}] get [{}] studentInfo", UserUtil.getUserId(request), studentId);
         return JsonResult.succResult(studentService.getStudentByStudentId(studentId));
     }
 
-
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public JsonResult uploadStudent(@RequestParam MultipartFile file) throws IOException {
         InputStream inputStream = file.getInputStream();
         JsonResult jsonResult = excelServiceimpl.huExcel(inputStream);
         return jsonResult;
+    }
+
+
+    @RequestMapping(value = "/csv")
+    public String findByCSV(HttpServletResponse response) {
+        List<Map<String, Object>> dataList = null;
+        List<Student> students = studentService.getAllStudent();
+        String sTitle = "Id,学号,姓名,密码,专业，班级";
+        String fName = "by_";
+        String mapKey = "id,studentId,name,password,major,grade";
+        dataList = new ArrayList<>();
+        Map<String, Object> map = null;
+        for (Student student : students) {
+            map = new HashMap<String, Object>();
+            map.put("id", student.getId());
+            map.put("studentId", student.getStudentId());
+            map.put("name", student.getName());
+            map.put("password", student.getPassword());
+            map.put("major", student.getMajor());
+            map.put("grade", student.getGrade());
+            dataList.add(map);
+        }
+        try (final OutputStream os = response.getOutputStream()) {
+            ExportUtil.responseSetProperties(fName, response);
+            ExportUtil.doExport(dataList, sTitle, mapKey, os);
+            return null;
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return "数据导出错误";
     }
 }

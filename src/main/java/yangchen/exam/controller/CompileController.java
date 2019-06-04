@@ -33,13 +33,6 @@ public class CompileController {
 
     @Autowired
     private CompileService compileService;
-
-
-    @Autowired
-    private IOkhttpService okhttpService;
-    @Autowired
-    private HttpServletRequest servletRequest;
-
     /**
      * @param code
      * @return 这里的编译，如果通过的话，是没有返回值的，所以用null判断一下，null就返回success，
