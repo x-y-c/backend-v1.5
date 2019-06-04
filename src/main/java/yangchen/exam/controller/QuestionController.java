@@ -100,7 +100,6 @@ public class QuestionController {
     public JsonResult getAllQuestion() {
         List<Question> questionList = questionService.findQuestionAll();
         return JsonResult.succResult(questionList);
-
     }
 
 

@@ -13,9 +13,7 @@ import yangchen.exam.model.CompileFront;
 import yangchen.exam.model.JsonResult;
 import yangchen.exam.service.compile.CompileCoreService;
 import yangchen.exam.service.compileService.CompileService;
-import yangchen.exam.service.http.IOkhttpService;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
@@ -54,43 +52,6 @@ public class CompileController {
     public JsonResult compileTest(@RequestParam String code, @RequestParam Integer examinationId, @RequestParam Integer index,@RequestParam Long studentId) {
         CompileFront compileFront = compileService.compileCode(examinationId, index, code,studentId);
         return JsonResult.succResult(compileFront);
-//        Logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!______________" + code + "\n");
-//
-//        CompileModel compileModel = new CompileModel();
-//        List<String> input = new ArrayList<>();
-//
-//        //todo 之后完成添加测试用例的方法，现在写成固定的；
-//        input.add("");
-//
-//        compileModel.setInput(input);
-//
-//        List<String> output = new ArrayList<>();
-//        output.add("hello world");
-//
-//        compileModel.setOutput(output);
-//
-//        compileModel.setTimeLimit(1000L);
-//        compileModel.setJudgeId(1);
-//        compileModel.setSrc(code);
-//        compileModel.setMemoryLimit(65535L);
-//
-//        GsonBuilder gsonBuilder = new GsonBuilder();
-//        gsonBuilder.disableHtmlEscaping();
-//        l;
-//
-//        Gson gson = gsonBuilder.create();
-//        String s = gson.toJson(compileModel);
-//        String s1 = okhttpService.postJsonBody("http://119.3.217.233:8080/judge.do", s);
-//        Logger.info(s1);
-//        CompileResult compileResult = gson.fromJson(s1, CompileResult.class);
-//        Logger.info(compileResult.toString());
-//        if (compileResult.getGlobalMsg() == null) {
-//
-//            return JsonResult.succResult(1);
-//        } else {
-//            return JsonResult.succResult(compileResult.getGlobalMsg());
-//        }
-
     }
 
 
@@ -116,38 +77,6 @@ public class CompileController {
             String result = compile.substring(error);
             return JsonResult.succResult(result);
         }
-
         return JsonResult.succResult(compile);
-
-
     }
 }
-    /*
-    //todo 添加代码的持久化，用户每次提交代码，都能够记录用户的提交记录和时间，代码信息 和 编译的结果等；
-    * */
-//    @RequestMapping(value = {"/", ""}, method = RequestMethod.POST)
-//    public JsonResult compileCode(@RequestParam String code) throws IOException {
-//        Logger.info("before" + "\n" + code);
-//
-//        String s = HtmlUtil.stripHtml(code);
-//        String ss = StringEscapeUtils.unescapeHtml4(s);
-//        ss = ss.replace(">", ">" + "\n");
-//        Long submitTime = System.currentTimeMillis();
-//        String compile = compileCoreService.compile(ss, submitTime);
-//
-//        Logger.info(compile);
-////        String compile = null;
-//        if (compile == null || !compile.contains("error")) {
-//            Logger.info("[{}] compiled code [{}]", UserUtil.getUserId(servletRequest), code);
-//            return JsonResult.succResult("success");
-//        }
-//        int error = compile.lastIndexOf("error");
-//        if (error > 0) {
-//            String result = compile.substring(error);
-//            Logger.info("[{}] compiled code [{}]", UserUtil.getUserId(servletRequest), code);
-//            return JsonResult.succResult(result);
-//        }
-//
-//        Logger.info("[{}] compiled code [{}]", UserUtil.getUserId(servletRequest), code);
-//        return JsonResult.succResult(compile);
-//    }
