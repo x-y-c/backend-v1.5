@@ -10,8 +10,14 @@ import yangchen.exam.model.JsonResult;
 import yangchen.exam.model.ScoreAdmin;
 import yangchen.exam.model.ScoreDetail;
 import yangchen.exam.service.score.ScoreService;
+import yangchen.exam.util.ExportUtil;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author YC
@@ -35,5 +41,34 @@ public class ScoreController {
     public JsonResult getScoreAdmin(@RequestParam Integer examGroupId) {
         List<ScoreAdmin> scoreAdminByExamGroupId = scoreService.getScoreAdminByExamGroupId(examGroupId);
         return JsonResult.succResult(scoreAdminByExamGroupId);
+    }
+
+
+    @GetMapping(value = "/csv")
+    public String downloadByCSV(HttpServletResponse response, @RequestParam Integer examGroupId) {
+        List<Map<String, Object>> dataList = null;
+        List<ScoreAdmin> scoreAdminList = scoreService.getScoreAdminByExamGroupId(examGroupId);
+        String sTitle = "学号,成绩,姓名,考试";
+        String fName = "score_";
+        String mapKey = "studentId,score,studentName,examDesc";
+        dataList = new ArrayList<>();
+        Map<String, Object> map = null;
+        for (ScoreAdmin scoreAdmin : scoreAdminList) {
+            map = new HashMap<>();
+            map.put("studentId", scoreAdmin.getStudentId());
+            map.put("score", scoreAdmin.getScore());
+            map.put("studentName", scoreAdmin.getStudentName());
+            map.put("examDesc", scoreAdmin.getExamDesc());
+            dataList.add(map);
+        }
+        try (final OutputStream os = response.getOutputStream()) {
+            ExportUtil.responseSetProperties(fName, response);
+            ExportUtil.doExport(dataList, sTitle, mapKey, os);
+            return null;
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return "数据导出错误";
+
     }
 }
