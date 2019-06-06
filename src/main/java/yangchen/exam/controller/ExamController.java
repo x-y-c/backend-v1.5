@@ -39,6 +39,30 @@ public class ExamController {
         return JsonResult.succResult(examinationDetails);
     }
 
+    @RequestMapping(value = "/finished", method = RequestMethod.GET)
+    public JsonResult getFinishedExam(@RequestParam Long studentId) {
+        List<ExaminationDetail> finishedExamination = examinationService.getFinishedExamination(studentId);
+        return JsonResult.succResult(finishedExamination);
+    }
+
+    @RequestMapping(value = "/unstarted", method = RequestMethod.GET)
+    public JsonResult getUnstartExam(@RequestParam Long studentId) {
+        List<ExaminationDetail> unStartedExamination = examinationService.getUnstartedExamination(studentId);
+        return JsonResult.succResult(unStartedExamination);
+    }
+
+    @RequestMapping(value = "/ended", method = RequestMethod.GET)
+    public JsonResult getEndedExam(@RequestParam Long studentId) {
+        List<ExaminationDetail> endedExamination = examinationService.getEndedExamination(studentId);
+        return JsonResult.succResult(endedExamination);
+    }
+
+    @RequestMapping(value = "/ing", method = RequestMethod.GET)
+    public JsonResult getIngExam(@RequestParam Long studentId) {
+        List<ExaminationDetail> ingExamination = examinationService.getIngExamination(studentId);
+        return JsonResult.succResult(ingExamination);
+    }
+
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public JsonResult createExam(@RequestBody ExamCreatedParam examCreatedParam) {
@@ -95,8 +119,8 @@ public class ExamController {
     }
 
     @RequestMapping(value = "/submit", method = RequestMethod.GET)
-    public JsonResult submitTest(@RequestParam Integer id,@RequestParam Long studentId) {
-        Boolean aBoolean = examinationService.submitTest(id,studentId);
+    public JsonResult submitTest(@RequestParam Integer id, @RequestParam Long studentId) {
+        Boolean aBoolean = examinationService.submitTest(id, studentId);
         return JsonResult.succResult(aBoolean);
     }
 

@@ -27,9 +27,19 @@ public interface ExaminationService {
      */
     Examination createExamInfo(String category);
 
-
+    //全部考试
     List<ExaminationDetail> examInfoDetail(Long studentId);
 
+    //结束的考试
+    List<ExaminationDetail> getEndedExamination(Long studentId);
+
+    //已完成的考试
+    List<ExaminationDetail> getFinishedExamination(Long studentId);
+
+    //未考试
+    List<ExaminationDetail> getUnstartedExamination(Long studentId);
+
+    List<ExaminationDetail> getIngExamination(Long studentId);
 
     /**
      * 根据阶段和题目数创建题目，
@@ -91,5 +101,5 @@ public interface ExaminationService {
     Examination getExaminationById(Integer id);
 
 
-    Boolean submitTest(Integer id,Long studentId);
+    Boolean submitTest(Integer id, Long studentId);
 }

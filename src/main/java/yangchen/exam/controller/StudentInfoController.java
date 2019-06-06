@@ -9,7 +9,6 @@ import org.springframework.web.multipart.MultipartFile;
 import yangchen.exam.entity.Student;
 import yangchen.exam.model.JsonResult;
 import yangchen.exam.model.ResultCode;
-import yangchen.exam.service.excelservice.ExcelService;
 import yangchen.exam.service.excelservice.ExcelServiceImpl;
 import yangchen.exam.service.student.studentService;
 import yangchen.exam.util.ExportUtil;
@@ -41,9 +40,6 @@ public class StudentInfoController {
 
     @Autowired
     private HttpServletRequest request;
-
-    @Autowired
-    private ExcelService excelService;
 
     @Autowired
     private ExcelServiceImpl excelServiceimpl;

@@ -8,6 +8,7 @@ package yangchen.exam.service.examInfo;
 
 import yangchen.exam.entity.ExamInfo;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -30,7 +31,20 @@ public interface ExamInfoService {
      * @param studentId
      * @return
      */
+    //全部
     List<ExamInfo> getExamInfoByStudentId(Long studentId);
+
+    //已结束
+    List<ExamInfo> getEndedExamInfo(Long studentId, Timestamp timestamp);
+
+    //未开始
+    List<ExamInfo> getUnstartExamInfo(Long studentId, Timestamp timestamp);
+
+    //进行中
+    List<ExamInfo> getIngExamInfo(Long studentId, Timestamp timestamp);
+
+    //已结束
+    List<ExamInfo> getFinishedExamInfo(Long studentId);
 
     ExamInfo getExamInfoByExaminationId(Integer examinationId);
 

@@ -102,5 +102,22 @@ public class QuestionController {
         return JsonResult.succResult(questionList);
     }
 
+    @RequestMapping(value = "/testCase", method = RequestMethod.GET)
+    public JsonResult getTestCase(@RequestParam Integer questionId) {
+        List<TestCase> byQid = testCaseService.findByQid(questionId);
+        return JsonResult.succResult(byQid);
+    }
+
+    /**
+     * 添加测试用例
+     * @param testCase
+     * @return
+     */
+    @RequestMapping(value = "/testCase/add", method = RequestMethod.POST)
+    public JsonResult addTestCase(@RequestBody TestCase testCase) {
+        TestCase testCase1 = testCaseService.addTestCase(testCase);
+        return JsonResult.succResult(testCase1);
+    }
+
 
 }
