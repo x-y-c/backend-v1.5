@@ -56,4 +56,6 @@ public interface ExamInfoService {
      * @return
      */
     List<ExamInfo> getExamInfoByExamGroup(Integer examGroupId);
+
+    Integer getTtl(Integer examinationId);
 }

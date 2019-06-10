@@ -3,7 +3,6 @@ package yangchen.exam.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import yangchen.exam.model.Category;
 
 import javax.persistence.*;
 

@@ -1,10 +1,8 @@
 package yangchen.exam.service.examination;
 
+import yangchen.exam.entity.ExamGroup;
 import yangchen.exam.entity.Examination;
-import yangchen.exam.model.ExamCreatedParam;
-import yangchen.exam.model.ExaminationDetail;
-import yangchen.exam.model.QuestionDetail;
-import yangchen.exam.model.QuestionResult;
+import yangchen.exam.model.*;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -48,6 +46,8 @@ public interface ExaminationService {
      * @param number
      */
     Examination createExamInfo(String category, Integer number);
+
+    ExamGroup createExam(ExamParam examParam);
 
 
     /**

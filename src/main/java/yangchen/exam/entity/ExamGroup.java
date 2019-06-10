@@ -3,6 +3,7 @@ package yangchen.exam.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import yangchen.exam.model.ExamType;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -38,4 +39,8 @@ public class ExamGroup {
     //发布人
     @Column(name = "exam_teacher")
     private String examTeacher;
+
+    //考试类型，0 是练习  1是考试
+    @Column(name = "exam_type")
+    private ExamType examType;
 }

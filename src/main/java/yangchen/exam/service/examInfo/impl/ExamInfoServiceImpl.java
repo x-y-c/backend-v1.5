@@ -77,4 +77,10 @@ public class ExamInfoServiceImpl implements ExamInfoService {
     public List<ExamInfo> getExamInfoByExamGroup(Integer examGroupId) {
         return examInfoRepo.findByExamGroupId(examGroupId);
     }
+
+    @Override
+    public Integer getTtl(Integer examinationId) {
+        ExamInfo byExaminationId = examInfoRepo.findByExaminationId(examinationId);
+        return Math.toIntExact(byExaminationId.getTtl());
+    }
 }

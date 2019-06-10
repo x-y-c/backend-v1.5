@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import yangchen.exam.model.CompileFront;
 import yangchen.exam.model.JsonResult;
-import yangchen.exam.service.compile.CompileCoreService;
 import yangchen.exam.service.compileService.CompileService;
 
 import java.io.IOException;
@@ -24,8 +23,6 @@ import java.io.IOException;
 public class CompileController {
 
 
-    @Autowired
-    private CompileCoreService compileCoreService;
     Logger Logger = LoggerFactory.getLogger(CompileController.class);
 
 
@@ -49,34 +46,10 @@ public class CompileController {
      * @return
      */
     @RequestMapping(value = {"/", ""}, method = RequestMethod.POST)
-    public JsonResult compileTest(@RequestParam String code, @RequestParam Integer examinationId, @RequestParam Integer index,@RequestParam Long studentId) {
-        CompileFront compileFront = compileService.compileCode(examinationId, index, code,studentId);
+    public JsonResult compileTest(@RequestParam String code, @RequestParam Integer examinationId, @RequestParam Integer index, @RequestParam Long studentId) {
+        CompileFront compileFront = compileService.compileCode(examinationId, index, code, studentId);
         return JsonResult.succResult(compileFront);
     }
 
 
-    /**
-     * 这里给postman测试用，因为postman的发送数据没有传输转码的问题
-     *
-     * @param code
-     * @return
-     * @throws IOException
-     */
-    @RequestMapping(value = {"/postman"}, method = RequestMethod.POST)
-    public JsonResult compileCodePostman(@RequestParam String code) throws IOException {
-        Logger.info("before" + "\n" + code);
-        Long submitTime = System.currentTimeMillis();
-        String compile = compileCoreService.compile(code, submitTime);
-
-        Logger.info(compile);
-        if (compile == null || !compile.contains("error")) {
-            return JsonResult.succResult("success");
-        }
-        int error = compile.lastIndexOf("error");
-        if (error > 0) {
-            String result = compile.substring(error);
-            return JsonResult.succResult(result);
-        }
-        return JsonResult.succResult(compile);
-    }
 }

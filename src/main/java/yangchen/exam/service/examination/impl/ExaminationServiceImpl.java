@@ -5,10 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.*;
-import yangchen.exam.model.ExamCreatedParam;
-import yangchen.exam.model.ExaminationDetail;
-import yangchen.exam.model.QuestionDetail;
-import yangchen.exam.model.QuestionResult;
+import yangchen.exam.model.*;
 import yangchen.exam.repo.examinationRepo;
 import yangchen.exam.service.examInfo.ExamInfoService;
 import yangchen.exam.service.examination.ExamGroupService;
@@ -53,6 +50,9 @@ public class ExaminationServiceImpl implements ExaminationService {
 
     @Autowired
     private yangchen.exam.repo.examInfoRepo examInfoRepo;
+
+    @Autowired
+    private yangchen.exam.repo.questionRepo questionRepo;
 
 
     @Override
@@ -189,7 +189,7 @@ public class ExaminationServiceImpl implements ExaminationService {
         examGroup.setClassName(grades.toString());
         examGroup.setExamTime(ttl);
         examGroup.setDesc(desc);
-
+        examGroup.setExamType(ExamType.execise);
         ExamGroup examGroup1 = examGroupService.addExamGroup(examGroup);
 
 
@@ -232,10 +232,88 @@ public class ExaminationServiceImpl implements ExaminationService {
                 examCreatedParam.getTtl(),
                 examCreatedParam.getDesc());
     }
+//    ExamGroup examGroup = new ExamGroup();
+//        examGroup.setBeginTime(startTime);
+//        examGroup.setEndTime(endTime);
+//    StringBuilder grades = new StringBuilder();
+//        for (String g : grade) {
+//        grades.append(g);
+//        grades.append(",");
+//    }
+//        examGroup.setClassName(grades.toString());
+//        examGroup.setExamTime(ttl);
+//        examGroup.setDesc(desc);
+//
+//    ExamGroup examGroup1 = examGroupService.addExamGroup(examGroup);
+
+    public ExamGroup createExam(ExamParam examParam) {
+        ExamGroup examGroup = new ExamGroup();
+        examGroup.setBeginTime(examParam.getBeginTime());
+        examGroup.setEndTime(examParam.getEndTime());
+        List<Student> studentList = new ArrayList<>();
+        List<String> grades = examParam.getGrades();
+        StringBuilder gradeStr = new StringBuilder();
+        for (String g : grades) {
+            gradeStr.append(g);
+            gradeStr.append(",");
+        }
+        examGroup.setClassName(gradeStr.toString());
+        examGroup.setExamTime(examParam.getTtl());
+        examGroup.setDesc(examParam.getTitle());
+        examGroup.setExamType(examParam.getExamType());
+
+        grades.forEach(s -> {
+            List<Student> classMate = studentService.getStudentListByGrade(s);
+            studentList.addAll(classMate);
+        });
+        List<TwoTuple<String, String>> examList = examParam.getExam();
+        List<List<Question>> questionList = new ArrayList<>();
+        for (TwoTuple<String, String> exam : examList) {
+            List<Question> result = questionRepo.findByCategoryAndDifficulty(exam.first, exam.second);
+            questionList.add(result);
+        }
+
+        studentList.forEach(student -> {
+            Boolean aBoolean = examTask(student, questionList, examParam);
+        });
+
+        ExamGroup examGroup1 = examGroupService.addExamGroup(examGroup);
+        return examGroup1;
+    }
 
 
-    public Examination addExamination(Examination examination) {
-        return examinationRepo.save(examination);
+    public Boolean examTask(Student student, List<List<Question>> questionList, ExamParam examParam) {
+        Examination examination = new Examination();
+        StringBuilder stringBuilder = new StringBuilder();
+        for (List<Question> questions : questionList) {
+            Set random = RandomUtil.getRandom(0, questions.size() - 1, 0);
+            for (Object o : random) {
+                //获取一道题目
+                Question question = questions.get(Integer.valueOf(String.valueOf(o)));
+                stringBuilder.append(question.getId());
+                stringBuilder.append(",");
+            }
+        }
+        examination.setUsed(Boolean.FALSE);
+        examination.setActive(Boolean.TRUE);
+        examination.setTitleId(stringBuilder.toString());
+        Examination save = examinationRepo.save(examination);
+        ExamInfo examInfo = new ExamInfo();
+        examInfo.setStudentName(student.getName());//姓名
+        examInfo.setStudentNumber(student.getStudentId());//学号
+        examInfo.setTtl(examParam.getTtl());//时长
+        examInfo.setExaminationId(save.getId());//试卷编号
+        examInfo.setExamStart(examParam.getBeginTime());//开始时间
+        examInfo.setExamEnd(examParam.getEndTime());//截止时间
+        examInfo.setDesc(examParam.getTitle());//题目
+        if (examParam.getExamType().equals(ExamType.execise)) {
+            examInfo.setCategory("练习");
+        } else {
+            examInfo.setCategory("考试");
+        }
+        ExamInfo examInfo1 = examInfoService.addExamInfo(examInfo);
+        return examInfo1 != null;
+
     }
 
     @Override
@@ -301,4 +379,5 @@ public class ExaminationServiceImpl implements ExaminationService {
         examInfoRepo.save(examInfoByExaminationId);
         return save != null;
     }
+
 }

@@ -5,6 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import yangchen.exam.entity.ExamGroup;
 import yangchen.exam.model.*;
+import yangchen.exam.service.examInfo.ExamInfoService;
 import yangchen.exam.service.examination.ExamGroupService;
 import yangchen.exam.service.examination.ExaminationService;
 
@@ -24,6 +25,9 @@ public class ExamController {
 
     @Autowired
     private ExamGroupService examGroupService;
+
+    @Autowired
+    private ExamInfoService examInfoService;
 
     /**
      * 通过学号查询考试信息；
@@ -83,6 +87,13 @@ public class ExamController {
         return JsonResult.succResult(null);
     }
 
+
+    @RequestMapping(value = "/complex", method = RequestMethod.POST)
+    public JsonResult createExam(@RequestBody ExamParam examParam) {
+        ExamGroup exam = examinationService.createExam(examParam);
+        return JsonResult.succResult(exam);
+    }
+
     @RequestMapping(value = "/unUsed", method = RequestMethod.GET)
     public JsonResult queryExamUnused() {
         return JsonResult.succResult(examinationService.getUnUsedExamination());
@@ -122,6 +133,12 @@ public class ExamController {
     public JsonResult submitTest(@RequestParam Integer id, @RequestParam Long studentId) {
         Boolean aBoolean = examinationService.submitTest(id, studentId);
         return JsonResult.succResult(aBoolean);
+    }
+
+    @RequestMapping(value = "/ttl", method = RequestMethod.GET)
+    public JsonResult getTtl(@RequestParam Integer examinationId) {
+        Integer ttl = examInfoService.getTtl(examinationId);
+        return JsonResult.succResult(ttl);
     }
 
 }
