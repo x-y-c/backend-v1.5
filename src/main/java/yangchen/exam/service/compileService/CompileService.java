@@ -1,7 +1,6 @@
 package yangchen.exam.service.compileService;
 
 import yangchen.exam.model.CompileFront;
-import yangchen.exam.model.CompileResult;
 
 /**
  * @author YC

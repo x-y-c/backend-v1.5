@@ -20,7 +20,6 @@ import yangchen.exam.service.score.ScoreService;
 import yangchen.exam.service.submit.SubmitService;
 import yangchen.exam.service.testInfo.TestCaseService;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 

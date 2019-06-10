@@ -35,14 +35,14 @@ public class StudentServiceImpl implements studentService {
         return studentRepo.save(student);
     }
 
-    public Student changePassword(Long studentId, String oldpasswprd,String password) {
+    public Student changePassword(Long studentId, String oldpasswprd, String password) {
         Student byStudentId = studentRepo.findByStudentId(studentId);
         if (byStudentId != null) {
-            if (byStudentId.getPassword().equals(oldpasswprd)){
+            if (byStudentId.getPassword().equals(oldpasswprd)) {
                 byStudentId.setPassword(password);
                 Student save = studentRepo.save(byStudentId);
-            return save;
-            }else {
+                return save;
+            } else {
                 return null;
             }
 
@@ -108,5 +108,10 @@ public class StudentServiceImpl implements studentService {
     public Page<Student> getPage(Integer pageNum, Integer pageLimit) {
         Pageable pageable = PageRequest.of(pageNum - 1, pageLimit);
         return studentRepo.findAll(pageable);
+    }
+
+    @Override
+    public List<String> initGrade() {
+        return studentRepo.getGrade();
     }
 }

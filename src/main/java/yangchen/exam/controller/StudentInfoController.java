@@ -135,4 +135,11 @@ public class StudentInfoController {
         }
         return "数据导出错误";
     }
+
+
+    @RequestMapping(value = "/grade", method = RequestMethod.GET)
+    public JsonResult getGrade() {
+        List<String> strings = studentService.initGrade();
+        return JsonResult.succResult(strings);
+    }
 }

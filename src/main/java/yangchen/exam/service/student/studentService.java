@@ -38,7 +38,7 @@ public interface studentService {
 
     Student addStudent(StudentInfo studentInfo);
 
-    Student changePassword(Long studentId, String oldpassword,String password);
+    Student changePassword(Long studentId, String oldpassword, String password);
 
     /**
      * 获取全部学生信息
@@ -63,6 +63,8 @@ public interface studentService {
      * @return
      */
     Page<Student> getPage(Integer pageNum, Integer pageLimit);
+
+    List<String> initGrade();
 
 
 }
