@@ -109,4 +109,28 @@ public class ExcelServiceImpl {
         }
 
     }
+
+    public JsonResult uploadQuestion(InputStream inputStream) {
+        ExcelReader excelReader = ExcelUtil.getReader(inputStream);
+        List<List<Object>> all = excelReader.read();
+        for (int i = 1; i < all.size(); i++) {
+            List<Object> objects = all.get(i);
+            Question question = new Question();
+            //自定义题号
+            question.setQuestionTitle(objects.get(0).toString());
+            //题目
+            question.setQuestionName(objects.get(1).toString());
+            //阶段
+            question.setCategory(objects.get(2).toString());
+            //知识点
+            question.setKnowledge(objects.get(3).toString());
+            //难度
+            question.setDifficulty(objects.get(4).toString());
+            //题目描述
+            question.setDescription(objects.get(5).toString());
+
+            questionService.createQuestion(question);
+        }
+        return JsonResult.succResult("添加成功", all.size() - 1);
+    }
 }

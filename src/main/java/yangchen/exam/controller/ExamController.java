@@ -1,5 +1,7 @@
 package yangchen.exam.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +30,8 @@ public class ExamController {
 
     @Autowired
     private ExamInfoService examInfoService;
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(ExamController.class);
 
     /**
      * 通过学号查询考试信息；
@@ -90,8 +94,9 @@ public class ExamController {
 
     @RequestMapping(value = "/complex", method = RequestMethod.POST)
     public JsonResult createExam(@RequestBody ExamParam examParam) {
-        ExamGroup exam = examinationService.createExam(examParam);
-        return JsonResult.succResult(exam);
+//        ExamGroup exam = examinationService.createExam(examParam);
+        LOGGER.info(examParam.toString());
+        return JsonResult.succResult(null);
     }
 
     @RequestMapping(value = "/unUsed", method = RequestMethod.GET)

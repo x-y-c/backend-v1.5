@@ -1,5 +1,6 @@
 package yangchen.exam.service.base.impl;
 
+import com.google.gson.Gson;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -9,8 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import yangchen.exam.entity.Student;
 import yangchen.exam.service.student.studentService;
-
-import java.util.List;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -66,9 +65,11 @@ private Timestamp createdTime;
         studentService.addStudent(student);
     }
 
+    Gson gson = new Gson();
+
     @Test
-    public void getAllStudent(){
-        List<Student> allStudent = studentService.getAllStudent();
-        LOGGER.info(allStudent.toString());
+    public void getAllStudent() {
+        Student studentByStudentId = studentService.getStudentByStudentId(2015011446L);
+        LOGGER.info(gson.toJson(studentByStudentId) );
     }
 }
