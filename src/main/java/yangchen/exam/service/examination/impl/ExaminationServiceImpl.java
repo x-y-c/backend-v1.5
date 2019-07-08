@@ -286,8 +286,8 @@ public class ExaminationServiceImpl implements ExaminationService {
         Examination examination = new Examination();
         StringBuilder stringBuilder = new StringBuilder();
         for (List<Question> questions : questionList) {
-            Set random = RandomUtil.getRandom(0, questions.size() - 1, 0);
-            for (Object o : random) {
+            Set random = RandomUtil.getRandom(0, questions.size() - 1, 1);
+           for (Object o : random) {
                 //获取一道题目
                 Question question = questions.get(Integer.valueOf(String.valueOf(o)));
                 stringBuilder.append(question.getId());

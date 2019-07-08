@@ -50,7 +50,7 @@ public class ExamInfoServiceImpl implements ExamInfoService {
 
     @Override
     public List<ExamInfo> getIngExamInfo(Long studentId, Timestamp timestamp) {
-        List<ExamInfo> doingExam = examInfoRepo.findByStudentNumberAndExamStartAfter(studentId, timestamp);
+        List<ExamInfo> doingExam = examInfoRepo.findByStudentNumberAndExamStartBeforeAndExamEndAfter(studentId, timestamp, new Timestamp(System.currentTimeMillis()));
         List<ExamInfo> result = new ArrayList<>(doingExam.size());
         doingExam.forEach(examInfo -> {
             //符合时间，且没有交卷的

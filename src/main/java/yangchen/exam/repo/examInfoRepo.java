@@ -18,6 +18,8 @@ public interface examInfoRepo extends JpaRepository<ExamInfo, Integer> {
 
     List<ExamInfo> findByStudentNumberAndExamStartAfter(Long studentId, Timestamp timestamp);
 
+    List<ExamInfo> findByStudentNumberAndExamStartBeforeAndExamEndAfter(Long studentId, Timestamp timestamp, Timestamp endTime);
+
     List<ExamInfo> findByStudentNumberAndExamEndBefore(Long studentId, Timestamp timestamp);
 
     @Query(value = "select  * from exam_info join examation on exam_info.examination_id=examation.id\n" +
