@@ -2,7 +2,7 @@ package yangchen.exam.service.question;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import yangchen.exam.entity.Examination;
+import yangchen.exam.entity.ExamPaper;
 import yangchen.exam.entity.Question;
 import yangchen.exam.repo.questionRepo;
 import yangchen.exam.service.examination.ExaminationService;
@@ -62,7 +62,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public Question getQuestionBy(Integer examinationId, Integer index) {
-        Examination examinationById = examinationService.getExaminationById(examinationId);
+        ExamPaper examinationById = examinationService.getExaminationById(examinationId);
 
        //??这里有bug
 

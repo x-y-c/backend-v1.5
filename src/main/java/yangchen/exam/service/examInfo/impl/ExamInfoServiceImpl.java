@@ -3,6 +3,7 @@ package yangchen.exam.service.examInfo.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.ExamInfo;
+import yangchen.exam.repo.ExamPaperRepo;
 import yangchen.exam.repo.examInfoRepo;
 import yangchen.exam.service.examInfo.ExamInfoService;
 
@@ -22,8 +23,7 @@ public class ExamInfoServiceImpl implements ExamInfoService {
     private examInfoRepo examInfoRepo;
 
     @Autowired
-    private yangchen.exam.repo.examinationRepo examinationRepo;
-
+    private ExamPaperRepo examPaperRepo;
 
     @Override
     public ExamInfo addExamInfo(ExamInfo examInfo) {
@@ -54,7 +54,7 @@ public class ExamInfoServiceImpl implements ExamInfoService {
         List<ExamInfo> result = new ArrayList<>(doingExam.size());
         doingExam.forEach(examInfo -> {
             //符合时间，且没有交卷的
-            if (examinationRepo.findById(examInfo.getExaminationId()).get().getUsed().equals(false)) {
+            if (examPaperRepo.findById(examInfo.getExaminationId()).get().getFinished().equals(false)) {
                 result.add(examInfo);
             }
         });

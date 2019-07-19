@@ -72,24 +72,6 @@ public class ExamController {
     }
 
 
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public JsonResult createExam(@RequestBody ExamCreatedParam examCreatedParam) {
-        if (examCreatedParam.getNumber() == null) {
-            //如果题目没有指定，就是5道题
-            examCreatedParam.setNumber(5);
-        }
-        if (examCreatedParam.getNumber() == null ||
-                examCreatedParam.getCategory() == null ||
-                examCreatedParam.getDesc() == null ||
-                examCreatedParam.getStart() == null ||
-                examCreatedParam.getEnd() == null ||
-                examCreatedParam.getTtl() == null
-        ) {
-            return JsonResult.errorResult(ResultCode.WRONG_PARAMS, "参数不能为空", null);
-        }
-        examinationService.createExam(examCreatedParam);
-        return JsonResult.succResult(null);
-    }
 
 
     @RequestMapping(value = "/complex", method = RequestMethod.POST)

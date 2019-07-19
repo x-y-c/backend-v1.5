@@ -1,7 +1,7 @@
 package yangchen.exam.service.examination;
 
 import yangchen.exam.entity.ExamGroup;
-import yangchen.exam.entity.Examination;
+import yangchen.exam.entity.ExamPaper;
 import yangchen.exam.model.*;
 
 import java.sql.Timestamp;
@@ -18,13 +18,6 @@ import java.util.List;
  */
 public interface ExaminationService {
 
-    /**
-     * 根据阶段创建题目，默认为5道题；
-     *
-     * @param category
-     */
-    Examination createExamInfo(String category);
-
     //全部考试
     List<ExaminationDetail> examInfoDetail(Long studentId);
 
@@ -39,31 +32,14 @@ public interface ExaminationService {
 
     List<ExaminationDetail> getIngExamination(Long studentId);
 
-    /**
-     * 根据阶段和题目数创建题目，
-     *
-     * @param category
-     * @param number
-     */
-    Examination createExamInfo(String category, Integer number);
+
+
 
     ExamGroup createExam(ExamParam examParam);
 
 
-    /**
-     * @param category  阶段 example ： 阶段3
-     * @param number    题数 example： 5
-     * @param grades    班级 example: 软工1501，软工1502
-     * @param startTime 开始时间
-     * @param endTime   结束时间
-     * @param ttl       持续时间
-     * @param desc      考卷描述
-     */
-    void createExam(String category, Integer number, List<String> grades, Timestamp startTime, Timestamp endTime,
-                    Long ttl, String desc);
 
 
-    void createExam(ExamCreatedParam examCreatedParam);
 
 
     /**
@@ -71,14 +47,14 @@ public interface ExaminationService {
      *
      * @return
      */
-    List<Examination> getUnUsedExamination();
+    List<ExamPaper> getUnUsedExamination();
 
     /**
      * 获取未作答的考卷
      *
      * @return
      */
-    List<Examination> getUsedExamination();
+    List<ExamPaper> getUsedExamination();
 
 
     /**
@@ -98,7 +74,7 @@ public interface ExaminationService {
     QuestionResult getQuestionInfoResult(Integer id);
 
 
-    Examination getExaminationById(Integer id);
+    ExamPaper getExaminationById(Integer id);
 
 
     Boolean submitTest(Integer id, Long studentId);
