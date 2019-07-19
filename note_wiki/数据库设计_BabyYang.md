@@ -5,7 +5,7 @@
 | :----: | :----: | :----: |
 | id | int | 主键自增 |
 | exam_description | varchar | 考试名称 |
-| class_name | list<string> | 参与考试的班级 |
+| class_name | list\<string\> | 参与考试的班级 |
 | exam_teacher | varchar | 考试出卷的老师 | 
 | begin_date | date | 考试开始的日期 |
 | begin_time | date | 考试开始的时间 | 
@@ -15,7 +15,7 @@
 | 字段名 | 类型 | 说明 |
 | :----: | :----: | :----: |
 | id | int | 主键自增 |
-| title_id | list<Integer> | 试卷题目id（对应question表） |
+| title_id | list\<Integer\> | 试卷题目id（对应question表） |
   
 ### exam_info_new
 | 字段名 | 类型 | 说明 |
