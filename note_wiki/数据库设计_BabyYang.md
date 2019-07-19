@@ -26,6 +26,27 @@
 | exam_paper_id | int | 考试卷号（标记这个学生的卷子id） |
 | exam_score | int | 考试成绩 |
 
+### score_new
+| 字段名 | 类型 | 说明 |
+| :----: | :----: | :----: |
+| id | int | 主键自增 |
+| student_id | int | 学生学号 |
+| exam_paper_id | int | 考试卷号 |
+| question_id | int | 试卷上的第几题 |
+| score | int | 单题成绩 |
+| weigh | int | 单题比重 |
+
+## 考试提交相关的表
+### submit_new
+| 字段名 | 类型 | 说明 |
+| :----: | :----: | :----: |
+| id | int | 主键自增 |
+
+### last_submit_new
+| 字段名 | 类型 | 说明 |
+| :----: | :----: | :----: |
+| id | int | 主键自增 |
+
 ## 创建练习需要的表
 ### practice_group_new
 ### practice_info_new
