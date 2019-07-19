@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ScoreAdmin {
-    private Long studentId;
+    private Integer studentId;
     private Integer score;
     private String studentName;
     private String examDesc;

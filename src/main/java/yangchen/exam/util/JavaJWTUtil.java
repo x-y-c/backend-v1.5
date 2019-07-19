@@ -58,7 +58,7 @@ public class JavaJWTUtil {
 
     }
 
-    public static String createTokenWithClaim(Long id, String password) {
+    public static String createTokenWithClaim(Integer id, String password) {
         return createTokenWithClaim(String.valueOf(id), password);
     }
 
@@ -106,13 +106,13 @@ public class JavaJWTUtil {
         System.out.println(audience.get(0));
         TokenInfo tokenInfo = new TokenInfo();
         tokenInfo.setPassword(password.asString());
-        tokenInfo.setUserId(loginName.asLong());
+        tokenInfo.setUserId(loginName.asInt());
         return tokenInfo;
     }
 
 
     public static void main(String[] args) {
-        String createToken = createTokenWithClaim(2015011446L, "19961012");
+        String createToken = createTokenWithClaim(2015011446, "19961012");
         System.out.println(createToken);
         System.out.println(verifyToken(createToken).toString());
     }

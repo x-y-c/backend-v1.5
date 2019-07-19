@@ -2,19 +2,18 @@ package yangchen.exam.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import yangchen.exam.entity.Student;
+import yangchen.exam.entity.StudentNew;
 
 import java.util.List;
 
-public interface studentRepo extends JpaRepository<Student, Integer> {
+public interface studentRepo extends JpaRepository<StudentNew, Integer> {
 
-    Student findByStudentId(Long studentId);
+    StudentNew findByStudentId(Integer studentId);
 
-    List<Student> findByGrade(String grade);
+    List<StudentNew> findByStudentGrade(String grade);
 
-    List<Student> findByMajor(String major);
 
-    @Query(value = "select distinct grade from student",nativeQuery = true)
+    @Query(value = "select distinct student_grade from student_new",nativeQuery = true)
     List<String> getGrade();
 
 

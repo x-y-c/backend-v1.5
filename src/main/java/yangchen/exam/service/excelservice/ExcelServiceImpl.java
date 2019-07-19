@@ -73,7 +73,7 @@ public class ExcelServiceImpl {
         for (int i = 1; i < all.size(); i++) {
             List<Object> objects = all.get(i);
             StudentInfo studentInfo = new StudentInfo();
-            studentInfo.setStudentId(Long.valueOf(objects.get(0).toString()));
+            studentInfo.setStudentId(Integer.valueOf(objects.get(0).toString()));
             studentInfo.setName(objects.get(1).toString());
             studentInfo.setGrade(objects.get(2).toString());
             studentInfo.setMajor(objects.get(3).toString());

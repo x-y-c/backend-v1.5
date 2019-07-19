@@ -7,7 +7,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import yangchen.exam.annotation.PassToken;
 import yangchen.exam.annotation.UserLoginToken;
-import yangchen.exam.entity.Student;
+import yangchen.exam.entity.StudentNew;
 import yangchen.exam.model.TokenInfo;
 import yangchen.exam.service.student.studentService;
 import yangchen.exam.util.JavaJWTUtil;
@@ -44,8 +44,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                     throw new RuntimeException("用户不存在，请重新登录");
                 }
                 TokenInfo tokenInfo = JavaJWTUtil.verifyToken(token);
-                Long studentId = tokenInfo.getUserId();
-                Student student = studentService.getStudentByStudentId(studentId);
+                Integer studentId = tokenInfo.getUserId();
+                StudentNew student = studentService.getStudentByStudentId(studentId);
                 if (student == null) {
                     throw new RuntimeException("用户不存在，请重新登录");
                 }

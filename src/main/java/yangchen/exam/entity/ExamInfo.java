@@ -19,7 +19,7 @@ public class ExamInfo {
     private Integer id;
 
     @Column(name = "student_number")
-    private Long studentNumber;
+    private Integer studentNumber;
 
     //学生姓名
     @Column(name = "student_name")

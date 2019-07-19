@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import yangchen.exam.annotation.PassToken;
 import yangchen.exam.annotation.UserLoginToken;
-import yangchen.exam.entity.Student;
+import yangchen.exam.entity.StudentNew;
 import yangchen.exam.entity.Teacher;
 import yangchen.exam.model.JsonResult;
 import yangchen.exam.model.ResultCode;
 import yangchen.exam.model.UserBaseInfo;
-import yangchen.exam.service.teacher.TeacherService;
 import yangchen.exam.service.student.studentService;
+import yangchen.exam.service.teacher.TeacherService;
 import yangchen.exam.service.token.TokenService;
 import yangchen.exam.util.IpUtil;
 import yangchen.exam.util.JavaJWTUtil;
@@ -49,7 +49,7 @@ public class UserController {
     @PassToken
     @RequestMapping(value = "student/login", method = RequestMethod.GET)
     public JsonResult login(@RequestParam String studentId, @RequestParam String password) {
-        Student student = StudentService.getStudentByStudentId(Long.valueOf(studentId));
+        StudentNew student = StudentService.getStudentByStudentId(Integer.valueOf(studentId));
         LOGGER.info("the ip is [{}]", IpUtil.getIpAddr(request));
 
         String userId = request.getHeader("userId");
@@ -63,7 +63,7 @@ public class UserController {
         String token = tokenService.getToken(student);
         UserBaseInfo userBaseInfo = new UserBaseInfo();
         userBaseInfo.setToken(token);
-        userBaseInfo.setUserName(student.getName());
+        userBaseInfo.setUserName(student.getStudentName());
         return JsonResult.succResult("成功", userBaseInfo);
     }
 

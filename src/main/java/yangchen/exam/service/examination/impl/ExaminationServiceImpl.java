@@ -166,7 +166,7 @@ public class ExaminationServiceImpl implements ExaminationService {
     public void createExam(String category, Integer number, List<String> grade, Timestamp startTime, Timestamp endTime,
                            Long ttl, String desc) {
 
-        List<Student> studentList = new ArrayList<>();
+        List<StudentNew> studentList = new ArrayList<>();
 
 
         //通过循环获取需要添加的全部学生；
@@ -193,10 +193,10 @@ public class ExaminationServiceImpl implements ExaminationService {
         ExamGroup examGroup1 = examGroupService.addExamGroup(examGroup);
 
 
-        for (Student student : studentList) {
+        for (StudentNew student : studentList) {
             Examination examination = createExamInfo(category, number);
             ExamInfo examInfo = new ExamInfo();
-            examInfo.setStudentName(student.getName());
+            examInfo.setStudentName(student.getStudentName());
             examInfo.setStudentNumber(student.getStudentId());
             examInfo.setDesc(desc);
             examInfo.setCategory(category);
@@ -250,7 +250,7 @@ public class ExaminationServiceImpl implements ExaminationService {
         ExamGroup examGroup = new ExamGroup();
         examGroup.setBeginTime(examParam.getBeginTime());
         examGroup.setEndTime(examParam.getEndTime());
-        List<Student> studentList = new ArrayList<>();
+        List<StudentNew> studentList = new ArrayList<>();
         List<String> grades = examParam.getGrades();
         StringBuilder gradeStr = new StringBuilder();
         for (String g : grades) {
@@ -263,7 +263,7 @@ public class ExaminationServiceImpl implements ExaminationService {
         examGroup.setExamType(examParam.getExamType());
 
         grades.forEach(s -> {
-            List<Student> classMate = studentService.getStudentListByGrade(s);
+            List<StudentNew> classMate = studentService.getStudentListByGrade(s);
             studentList.addAll(classMate);
         });
         List<TwoTuple<String, String>> examList = examParam.getExam();
@@ -282,7 +282,7 @@ public class ExaminationServiceImpl implements ExaminationService {
     }
 
 
-    public Boolean examTask(Student student, List<List<Question>> questionList, ExamParam examParam) {
+    public Boolean examTask(StudentNew student, List<List<Question>> questionList, ExamParam examParam) {
         Examination examination = new Examination();
         StringBuilder stringBuilder = new StringBuilder();
         for (List<Question> questions : questionList) {
@@ -299,7 +299,7 @@ public class ExaminationServiceImpl implements ExaminationService {
         examination.setTitleId(stringBuilder.toString());
         Examination save = examinationRepo.save(examination);
         ExamInfo examInfo = new ExamInfo();
-        examInfo.setStudentName(student.getName());//姓名
+        examInfo.setStudentName(student.getStudentName());//姓名
         examInfo.setStudentNumber(student.getStudentId());//学号
         examInfo.setTtl(examParam.getTtl());//时长
         examInfo.setExaminationId(save.getId());//试卷编号

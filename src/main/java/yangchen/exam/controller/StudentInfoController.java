@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import yangchen.exam.entity.Student;
+import yangchen.exam.entity.StudentNew;
 import yangchen.exam.model.JsonResult;
 import yangchen.exam.model.ResultCode;
 import yangchen.exam.service.excelservice.ExcelServiceImpl;
@@ -62,30 +62,23 @@ public class StudentInfoController {
         return JsonResult.succResult(studentService.getPage(page, pageLimit));
     }
 
-    @RequestMapping(value = "/major", method = RequestMethod.GET)
-    public JsonResult getStudentByMajor(@RequestParam String major) {
-        LOGGER.info("[{}] get student By Major", UserUtil.getUserId(request));
-        return JsonResult.succResult(studentService.getStudentByMajor(major));
-    }
-
-
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public JsonResult AddStudent(@RequestBody Student student) {
+    public JsonResult AddStudent(@RequestBody StudentNew student) {
         LOGGER.info("[{}] add student", UserUtil.getUserId(request));
         return JsonResult.succResult(studentService.addStudent(student));
     }
 
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public JsonResult updateStudent(@RequestBody Student student) {
+    public JsonResult updateStudent(@RequestBody StudentNew student) {
         LOGGER.info("[{}] update student", UserUtil.getUserId(request));
         return JsonResult.succResult(studentService.changeStudentInfo(student));
     }
 
     @RequestMapping(value = "/password", method = RequestMethod.POST)
-    public JsonResult updatePassword(@RequestParam Long studentId, @RequestParam String oldpassword, @RequestParam String password) {
+    public JsonResult updatePassword(@RequestParam Integer studentId, @RequestParam String oldpassword, @RequestParam String password) {
         LOGGER.info("[{}] change password", UserUtil.getUserId(request));
-        Student student = studentService.changePassword(studentId, oldpassword, password);
+        StudentNew student = studentService.changePassword(studentId, oldpassword, password);
         if (student != null) {
             return JsonResult.succResult(student);
         } else {
@@ -94,7 +87,7 @@ public class StudentInfoController {
     }
 
     @RequestMapping(value = "/info", method = RequestMethod.GET)
-    public JsonResult getStudentInfo(@RequestParam Long studentId) {
+    public JsonResult getStudentInfo(@RequestParam Integer studentId) {
         LOGGER.info("[{}] get [{}] studentInfo", UserUtil.getUserId(request), studentId);
         return JsonResult.succResult(studentService.getStudentByStudentId(studentId));
     }
@@ -110,20 +103,19 @@ public class StudentInfoController {
     @RequestMapping(value = "/csv")
     public String findByCSV(HttpServletResponse response) {
         List<Map<String, Object>> dataList = null;
-        List<Student> students = studentService.getAllStudent();
+        List<StudentNew> students = studentService.getAllStudent();
         String sTitle = "Id,学号,姓名,密码,专业，班级";
         String fName = "by_";
         String mapKey = "id,studentId,name,password,major,grade";
         dataList = new ArrayList<>();
         Map<String, Object> map = null;
-        for (Student student : students) {
+        for (StudentNew student : students) {
             map = new HashMap<String, Object>();
             map.put("id", student.getId());
             map.put("studentId", student.getStudentId());
-            map.put("name", student.getName());
+            map.put("name", student.getStudentName());
             map.put("password", student.getPassword());
-            map.put("major", student.getMajor());
-            map.put("grade", student.getGrade());
+            map.put("grade", student.getStudentGrade());
             dataList.add(map);
         }
         try (final OutputStream os = response.getOutputStream()) {

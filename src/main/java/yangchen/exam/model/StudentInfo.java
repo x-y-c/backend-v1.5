@@ -16,7 +16,7 @@ public class StudentInfo {
     /**
      * 学号
      */
-    private Long studentId;
+    private Integer studentId;
 
     private String name;
 

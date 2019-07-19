@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import yangchen.exam.entity.Student;
+import yangchen.exam.entity.StudentNew;
 import yangchen.exam.model.StudentInfo;
 import yangchen.exam.repo.studentRepo;
 
@@ -21,26 +21,26 @@ public class StudentServiceImpl implements studentService {
 
 
     @Override
-    public Student getStudentByStudentId(Long studentId) {
+    public StudentNew getStudentByStudentId(Integer studentId) {
         return studentRepo.findByStudentId(studentId);
     }
 
     @Override
-    public List<Student> getStudentListByGrade(String grade) {
-        return studentRepo.findByGrade(grade);
+    public List<StudentNew> getStudentListByGrade(String grade) {
+        return studentRepo.findByStudentGrade(grade);
     }
 
     @Override
-    public Student changeStudentInfo(Student student) {
+    public StudentNew changeStudentInfo(StudentNew student) {
         return studentRepo.save(student);
     }
 
-    public Student changePassword(Long studentId, String oldpasswprd, String password) {
-        Student byStudentId = studentRepo.findByStudentId(studentId);
+    public StudentNew changePassword(Integer studentId, String oldpasswprd, String password) {
+        StudentNew byStudentId = studentRepo.findByStudentId(studentId);
         if (byStudentId != null) {
             if (byStudentId.getPassword().equals(oldpasswprd)) {
                 byStudentId.setPassword(password);
-                Student save = studentRepo.save(byStudentId);
+                StudentNew save = studentRepo.save(byStudentId);
                 return save;
             } else {
                 return null;
@@ -52,24 +52,20 @@ public class StudentServiceImpl implements studentService {
     }
 
     @Override
-    public void deleteStudentInfo(Student student) {
+    public void deleteStudentInfo(StudentNew student) {
         studentRepo.delete(student);
     }
 
     @Override
-    public Student addStudent(Student student) {
+    public StudentNew addStudent(StudentNew student) {
         if (student.getPassword() == null || student.getPassword().length() <= 0) {
             student.setPassword("123456");
         }
 
-        Student byStudentId = studentRepo.findByStudentId(student.getStudentId());
+        StudentNew byStudentId = studentRepo.findByStudentId(student.getStudentId());
         if (byStudentId != null) {
-            byStudentId.setGrade(student.getGrade());
-            byStudentId.setMajor(student.getMajor());
+            byStudentId.setStudentGrade((student.getStudentGrade()));
             return studentRepo.save(byStudentId);
-        }
-        if (student.getEnabled() == null) {
-            student.setEnabled(true);
         }
         return studentRepo.save(student);
     }
@@ -82,30 +78,25 @@ public class StudentServiceImpl implements studentService {
      * @return
      */
     @Override
-    public Student addStudent(StudentInfo studentInfo) {
-        Student student = new Student();
-        student.setName(studentInfo.getName());
-        student.setEnabled(true);
+    public StudentNew addStudent(StudentInfo studentInfo) {
+        StudentNew student = new StudentNew();
+        student.setStudentName(studentInfo.getName());
         student.setStudentId(studentInfo.getStudentId());
         student.setPassword("123456");
-        student.setMajor(studentInfo.getMajor());
-        student.setGrade(studentInfo.getGrade());
+
+        student.setStudentGrade(studentInfo.getGrade());
 
         return studentRepo.save(student);
     }
 
     @Override
-    public List<Student> getAllStudent() {
+    public List<StudentNew> getAllStudent() {
         return studentRepo.findAll();
     }
 
-    @Override
-    public List<Student> getStudentByMajor(String major) {
-        return studentRepo.findByMajor(major);
-    }
 
     @Override
-    public Page<Student> getPage(Integer pageNum, Integer pageLimit) {
+    public Page<StudentNew> getPage(Integer pageNum, Integer pageLimit) {
         Pageable pageable = PageRequest.of(pageNum - 1, pageLimit);
         return studentRepo.findAll(pageable);
     }

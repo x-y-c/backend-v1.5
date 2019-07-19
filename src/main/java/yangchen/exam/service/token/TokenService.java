@@ -1,8 +1,8 @@
 package yangchen.exam.service.token;
 
-import yangchen.exam.entity.Student;
+import yangchen.exam.entity.StudentNew;
 
 public interface TokenService {
-    String getToken(Student student);
+    String getToken(StudentNew student);
 
 }
