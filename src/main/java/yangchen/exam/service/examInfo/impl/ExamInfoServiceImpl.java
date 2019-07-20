@@ -1,6 +1,7 @@
 package yangchen.exam.service.examInfo.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.ExamInfo;
 import yangchen.exam.repo.ExamPaperRepo;
@@ -68,17 +69,19 @@ public class ExamInfoServiceImpl implements ExamInfoService {
     }
 
 
+    @Cacheable(value = "examInfo")
     @Override
     public ExamInfo getExamInfoByExaminationId(Integer examinationId) {
         return examInfoRepo.findByExaminationId(examinationId);
     }
-
+@Cacheable(value = "examInfoLists")
     @Override
     public List<ExamInfo> getExamInfoByExamGroupId(Integer examGroupId) {
         List<ExamInfo> examInfoList = examInfoRepo.findByExamGroupId(examGroupId);
         return examInfoList;
     }
 
+    @Cacheable(value = "examInfoList")
     @Override
     public List<ExamInfo> getExamInfoByExamGroup(Integer examGroupId) {
         return examInfoRepo.findByExamGroupId(examGroupId);
