@@ -129,7 +129,7 @@ public class ExaminationServiceImpl implements ExaminationService {
         }
         examGroup.setClassName(gradeStr.toString());
         examGroup.setExamTime(examParam.getTtl());
-        examGroup.setExamDesc(examParam.getTitle());
+        examGroup.setExamDesc(examParam.getExamName());
 
         grades.forEach(s -> {
             List<StudentNew> classMate = studentService.getStudentListByGrade(s);
@@ -179,7 +179,7 @@ public class ExaminationServiceImpl implements ExaminationService {
         //examParam.getTtl() 单位是秒，时间戳的单位是毫秒，所以，取出ttl*1000，转换为ms；
         long endTime = time + examParam.getTtl() * 1000;
         examInfo.setExamEnd(new Timestamp(endTime));//截止时间
-        examInfo.setDesc(examParam.getTitle());//题目
+        examInfo.setDesc(examParam.getExamName());//题目
         ExamInfo examInfo1 = examInfoService.addExamInfo(examInfo);
         return examInfo1 != null;
 
