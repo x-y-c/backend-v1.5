@@ -75,15 +75,16 @@
 | :----: | :----: | :----: |
 | id | int | 主键自增 |
 | CustomBh | varchar | 出题人编号 |
-| IsPrograming | int | 是否是编程题 |
-| Difficulty | int | 难度（5种） |
+| Question | int | 题型 |
 | Stage | int | 阶段(9种) |
-| Description | varchar | 题目具体描述 |
+| Difficulty | int | 难度（5种） |
 | name | varchar | 题目缩略描述 |
+| Description | varchar | 题目具体描述 |
 | SourceCode | varchar | 源代码 |
 | startTag | varchar | 代码填空题起始位置 |
 | endTag | varchar | 代码填空题结束位置 |
 | Answer | varchar |选择题，判断题答案 |
+| Add_time | timestamp | 添加题目的时间 |
 //先说这么多  有些字段还是觉得怪怪的
 
 
