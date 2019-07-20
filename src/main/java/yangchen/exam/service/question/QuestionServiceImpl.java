@@ -19,6 +19,9 @@ public class QuestionServiceImpl implements QuestionService {
     @Autowired
     private questionRepo questionRepo;
 
+
+    @Autowired
+    private QuestionBaseService questionBaseService;
     @Autowired
     private ExaminationService examinationService;
 
@@ -65,8 +68,6 @@ public class QuestionServiceImpl implements QuestionService {
     public Question getQuestionBy(Integer examinationId, Integer index) {
         ExamPaper examinationById = examinationService.getExaminationById(examinationId);
 
-        //??这里有bug
-
         String[] split = examinationById.getTitleId().split(",");
         Optional<Question> byId = questionRepo.findById((Integer.valueOf(split[index])));
         return byId.get();
@@ -79,7 +80,7 @@ public class QuestionServiceImpl implements QuestionService {
         String titleId = exampaperByExamPaper.getTitleId();
         String[] split = titleId.split(",");
         for (String s : split) {
-            Question question = questionRepo.findById(Integer.valueOf(s)).get();
+            Question question = questionBaseService.getQuestionById(Integer.valueOf(s));
             examNameList.add(question.getQuestionName());
         }
         return examNameList;
