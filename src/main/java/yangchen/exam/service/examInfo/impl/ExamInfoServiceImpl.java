@@ -31,25 +31,25 @@ public class ExamInfoServiceImpl implements ExamInfoService {
     }
 
     @Override
-    public List<ExamInfo> getExamInfoByStudentId(Long studentId) {
+    public List<ExamInfo> getExamInfoByStudentId(Integer studentId) {
         List<ExamInfo> byStudentNumber = examInfoRepo.findByStudentNumber(studentId);
         return byStudentNumber;
     }
 
     @Override
-    public List<ExamInfo> getEndedExamInfo(Long studentId, Timestamp timestamp) {
+    public List<ExamInfo> getEndedExamInfo(Integer studentId, Timestamp timestamp) {
         List<ExamInfo> endExam = examInfoRepo.findByStudentNumberAndExamEndBefore(studentId, timestamp);
         return endExam;
     }
 
     @Override
-    public List<ExamInfo> getUnstartExamInfo(Long studentId, Timestamp timestamp) {
+    public List<ExamInfo> getUnstartExamInfo(Integer studentId, Timestamp timestamp) {
         List<ExamInfo> unstartedExam = examInfoRepo.findByStudentNumberAndExamStartAfter(studentId, timestamp);
         return unstartedExam;
     }
 
     @Override
-    public List<ExamInfo> getIngExamInfo(Long studentId, Timestamp timestamp) {
+    public List<ExamInfo> getIngExamInfo(Integer studentId, Timestamp timestamp) {
         List<ExamInfo> doingExam = examInfoRepo.findByStudentNumberAndExamStartBeforeAndExamEndAfter(studentId, timestamp, new Timestamp(System.currentTimeMillis()));
         List<ExamInfo> result = new ArrayList<>(doingExam.size());
         doingExam.forEach(examInfo -> {
@@ -62,7 +62,7 @@ public class ExamInfoServiceImpl implements ExamInfoService {
     }
 
     @Override
-    public List<ExamInfo> getFinishedExamInfo(Long studentId) {
+    public List<ExamInfo> getFinishedExamInfo(Integer studentId) {
         List<ExamInfo> finishedExam = examInfoRepo.getFinishedExam(studentId);
         return finishedExam;
     }

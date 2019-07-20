@@ -32,19 +32,19 @@ public interface ExamInfoService {
      * @return
      */
     //全部
-    List<ExamInfo> getExamInfoByStudentId(Long studentId);
+    List<ExamInfo> getExamInfoByStudentId(Integer studentId);
 
     //已结束
-    List<ExamInfo> getEndedExamInfo(Long studentId, Timestamp timestamp);
+    List<ExamInfo> getEndedExamInfo(Integer studentId, Timestamp timestamp);
 
     //未开始
-    List<ExamInfo> getUnstartExamInfo(Long studentId, Timestamp timestamp);
+    List<ExamInfo> getUnstartExamInfo(Integer studentId, Timestamp timestamp);
 
     //进行中
-    List<ExamInfo> getIngExamInfo(Long studentId, Timestamp timestamp);
+    List<ExamInfo> getIngExamInfo(Integer studentId, Timestamp timestamp);
 
     //已结束
-    List<ExamInfo> getFinishedExamInfo(Long studentId);
+    List<ExamInfo> getFinishedExamInfo(Integer studentId);
 
     ExamInfo getExamInfoByExaminationId(Integer examinationId);
 

@@ -18,18 +18,18 @@ import java.util.List;
 public interface ExaminationService {
 
     //全部考试
-    List<ExaminationDetail> examInfoDetail(Long studentId);
+    List<ExaminationDetail> examInfoDetail(Integer studentId);
 
     //结束的考试
-    List<ExaminationDetail> getEndedExamination(Long studentId);
+    List<ExaminationDetail> getEndedExamination(Integer studentId);
 
     //已完成的考试
-    List<ExaminationDetail> getFinishedExamination(Long studentId);
+    List<ExaminationDetail> getFinishedExamination(Integer studentId);
 
     //未考试
-    List<ExaminationDetail> getUnstartedExamination(Long studentId);
+    List<ExaminationDetail> getUnstartedExamination(Integer studentId);
 
-    List<ExaminationDetail> getIngExamination(Long studentId);
+    List<ExaminationDetail> getIngExamination(Integer studentId);
 
 
 
@@ -76,5 +76,5 @@ public interface ExaminationService {
     ExamPaper getExaminationById(Integer id);
 
 
-    Boolean submitTest(Integer id, Long studentId);
+    Boolean submitTest(Integer id, Integer studentId);
 }

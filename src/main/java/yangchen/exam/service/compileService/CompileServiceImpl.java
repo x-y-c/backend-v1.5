@@ -49,7 +49,7 @@ public class CompileServiceImpl implements CompileService {
     public static Logger LOGGER = LoggerFactory.getLogger(CompileServiceImpl.class);
 
     @Override
-    public CompileFront compileCode(Integer examinationId, Integer index, String src, Long studentId) {
+    public CompileFront compileCode(Integer examinationId, Integer index, String src, Integer studentId) {
 
         double score = 0.0;
         int succCount = 0;

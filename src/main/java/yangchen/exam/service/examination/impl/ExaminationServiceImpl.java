@@ -56,7 +56,7 @@ public class ExaminationServiceImpl implements ExaminationService {
 
 
     @Override
-    public List<ExaminationDetail> examInfoDetail(Long studentId) {
+    public List<ExaminationDetail> examInfoDetail(Integer studentId) {
         List<ExamInfo> examInfoByStudentId = examInfoService.getExamInfoByStudentId(studentId);
         List<ExaminationDetail> examinationDetails = changeExamInfo(examInfoByStudentId);
         return examinationDetails;
@@ -80,7 +80,7 @@ public class ExaminationServiceImpl implements ExaminationService {
     }
 
     @Override
-    public List<ExaminationDetail> getEndedExamination(Long studentId) {
+    public List<ExaminationDetail> getEndedExamination(Integer studentId) {
         Timestamp timestamp1 = new Timestamp(System.currentTimeMillis());
         List<ExamInfo> endedExamInfo = examInfoService.getEndedExamInfo(studentId, timestamp1);
         List<ExaminationDetail> examinationDetails = changeExamInfo(endedExamInfo);
@@ -88,14 +88,14 @@ public class ExaminationServiceImpl implements ExaminationService {
     }
 
     @Override
-    public List<ExaminationDetail> getFinishedExamination(Long studentId) {
+    public List<ExaminationDetail> getFinishedExamination(Integer studentId) {
         List<ExamInfo> finishedExamInfo = examInfoService.getFinishedExamInfo(studentId);
         List<ExaminationDetail> examinationDetails = changeExamInfo(finishedExamInfo);
         return examinationDetails;
     }
 
     @Override
-    public List<ExaminationDetail> getUnstartedExamination(Long studentId) {
+    public List<ExaminationDetail> getUnstartedExamination(Integer studentId) {
         Timestamp current = new Timestamp(System.currentTimeMillis());
         List<ExamInfo> unstartExamInfo = examInfoService.getUnstartExamInfo(studentId, current);
         List<ExaminationDetail> examinationDetails = changeExamInfo(unstartExamInfo);
@@ -103,7 +103,7 @@ public class ExaminationServiceImpl implements ExaminationService {
     }
 
     @Override
-    public List<ExaminationDetail> getIngExamination(Long studentId) {
+    public List<ExaminationDetail> getIngExamination(Integer studentId) {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         List<ExamInfo> IngExamination = examInfoService.getIngExamInfo(studentId, timestamp);
         List<ExaminationDetail> examinationDetails = changeExamInfo(IngExamination);
@@ -233,7 +233,7 @@ public class ExaminationServiceImpl implements ExaminationService {
     }
 
     @Override
-    public Boolean submitTest(Integer id, Long studentId) {
+    public Boolean submitTest(Integer id, Integer studentId) {
         ExamPaper examination = examPaperRepo.findById(id).get();
         examination.setFinished(Boolean.TRUE);
         ExamPaper save = examPaperRepo.save(examination);

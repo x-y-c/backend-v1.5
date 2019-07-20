@@ -36,7 +36,7 @@ public class ScoreServiceImpl implements ScoreService {
     }
 
     @Override
-    public List<Score> findByExaminationAndStudentId(Integer examination, Long studentId) {
+    public List<Score> findByExaminationAndStudentId(Integer examination, Integer studentId) {
         return scoreRepo.findByStudentIdAndExaminationId(studentId, examination);
     }
 
@@ -55,7 +55,7 @@ public class ScoreServiceImpl implements ScoreService {
     }
 
     @Override
-    public List<ScoreDetail> getScoreDetailByStudentId(Long studentId) {
+    public List<ScoreDetail> getScoreDetailByStudentId(Integer studentId) {
         List<ExamInfo> examInfoByStudentId = examInfoService.getExamInfoByStudentId(studentId);
         List<ScoreDetail> result = new ArrayList<>(examInfoByStudentId.size());
         examInfoByStudentId.forEach(examInfo -> {

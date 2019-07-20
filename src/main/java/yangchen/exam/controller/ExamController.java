@@ -42,31 +42,31 @@ public class ExamController {
      * @return
      */
     @RequestMapping(value = "/detail", method = RequestMethod.GET)
-    public JsonResult getExamInfoByStudentId(@RequestParam Long studentId) {
+    public JsonResult getExamInfoByStudentId(@RequestParam Integer studentId) {
         List<ExaminationDetail> examinationDetails = examinationService.examInfoDetail(studentId);
         return JsonResult.succResult(examinationDetails);
     }
 
     @RequestMapping(value = "/finished", method = RequestMethod.GET)
-    public JsonResult getFinishedExam(@RequestParam Long studentId) {
+    public JsonResult getFinishedExam(@RequestParam Integer studentId) {
         List<ExaminationDetail> finishedExamination = examinationService.getFinishedExamination(studentId);
         return JsonResult.succResult(finishedExamination);
     }
 
     @RequestMapping(value = "/unstarted", method = RequestMethod.GET)
-    public JsonResult getUnstartExam(@RequestParam Long studentId) {
+    public JsonResult getUnstartExam(@RequestParam Integer studentId) {
         List<ExaminationDetail> unStartedExamination = examinationService.getUnstartedExamination(studentId);
         return JsonResult.succResult(unStartedExamination);
     }
 
     @RequestMapping(value = "/ended", method = RequestMethod.GET)
-    public JsonResult getEndedExam(@RequestParam Long studentId) {
+    public JsonResult getEndedExam(@RequestParam Integer studentId) {
         List<ExaminationDetail> endedExamination = examinationService.getEndedExamination(studentId);
         return JsonResult.succResult(endedExamination);
     }
 
     @RequestMapping(value = "/ing", method = RequestMethod.GET)
-    public JsonResult getIngExam(@RequestParam Long studentId) {
+    public JsonResult getIngExam(@RequestParam Integer studentId) {
         List<ExaminationDetail> ingExamination = examinationService.getIngExamination(studentId);
         return JsonResult.succResult(ingExamination);
     }
@@ -117,7 +117,7 @@ public class ExamController {
     }
 
     @RequestMapping(value = "/submit", method = RequestMethod.GET)
-    public JsonResult submitTest(@RequestParam Integer id, @RequestParam Long studentId) {
+    public JsonResult submitTest(@RequestParam Integer id, @RequestParam Integer studentId) {
         Boolean aBoolean = examinationService.submitTest(id, studentId);
         return JsonResult.succResult(aBoolean);
     }

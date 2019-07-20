@@ -32,7 +32,7 @@ public class ScoreController {
     private ScoreService scoreService;
 
     @GetMapping(value = "/info")
-    public JsonResult getScoreList(@RequestParam Long studentId) {
+    public JsonResult getScoreList(@RequestParam Integer studentId) {
         List<ScoreDetail> scoreDetailByStudentId = scoreService.getScoreDetailByStudentId(studentId);
         return JsonResult.succResult(scoreDetailByStudentId);
     }

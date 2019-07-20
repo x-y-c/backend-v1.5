@@ -14,7 +14,7 @@ import java.util.List;
 public interface ScoreService {
     Score saveScore(Score score);
 
-    List<Score> findByExaminationAndStudentId(Integer examination, Long studentId);
+    List<Score> findByExaminationAndStudentId(Integer examination, Integer studentId);
 
     Score saveOrUpdate(Score score);
 
@@ -25,7 +25,7 @@ public interface ScoreService {
      * @param studentId
      * @return
      */
-    List<ScoreDetail> getScoreDetailByStudentId(Long studentId);
+    List<ScoreDetail> getScoreDetailByStudentId(Integer studentId);
 
 
     /**

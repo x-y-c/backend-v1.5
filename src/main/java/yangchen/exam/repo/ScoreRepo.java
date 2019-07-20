@@ -18,8 +18,8 @@ public interface ScoreRepo extends JpaRepository<Score, Integer> {
      * @param examinationId
      * @return
      */
-    List<Score> findByStudentIdAndExaminationId(Long studentId, Integer examinationId);
+    List<Score> findByStudentIdAndExaminationId(Integer studentId, Integer examinationId);
 
-    Score findByStudentIdAndExaminationIdAndIndex(Long studentId, Integer examinationId, Integer index);
+    Score findByStudentIdAndExaminationIdAndIndex(Integer studentId, Integer examinationId, Integer index);
 
 }

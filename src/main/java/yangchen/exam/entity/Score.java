@@ -25,7 +25,7 @@ public class Score {
     private Integer id;
 
     @Column(name = "student_id")
-    private Long studentId;
+    private Integer studentId;
 
     @Column(name = "examination_id")
     private Integer examinationId;
