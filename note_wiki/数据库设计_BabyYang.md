@@ -75,7 +75,7 @@
 | :----: | :----: | :----: |
 | id | int | 主键自增 |
 | CustomBh | varchar | 出题人编号 |
-| Question | int | 题型 |
+| QuestionType | int | 题型 |
 | Stage | int | 阶段(9种) |
 | Difficulty | int | 难度（5种） |
 | name | varchar | 题目缩略描述 |
