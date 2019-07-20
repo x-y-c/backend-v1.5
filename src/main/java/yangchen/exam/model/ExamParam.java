@@ -57,9 +57,7 @@ public class ExamParam {
      */
     private List<TwoTuple<String, String>> exam;
     private Timestamp beginTime;
-    private Timestamp endTime;
-    private Long ttl;
-    private ExamType examType;
+    private Integer ttl;
     private List<String> grades;
-    private String title;
+    private String examName;
 }

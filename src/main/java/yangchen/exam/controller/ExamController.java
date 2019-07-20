@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import yangchen.exam.entity.ExamGroup;
+import yangchen.exam.entity.ExamGroupNew;
 import yangchen.exam.model.*;
 import yangchen.exam.service.examInfo.ExamInfoService;
 import yangchen.exam.service.examination.ExamGroupService;
@@ -76,7 +76,7 @@ public class ExamController {
 
     @RequestMapping(value = "/complex", method = RequestMethod.POST)
     public JsonResult createExam(@RequestBody ExamParam examParam) {
-        ExamGroup exam = examinationService.createExam(examParam);
+        ExamGroupNew exam = examinationService.createExam(examParam);
         LOGGER.info(exam.toString());
         return JsonResult.succResult(exam.toString());
     }
@@ -112,7 +112,7 @@ public class ExamController {
 
     @RequestMapping(value = "/examination", method = RequestMethod.GET)
     public JsonResult getExamGroup(Integer id) {
-        List<ExamGroup> allExamGroup = examGroupService.getAllExamGroup(id);
+        List<ExamGroupNew> allExamGroup = examGroupService.getAllExamGroup(id);
         return JsonResult.succResult(allExamGroup);
     }
 

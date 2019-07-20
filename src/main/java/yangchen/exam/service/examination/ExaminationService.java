@@ -1,10 +1,9 @@
 package yangchen.exam.service.examination;
 
-import yangchen.exam.entity.ExamGroup;
+import yangchen.exam.entity.ExamGroupNew;
 import yangchen.exam.entity.ExamPaper;
 import yangchen.exam.model.*;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -35,7 +34,7 @@ public interface ExaminationService {
 
 
 
-    ExamGroup createExam(ExamParam examParam);
+    ExamGroupNew createExam(ExamParam examParam);
 
 
 

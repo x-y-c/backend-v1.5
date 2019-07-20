@@ -19,6 +19,8 @@ public class ExamGroupNew {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+
+
     @Column(name = "exam_description")
     private String examDesc;
 
@@ -34,4 +36,7 @@ public class ExamGroupNew {
 
     @Column(name = "exam_time")
     private Integer examTime;
+
+    @Column(name = "end_time")
+    private Timestamp endTime;
 }

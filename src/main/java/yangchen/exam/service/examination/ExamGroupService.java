@@ -1,6 +1,6 @@
 package yangchen.exam.service.examination;
 
-import yangchen.exam.entity.ExamGroup;
+import yangchen.exam.entity.ExamGroupNew;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import java.util.List;
  * O(∩_∩)O)
  */
 public interface ExamGroupService {
-    ExamGroup addExamGroup(ExamGroup examGroup);
+    ExamGroupNew addExamGroup(ExamGroupNew examGroup);
 
-    List<ExamGroup> getAllExamGroup(Integer id);
+    List<ExamGroupNew> getAllExamGroup(Integer id);
 }

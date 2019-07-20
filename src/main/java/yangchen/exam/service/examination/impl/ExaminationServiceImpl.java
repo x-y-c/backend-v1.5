@@ -111,10 +111,15 @@ public class ExaminationServiceImpl implements ExaminationService {
     }
 
 
-    public ExamGroup createExam(ExamParam examParam) {
-        ExamGroup examGroup = new ExamGroup();
+    public ExamGroupNew createExam(ExamParam examParam) {
+        ExamGroupNew examGroup = new ExamGroupNew();
         examGroup.setBeginTime(examParam.getBeginTime());
-        examGroup.setEndTime(examParam.getEndTime());
+        //这里，考试只需要考试开始时间，在开始时间的基础上加上考试时长，就是结束时间；
+        Timestamp beginTime = examParam.getBeginTime();
+        long time = beginTime.getTime();
+        //examParam.getTtl() 单位是秒，时间戳的单位是毫秒，所以，取出ttl*1000，转换为ms；
+        long endTime = time + examParam.getTtl() * 1000;
+        examGroup.setEndTime(new Timestamp(endTime));
         List<StudentNew> studentList = new ArrayList<>();
         List<String> grades = examParam.getGrades();
         StringBuilder gradeStr = new StringBuilder();
@@ -124,8 +129,7 @@ public class ExaminationServiceImpl implements ExaminationService {
         }
         examGroup.setClassName(gradeStr.toString());
         examGroup.setExamTime(examParam.getTtl());
-        examGroup.setDesc(examParam.getTitle());
-        examGroup.setExamType(examParam.getExamType());
+        examGroup.setExamDesc(examParam.getTitle());
 
         grades.forEach(s -> {
             List<StudentNew> classMate = studentService.getStudentListByGrade(s);
@@ -142,7 +146,7 @@ public class ExaminationServiceImpl implements ExaminationService {
             Boolean aBoolean = examTask(student, questionList, examParam);
         });
 
-        ExamGroup examGroup1 = examGroupService.addExamGroup(examGroup);
+        ExamGroupNew examGroup1 = examGroupService.addExamGroup(examGroup);
         return examGroup1;
     }
 
@@ -159,25 +163,23 @@ public class ExaminationServiceImpl implements ExaminationService {
                 stringBuilder.append(",");
             }
         }
-//        examination.setUsed(Boolean.FALSE);
-//        examination.setActive(Boolean.TRUE);
-//        examination.setTitleId(stringBuilder.toString());
         examPaper.setFinished(Boolean.FALSE);
         examPaper.setTitleId(stringBuilder.toString());
         ExamPaper savedExamPaper = examPaperRepo.save(examPaper);
         ExamInfo examInfo = new ExamInfo();
         examInfo.setStudentName(student.getStudentName());//姓名
         examInfo.setStudentNumber(student.getStudentId());//学号
-        examInfo.setTtl(examParam.getTtl());//时长
+        examInfo.setTtl(Long.valueOf(examParam.getTtl()));//时长
         examInfo.setExaminationId(savedExamPaper.getId());//试卷编号
         examInfo.setExamStart(examParam.getBeginTime());//开始时间
-        examInfo.setExamEnd(examParam.getEndTime());//截止时间
+
+
+        Timestamp beginTime = examParam.getBeginTime();
+        long time = beginTime.getTime();
+        //examParam.getTtl() 单位是秒，时间戳的单位是毫秒，所以，取出ttl*1000，转换为ms；
+        long endTime = time + examParam.getTtl() * 1000;
+        examInfo.setExamEnd(new Timestamp(endTime));//截止时间
         examInfo.setDesc(examParam.getTitle());//题目
-        if (examParam.getExamType().equals(ExamType.execise)) {
-            examInfo.setCategory("练习");
-        } else {
-            examInfo.setCategory("考试");
-        }
         ExamInfo examInfo1 = examInfoService.addExamInfo(examInfo);
         return examInfo1 != null;
 

@@ -1,7 +1,7 @@
 package yangchen.exam.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import yangchen.exam.entity.ExamGroup;
+import yangchen.exam.entity.ExamGroupNew;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
  * @date 2019/5/6 16:09
  * O(∩_∩)O)
  */
-public interface examGroupRepo extends JpaRepository<ExamGroup, Integer> {
+public interface examGroupRepo extends JpaRepository<ExamGroupNew, Integer> {
 
     /**
      * 查找已经结束的考试
@@ -20,7 +20,7 @@ public interface examGroupRepo extends JpaRepository<ExamGroup, Integer> {
      * @param timestamp
      * @return
      */
-    List<ExamGroup> findByEndTimeBefore(Timestamp timestamp);
+    List<ExamGroupNew> findByEndTimeBefore(Timestamp timestamp);
 
     /**
      * 查询未开始的考试
@@ -28,5 +28,5 @@ public interface examGroupRepo extends JpaRepository<ExamGroup, Integer> {
      * @param timestamp
      * @return
      */
-    List<ExamGroup> findByBeginTimeAfter(Timestamp timestamp);
+    List<ExamGroupNew> findByBeginTimeAfter(Timestamp timestamp);
 }
