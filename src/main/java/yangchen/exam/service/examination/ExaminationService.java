@@ -32,14 +32,12 @@ public interface ExaminationService {
     List<ExaminationDetail> getIngExamination(Integer studentId);
 
 
-
-
     ExamGroupNew createExam(ExamParam examParam);
 
 
+    List<ExamPageInfo> getExamPageInfo(Integer examGroupId);
 
-
-
+    ExamPaper getExampaperByExamPaper(Integer examPaperId);
 
     /**
      * 获取已经作答过的考卷

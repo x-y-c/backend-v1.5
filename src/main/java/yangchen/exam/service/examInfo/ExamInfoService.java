@@ -49,6 +49,9 @@ public interface ExamInfoService {
     ExamInfo getExamInfoByExaminationId(Integer examinationId);
 
 
+    List<ExamInfo>getExamInfoByExamGroupId(Integer examGroupId);
+
+
     /**
      * 通过examGroup查询信息；
      *

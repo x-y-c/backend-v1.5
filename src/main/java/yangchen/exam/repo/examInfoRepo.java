@@ -26,4 +26,6 @@ public interface examInfoRepo extends JpaRepository<ExamInfo, Integer> {
             "where examation.used=1 and  student_number=?", nativeQuery = true)
     List<ExamInfo> getFinishedExam(Integer studentId);
 
+    List<ExamInfo> getByExamGroupId(Integer examGroupId);
+
 }

@@ -7,6 +7,7 @@ import yangchen.exam.entity.Question;
 import yangchen.exam.repo.questionRepo;
 import yangchen.exam.service.examination.ExaminationService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,10 +65,23 @@ public class QuestionServiceImpl implements QuestionService {
     public Question getQuestionBy(Integer examinationId, Integer index) {
         ExamPaper examinationById = examinationService.getExaminationById(examinationId);
 
-       //??这里有bug
+        //??这里有bug
 
         String[] split = examinationById.getTitleId().split(",");
         Optional<Question> byId = questionRepo.findById((Integer.valueOf(split[index])));
         return byId.get();
+    }
+
+    @Override
+    public List<String> getQuestionNamesByExamPage(Integer examPageId) {
+        ExamPaper exampaperByExamPaper = examinationService.getExampaperByExamPaper(examPageId);
+        List<String> examNameList = new ArrayList<>();
+        String titleId = exampaperByExamPaper.getTitleId();
+        String[] split = titleId.split(",");
+        for (String s : split) {
+            Question question = questionRepo.findById(Integer.valueOf(s)).get();
+            examNameList.add(question.getQuestionName());
+        }
+        return examNameList;
     }
 }

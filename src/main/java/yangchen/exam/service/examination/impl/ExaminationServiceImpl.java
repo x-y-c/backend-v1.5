@@ -141,17 +141,40 @@ public class ExaminationServiceImpl implements ExaminationService {
             List<Question> result = questionRepo.findByCategoryAndDifficulty(exam.first, exam.second);
             questionList.add(result);
         }
+        ExamGroupNew examGroup1 = examGroupService.addExamGroup(examGroup);
 
         studentList.forEach(student -> {
-            Boolean aBoolean = examTask(student, questionList, examParam);
+            Boolean aBoolean = examTask(student, questionList, examParam, examGroup1.getId());
         });
 
-        ExamGroupNew examGroup1 = examGroupService.addExamGroup(examGroup);
         return examGroup1;
     }
 
+    @Override
+    public List<ExamPageInfo> getExamPageInfo(Integer examGroupId) {
+        List<ExamInfo> examInfoList = examInfoService.getExamInfoByExamGroup(examGroupId);
+        List<ExamPageInfo> examInforesult = new ArrayList<>();
+        for (ExamInfo examInfo : examInfoList) {
+            ExamPageInfo examPageInfo = new ExamPageInfo();
+            StudentNew student = studentService.getStudentByStudentId(examInfo.getStudentNumber());
+            examPageInfo.setStudentGrade(student.getStudentGrade());
+            examPageInfo.setStudentName(student.getStudentName());
+            List<String> questionNamesByExamPages = questionService.getQuestionNamesByExamPage(examInfo.getExaminationId());
+            examPageInfo.setQuestionList(questionNamesByExamPages);
+            examInforesult.add(examPageInfo);
 
-    public Boolean examTask(StudentNew student, List<List<Question>> questionList, ExamParam examParam) {
+        }
+        return examInforesult;
+    }
+
+    @Override
+    public ExamPaper getExampaperByExamPaper(Integer examPaperId) {
+        ExamPaper examPaper = examPaperRepo.findById(examPaperId).get();
+        return examPaper;
+    }
+
+
+    public Boolean examTask(StudentNew student, List<List<Question>> questionList, ExamParam examParam, Integer examPaperId) {
         ExamPaper examPaper = new ExamPaper();
         StringBuilder stringBuilder = new StringBuilder();
         for (List<Question> questions : questionList) {
@@ -171,7 +194,8 @@ public class ExaminationServiceImpl implements ExaminationService {
         examInfo.setStudentNumber(student.getStudentId());//学号
         examInfo.setTtl(Long.valueOf(examParam.getTtl()));//时长
         examInfo.setExaminationId(savedExamPaper.getId());//试卷编号
-        examInfo.setExamStart(examParam.getBeginTime());//开始时间
+        examInfo.setExamStart(examParam.getBeginTime());
+        examInfo.setExamGroupId(examPaperId);
 
 
         Timestamp beginTime = examParam.getBeginTime();

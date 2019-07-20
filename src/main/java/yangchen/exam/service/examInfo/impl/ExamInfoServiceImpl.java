@@ -74,6 +74,12 @@ public class ExamInfoServiceImpl implements ExamInfoService {
     }
 
     @Override
+    public List<ExamInfo> getExamInfoByExamGroupId(Integer examGroupId) {
+        List<ExamInfo> examInfoList = examInfoRepo.findByExamGroupId(examGroupId);
+        return examInfoList;
+    }
+
+    @Override
     public List<ExamInfo> getExamInfoByExamGroup(Integer examGroupId) {
         return examInfoRepo.findByExamGroupId(examGroupId);
     }

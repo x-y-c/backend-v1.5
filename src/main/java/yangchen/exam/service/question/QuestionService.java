@@ -62,4 +62,7 @@ public interface QuestionService {
 
 
     Question getQuestionBy(Integer examinationId, Integer index);
+
+
+    List<String> getQuestionNamesByExamPage(Integer examPageId);
 }

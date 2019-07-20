@@ -37,7 +37,6 @@ public class ExamController {
      * 通过学号查询考试信息；
      * 包括考试题目，时间，等等信息；
      *
-     *
      * @param studentId
      * @return
      */
@@ -72,14 +71,19 @@ public class ExamController {
     }
 
 
-
-
     @RequestMapping(value = "/complex", method = RequestMethod.POST)
     public JsonResult createExam(@RequestBody ExamParam examParam) {
         ExamGroupNew exam = examinationService.createExam(examParam);
         LOGGER.info(exam.toString());
         return JsonResult.succResult(exam.toString());
     }
+
+    @RequestMapping(value = "/examPaperInfo", method = RequestMethod.GET)
+    public JsonResult getExamPaperInfo(@RequestParam Integer examGroupId) {
+        List<ExamPageInfo> examPageInfo = examinationService.getExamPageInfo(examGroupId);
+        return JsonResult.succResult(examPageInfo);
+    }
+
 
     @RequestMapping(value = "/unUsed", method = RequestMethod.GET)
     public JsonResult queryExamUnused() {
