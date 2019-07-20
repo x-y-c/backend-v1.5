@@ -7,8 +7,8 @@
 | exam_description | varchar | 考试名称 |
 | class_name | list\<string\> | 参与考试的班级 |
 | exam_teacher | varchar | 考试出卷的老师 | 
-| begin_date | date | 考试开始的日期 |
-| begin_time | date | 考试开始的时间 | 
+| begin_date | timeStamp | 考试开始的日期 |
+| begin_time | timeStamp | 考试开始的时间 | 
 | exam_time | int | 考试时长(以分为单位) |
 
 ### exam_paper_new
@@ -24,7 +24,6 @@
 | student_id | int | 学生学号 |
 | exam_group_id | int | 考试组号（标记是哪一场考试） |
 | exam_paper_id | int | 考试卷号（标记这个学生的卷子id） |
-| exam_score | int | 考试成绩 |
 
 ### score_new
 | 字段名 | 类型 | 说明 |
@@ -34,7 +33,6 @@
 | exam_paper_id | int | 考试卷号 |
 | question_id | int | 试卷上的第几题 |
 | score | int | 单题成绩 |
-| weigh | int | 单题比重 |
 
 ## 考试提交相关的表
 ### submit_new
@@ -76,6 +74,19 @@
 | 字段名 | 类型 | 说明 |
 | :----: | :----: | :----: |
 | id | int | 主键自增 |
+| CustomBh | varchar | 出题人编号 |
+| QuestionType | int | 题型 |
+| Stage | int | 阶段(9种) |
+| Difficulty | int | 难度（5种） |
+| name | varchar | 题目缩略描述 |
+| Description | varchar | 题目具体描述 |
+| SourceCode | varchar | 源代码 |
+| startTag | varchar | 代码填空题起始位置 |
+| endTag | varchar | 代码填空题结束位置 |
+| Answer | varchar |选择题，判断题答案 |
+| Add_time | timestamp | 添加题目的时间 |
+//先说这么多  有些字段还是觉得怪怪的
+
 
 ### teat_case_new
 | 字段名 | 类型 | 说明 |
