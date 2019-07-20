@@ -5,13 +5,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.sql.Date;
 import java.sql.Timestamp;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Table(name = "exam_group_new")
 public class ExamGroupNew {
 
     @Id
@@ -28,8 +28,6 @@ public class ExamGroupNew {
     @Column(name = "exam_teacher")
     private String examTeacher;
 
-    @Column(name = "begin_date")
-    private Date beginDate;
 
     @Column(name = "begin_time")
     private Timestamp beginTime;

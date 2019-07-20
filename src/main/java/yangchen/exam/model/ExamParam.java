@@ -34,6 +34,26 @@ public class ExamParam {
      * 	"examType":0
      *        }
      *
+     *
+     *
+     *        {
+     *            exam:[],
+     *            title:'',
+     *            grades:[],
+     *            beginTime:'',
+     *            ttl:"",
+     *            examType:1
+     *            }
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
      */
     private List<TwoTuple<String, String>> exam;
     private Timestamp beginTime;
