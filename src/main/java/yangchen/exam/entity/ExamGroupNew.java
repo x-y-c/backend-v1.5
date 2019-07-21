@@ -19,8 +19,6 @@ public class ExamGroupNew {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-
-
     @Column(name = "exam_description")
     private String examDesc;
 

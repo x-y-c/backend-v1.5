@@ -13,4 +13,7 @@ public interface ExamGroupService {
     ExamGroupNew addExamGroup(ExamGroupNew examGroup);
 
     List<ExamGroupNew> getAllExamGroup(Integer id);
+
+
+   List<ExamGroupNew> getExamGroup(Integer examGroupId);
 }

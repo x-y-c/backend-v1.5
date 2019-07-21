@@ -132,4 +132,10 @@ public class ExamController {
         return JsonResult.succResult(ttl);
     }
 
+    @RequestMapping(value = "/groupInfo",method = RequestMethod.GET)
+    public JsonResult getExamGroupInfo(@RequestParam Integer id) {
+        List<ExamGroupNew> examGroup = examGroupService.getExamGroup(id);
+        return JsonResult.succResult(examGroup);
+    }
+
 }

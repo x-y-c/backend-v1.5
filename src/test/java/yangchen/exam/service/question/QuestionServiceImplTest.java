@@ -21,7 +21,7 @@ public class QuestionServiceImplTest {
 
     @Test
     public void test() {
-        List<String> questionNamesByExamPage = questionService.getQuestionNamesByExamPage(32);
-        LOGGER.info(questionNamesByExamPage.toString());
+//        List<String> questionNamesByExamPage = questionService.getQuestionNamesByExamPage(32);
+//        LOGGER.info(questionNamesByExamPage.toString());
     }
 }

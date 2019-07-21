@@ -23,7 +23,7 @@ public class Question {
     /**
      * 自定义标题
      */
-    @Column(name = "questionTitle")
+    @Column(name = "question_title")
     private String questionTitle;
 
     /**

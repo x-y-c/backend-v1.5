@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.ExamPaper;
 import yangchen.exam.entity.Question;
+import yangchen.exam.model.QuestionInfo;
 import yangchen.exam.repo.questionRepo;
 import yangchen.exam.service.examination.ExaminationService;
 
@@ -74,14 +75,17 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public List<String> getQuestionNamesByExamPage(Integer examPageId) {
+    public List<QuestionInfo> getQuestionNamesByExamPage(Integer examPageId) {
         ExamPaper exampaperByExamPaper = examinationService.getExampaperByExamPaper(examPageId);
-        List<String> examNameList = new ArrayList<>();
+        List<QuestionInfo> examNameList = new ArrayList<>();
         String titleId = exampaperByExamPaper.getTitleId();
         String[] split = titleId.split(",");
-        for (String s : split) {
-            Question question = questionBaseService.getQuestionById(Integer.valueOf(s));
-            examNameList.add(question.getQuestionName());
+        for (int i=0;i<split.length;i++) {
+            Question question = questionBaseService.getQuestionById(Integer.valueOf(split[i]));
+            QuestionInfo questionInfo = new QuestionInfo();
+            questionInfo.setLabel("题目"+(i+1));
+            questionInfo.setValue(question.getQuestionName());
+            examNameList.add(questionInfo);
         }
         return examNameList;
     }

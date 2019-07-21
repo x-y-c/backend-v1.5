@@ -7,6 +7,7 @@ import yangchen.exam.repo.examGroupRepo;
 import yangchen.exam.service.examination.ExamGroupService;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,6 +42,14 @@ public class ExamGroupServiceImpl implements ExamGroupService {
             default:
                 return examGroupRepo.findAll();
         }
+
+    }
+
+    @Override
+    public List<ExamGroupNew> getExamGroup(Integer examGroupId) {
+        List<ExamGroupNew> result = new ArrayList<>();
+        result.add(examGroupRepo.findById(examGroupId).get());
+        return result;
 
     }
 
