@@ -13,6 +13,7 @@ import java.util.List;
 @Builder
 public class ExamPageInfo {
 
+    private Integer studentId;
     private String studentName;
     private String studentGrade;
     private List<String> questionList;

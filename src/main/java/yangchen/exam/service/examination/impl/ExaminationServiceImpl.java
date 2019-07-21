@@ -159,6 +159,7 @@ public class ExaminationServiceImpl implements ExaminationService {
             StudentNew student = studentService.getStudentByStudentId(examInfo.getStudentNumber());
             examPageInfo.setStudentGrade(student.getStudentGrade());
             examPageInfo.setStudentName(student.getStudentName());
+            examPageInfo.setStudentId(student.getStudentId());
             List<String> questionNamesByExamPages = questionService.getQuestionNamesByExamPage(examInfo.getExaminationId());
             examPageInfo.setQuestionList(questionNamesByExamPages);
             examInforesult.add(examPageInfo);
