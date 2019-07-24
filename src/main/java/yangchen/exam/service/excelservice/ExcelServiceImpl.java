@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import yangchen.exam.entity.Question;
+import yangchen.exam.entity.QuestionNew;
 import yangchen.exam.model.JsonResult;
 import yangchen.exam.model.StudentInfo;
 import yangchen.exam.service.question.QuestionService;
@@ -89,21 +89,17 @@ public class ExcelServiceImpl {
         List<List<Object>> all = reader.read();
         for (int i = 1; i < 10; i++) {
             List<Object> objects = all.get(i);
-            Question question = new Question();
+            QuestionNew question = new QuestionNew();
             //自定义题号
-            question.setQuestionTitle(objects.get(0).toString());
+            question.setQuestionName(objects.get(0).toString());
             //题目
             question.setQuestionName(objects.get(1).toString());
             //阶段
-            question.setCategory(objects.get(2).toString());
-            //知识点
-            question.setKnowledge(objects.get(3).toString());
+            question.setStage(Integer.valueOf(objects.get(2).toString()));
             //难度
-            question.setDifficulty(objects.get(4).toString());
+            question.setDifficulty(Integer.valueOf(objects.get(4).toString()));
             //题目描述
-            question.setDescription(objects.get(5).toString());
-
-//            questionService.createQuestion(question);
+            question.setQuestionDescription(objects.get(5).toString());
 
             System.out.println(objects.toString());
         }
@@ -115,19 +111,33 @@ public class ExcelServiceImpl {
         List<List<Object>> all = excelReader.read();
         for (int i = 1; i < all.size(); i++) {
             List<Object> objects = all.get(i);
-            Question question = new Question();
-            //自定义题号
-            question.setQuestionTitle(objects.get(0).toString());
+            QuestionNew question = new QuestionNew();
+            //2019/07/24 在 question_new 表中，取消了question_title
             //题目
             question.setQuestionName(objects.get(1).toString());
             //阶段
-            question.setCategory(objects.get(2).toString());
-            //知识点
-            question.setKnowledge(objects.get(3).toString());
+            //todo  阶段前端处理
+            /**
+             * 1000301  --》阶段一
+             * 1000302  --》阶段二
+             * 1000303  --》阶段三
+             * 1000304  --》阶段四
+             * 1000305  --》阶段5
+             * 1000306  --》阶段6
+             * 1000307  --》阶段7
+             * 1000308  --》阶段8
+             * 1000309  --》阶段9
+             *
+             *
+             */
+            question.setStage(Integer.valueOf(objects.get(2).toString()));
+            //question_new 表中取消了 knowledge参数
             //难度
-            question.setDifficulty(objects.get(4).toString());
+
+            //todo 难度的关系对应交给前端处理
+//            question.setDifficulty(objects.get(4).toString());
             //题目描述
-            question.setDescription(objects.get(5).toString());
+            question.setQuestionDescription(objects.get(5).toString());
 
             questionService.createQuestion(question);
         }

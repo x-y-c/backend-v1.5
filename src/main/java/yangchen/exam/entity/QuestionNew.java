@@ -1,4 +1,4 @@
-package yangchen.exam.repo;
+package yangchen.exam.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,7 +1,7 @@
 package yangchen.exam.service.question;
 
-import yangchen.exam.entity.Question;
+import yangchen.exam.entity.QuestionNew;
 
 public interface QuestionBaseService {
-    Question getQuestionById(Integer questionId);
+    QuestionNew getQuestionById(Integer questionId);
 }

@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import yangchen.exam.entity.Question;
+import yangchen.exam.entity.QuestionNew;
 import yangchen.exam.entity.TestCase;
 import yangchen.exam.model.JsonResult;
 import yangchen.exam.service.excelservice.ExcelServiceImpl;
@@ -48,24 +48,18 @@ public class QuestionController {
     private ExcelServiceImpl excelService;
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public JsonResult createQuestion(@RequestBody Question question) {
-        Question questionResult = questionService.createQuestion(question);
+    public JsonResult createQuestion(@RequestBody QuestionNew question) {
+        QuestionNew questionResult = questionService.createQuestion(question);
         LOGGER.info("[{}] create question, the ip = [{}]",
                 UserUtil.getUserId(httpServletRequest), IpUtil.getIpAddr(httpServletRequest));
         return JsonResult.succResult(questionResult);
     }
 
-    @RequestMapping(value = "/category", method = RequestMethod.GET)
-    public JsonResult findQuestionByCategory(@RequestParam String category) {
-        List<Question> questionByCategory = questionService.findQuestionByCategory(category);
-        LOGGER.info("[{}] find question by category, the ip = [{}]",
-                UserUtil.getUserId(httpServletRequest), IpUtil.getIpAddr(httpServletRequest));
-        return JsonResult.succResult(questionByCategory);
-    }
+
 
     @RequestMapping(value = "/questionId", method = RequestMethod.GET)
     public JsonResult findQuestionById(@RequestParam Integer id) {
-        Question questionById = questionService.findQuestionById(id);
+        QuestionNew questionById = questionService.findQuestionById(id);
         LOGGER.info("[{}] find question by Id,the ip = [{}]", UserUtil.getUserId(httpServletRequest), IpUtil.getIpAddr(httpServletRequest));
         return JsonResult.succResult(questionById);
     }
@@ -81,8 +75,8 @@ public class QuestionController {
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public JsonResult updateQuestion(@RequestBody Question question) {
-        Question questionResult = questionService.updateQuestion(question);
+    public JsonResult updateQuestion(@RequestBody QuestionNew question) {
+        QuestionNew questionResult = questionService.updateQuestion(question);
         LOGGER.info("[{} ]update question , the ip = [{}]", UserUtil.getUserId(httpServletRequest), IpUtil.getIpAddr(httpServletRequest));
         return JsonResult.succResult(questionResult);
 
@@ -105,7 +99,7 @@ public class QuestionController {
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public JsonResult getAllQuestion() {
-        List<Question> questionList = questionService.findQuestionAll();
+        List<QuestionNew> questionList = questionService.findQuestionAll();
         return JsonResult.succResult(questionList);
     }
 

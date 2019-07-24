@@ -1,6 +1,6 @@
 package yangchen.exam.service.question;
 
-import yangchen.exam.entity.Question;
+import yangchen.exam.entity.QuestionNew;
 import yangchen.exam.model.QuestionInfo;
 
 import java.util.List;
@@ -17,7 +17,7 @@ public interface QuestionService {
      * @param question
      * @return
      */
-    Question createQuestion(Question question);
+    QuestionNew createQuestion(QuestionNew question);
 
     /**
      * 修改题目
@@ -25,7 +25,7 @@ public interface QuestionService {
      * @param question
      * @return
      */
-    Question updateQuestion(Question question);
+    QuestionNew updateQuestion(QuestionNew question);
 
     /**
      * 删除题目，连同测试用例
@@ -42,16 +42,9 @@ public interface QuestionService {
      * @param id
      * @return
      */
-    Question findQuestionById(Integer id);
+    QuestionNew findQuestionById(Integer id);
 
 
-    /**
-     * 通过条件筛选题目
-     *
-     * @param category
-     * @return
-     */
-    List<Question> findQuestionByCategory(String category);
 
 
     /**
@@ -59,10 +52,10 @@ public interface QuestionService {
      *
      * @return
      */
-    List<Question> findQuestionAll();
+    List<QuestionNew> findQuestionAll();
 
 
-    Question getQuestionBy(Integer examinationId, Integer index);
+    QuestionNew getQuestionBy(Integer examinationId, Integer index);
 
 
     List<QuestionInfo> getQuestionNamesByExamPage(Integer examPageId);

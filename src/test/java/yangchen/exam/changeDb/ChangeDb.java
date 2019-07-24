@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import yangchen.exam.entity.Questions;
-import yangchen.exam.repo.QuestionNew;
+import yangchen.exam.entity.QuestionNew;
 import yangchen.exam.repo.QuestionNewRepo;
 import yangchen.exam.repo.QuestionsRepo;
 

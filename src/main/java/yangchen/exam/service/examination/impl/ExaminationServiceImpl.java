@@ -135,10 +135,12 @@ public class ExaminationServiceImpl implements ExaminationService {
             List<StudentNew> classMate = studentService.getStudentListByGrade(s);
             studentList.addAll(classMate);
         });
-        List<TwoTuple<String, String>> examList = examParam.getExam();
-        List<List<Question>> questionList = new ArrayList<>();
-        for (TwoTuple<String, String> exam : examList) {
-            List<Question> result = questionRepo.findByCategoryAndDifficulty(exam.first, exam.second);
+
+
+        List<TwoTuple<Integer, Integer>> examList = examParam.getExam();
+        List<List<QuestionNew>> questionList = new ArrayList<>();
+        for (TwoTuple<Integer, Integer> exam : examList) {
+            List<QuestionNew> result = questionRepo.findByStageAndDifficulty(exam.first, exam.second);
             questionList.add(result);
         }
         ExamGroupNew examGroup1 = examGroupService.addExamGroup(examGroup);
@@ -175,14 +177,14 @@ public class ExaminationServiceImpl implements ExaminationService {
     }
 
 
-    public Boolean examTask(StudentNew student, List<List<Question>> questionList, ExamParam examParam, Integer examPaperId) {
+    public Boolean examTask(StudentNew student, List<List<QuestionNew>> questionList, ExamParam examParam, Integer examPaperId) {
         ExamPaper examPaper = new ExamPaper();
         StringBuilder stringBuilder = new StringBuilder();
-        for (List<Question> questions : questionList) {
+        for (List<QuestionNew> questions : questionList) {
             Set random = RandomUtil.getRandom(0, questions.size() - 1, 1);
             for (Object o : random) {
                 //获取一道题目
-                Question question = questions.get(Integer.valueOf(String.valueOf(o)));
+                QuestionNew question = questions.get(Integer.valueOf(String.valueOf(o)));
                 stringBuilder.append(question.getId());
                 stringBuilder.append(",");
             }
@@ -229,10 +231,10 @@ public class ExaminationServiceImpl implements ExaminationService {
         LOGGER.info(String.valueOf(split.length));
 //        LOGGER.info(split[0] + "\n" + split[1] + "\n" + split[2] + "\n");
         for (String title : split) {
-            Question questionById = questionService.findQuestionById(Integer.valueOf(title));
+            QuestionNew questionById = questionService.findQuestionById(Integer.valueOf(title));
             if (questionById != null) {
                 QuestionDetail questionDetail = new QuestionDetail();
-                questionDetail.setQuestion(questionById.getDescription());
+                questionDetail.setQuestion(questionById.getQuestionDescription());
                 questionDetail.setTitle(questionById.getQuestionName());
                 result.add(questionDetail);
             }

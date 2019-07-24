@@ -1,16 +1,15 @@
 package yangchen.exam.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import yangchen.exam.entity.Question;
+import yangchen.exam.entity.QuestionNew;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface questionRepo extends JpaRepository<Question, Integer> {
+public interface questionRepo extends JpaRepository<QuestionNew, Integer> {
 
-    Optional<Question> findById(Integer id);
+    Optional<QuestionNew> findById(Integer id);
 
-    List<Question> findByCategory(String category);
 
-    List<Question> findByCategoryAndDifficulty(String category, String difficulty);
+    List<QuestionNew> findByStageAndDifficulty(Integer stage, Integer difficulty);
 }

@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import yangchen.exam.entity.Question;
+import yangchen.exam.entity.QuestionNew;
 import yangchen.exam.entity.Score;
 import yangchen.exam.entity.Submit;
 import yangchen.exam.entity.TestCase;
@@ -54,7 +54,7 @@ public class CompileServiceImpl implements CompileService {
         double score = 0.0;
         int succCount = 0;
 
-        Question questionBy = questionService.getQuestionBy(examinationId, index);
+        QuestionNew questionBy = questionService.getQuestionBy(examinationId, index);
         submitService.addSubmit(Submit.builder().examinationId(examinationId).questionId(questionBy.getId()).src(src).build());
         List<TestCase> TestCaseList = testCaseService.findByQid(questionBy.getId());
         CompileModel compileModel = new CompileModel();

@@ -1,6 +1,7 @@
 package yangchen.exam.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import yangchen.exam.entity.ExamGroupNew;
 
 import java.sql.Timestamp;
@@ -29,4 +30,8 @@ public interface examGroupRepo extends JpaRepository<ExamGroupNew, Integer> {
      * @return
      */
     List<ExamGroupNew> findByBeginTimeAfter(Timestamp timestamp);
+
+
+    @Query(value = "select * from  exam_group_new order by id desc ", nativeQuery = true)
+    List<ExamGroupNew> getAllExamGroupDesc();
 }

@@ -34,7 +34,7 @@ public class ExamGroupServiceImpl implements ExamGroupService {
         }
         switch (id) {
             case 0:
-                return examGroupRepo.findAll();
+                return examGroupRepo.getAllExamGroupDesc();
             case 1:
                 return examGroupRepo.findByEndTimeBefore(new Timestamp(System.currentTimeMillis()));
             case 2:
