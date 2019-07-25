@@ -58,8 +58,8 @@ public class QuestionController {
 
 
     @RequestMapping(value = "/questionId", method = RequestMethod.GET)
-    public JsonResult findQuestionById(@RequestParam Integer id) {
-        QuestionNew questionById = questionService.findQuestionById(id);
+    public JsonResult findQuestionById(@RequestParam String id) {
+        QuestionNew questionById = questionService.findByQuestionBh(id);
         LOGGER.info("[{}] find question by Id,the ip = [{}]", UserUtil.getUserId(httpServletRequest), IpUtil.getIpAddr(httpServletRequest));
         return JsonResult.succResult(questionById);
     }
@@ -106,7 +106,10 @@ public class QuestionController {
     @RequestMapping(value = "/testCase", method = RequestMethod.GET)
     public JsonResult getTestCase(@RequestParam String questionId) {
         List<TestCase> byQid = testCaseService.findByQuestionId(questionId);
+
+
         return JsonResult.succResult(byQid);
+
     }
 
     /**

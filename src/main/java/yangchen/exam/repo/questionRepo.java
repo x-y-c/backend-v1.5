@@ -12,4 +12,6 @@ public interface questionRepo extends JpaRepository<QuestionNew, Integer> {
 
 
     List<QuestionNew> findByStageAndDifficulty(Integer stage, Integer difficulty);
+
+    QuestionNew findByQuestionBh(String questionBh);
 }
