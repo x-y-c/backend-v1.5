@@ -19,8 +19,8 @@ public class TestInfoServiceImpl implements TestInfoService {
     private TestCaseService testCaseService;
 
     @Override
-    public List<TestCase> getTestCaseByQuestionId(Integer id) {
-        List<TestCase> testCaseByQuestionId = testCaseService.findByQid(id);
+    public List<TestCase> getTestCaseByQuestionId(String id) {
+        List<TestCase> testCaseByQuestionId = testCaseService.findByQuestionId(id);
         return testCaseByQuestionId;
     }
 }

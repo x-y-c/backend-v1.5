@@ -5,6 +5,7 @@ import yangchen.exam.entity.TestCase;
 
 import java.util.List;
 
-public interface testCaseRepo extends JpaRepository<TestCase, Integer> {
-    List<TestCase> findByQid(Integer qid);
+public interface testCaseRepo extends JpaRepository<TestCase, String > {
+
+    List<TestCase> findByQuestionId(String questionId);
 }
