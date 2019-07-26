@@ -136,12 +136,11 @@ public class ExamController {
         return JsonResult.succResult(aBoolean);
     }
 
-    @RequestMapping(value = "/examInfo", method = RequestMethod.GET)
+    @RequestMapping(value = {"/",""}, method = RequestMethod.GET)
     public JsonResult getTtl(@RequestParam Integer examinationId) {
         ExamInfo examInfo = examInfoService.getExamInfoByExaminationId(examinationId);
         return JsonResult.succResult(examInfo);
     }
-
     @RequestMapping(value = "/groupInfo",method = RequestMethod.GET)
     public JsonResult getExamGroupInfo(@RequestParam Integer id) {
         List<ExamGroupNew> examGroup = examGroupService.getExamGroup(id);
