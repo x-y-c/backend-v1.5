@@ -3,6 +3,7 @@ package yangchen.exam.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -102,6 +103,13 @@ public class QuestionController {
         List<QuestionNew> questionList = questionService.findQuestionAll();
         return JsonResult.succResult(questionList);
     }
+
+    @RequestMapping(value = "/page",method = RequestMethod.GET)
+    public JsonResult getPagedQuestion(int pageNo,int pageLimit){
+        Page<QuestionNew> pageQuestion = questionService.getPageQuestion(pageNo - 1, pageLimit);
+        return JsonResult.succResult(pageQuestion);
+    }
+
 
     @RequestMapping(value = "/testCase", method = RequestMethod.GET)
     public JsonResult getTestCase(@RequestParam Integer questionId) {

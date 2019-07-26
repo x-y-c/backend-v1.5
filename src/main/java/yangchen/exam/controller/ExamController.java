@@ -1,8 +1,10 @@
 package yangchen.exam.controller;
 
+import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import yangchen.exam.entity.ExamGroupNew;
@@ -118,6 +120,13 @@ public class ExamController {
     public JsonResult getExamGroup(Integer id) {
         List<ExamGroupNew> allExamGroup = examGroupService.getAllExamGroup(id);
         return JsonResult.succResult(allExamGroup);
+    }
+
+    @RequestMapping(value = "/examGroup/page",method = RequestMethod.GET)
+    public JsonResult getPagedExamGroup(int pageNo,int pageLimit){
+        Page<ExamGroupNew> pageExamGroup = examGroupService.getPageExamGroup(pageNo-1, pageLimit);
+        return JsonResult.succResult(pageExamGroup);
+
     }
 
     @RequestMapping(value = "/submit", method = RequestMethod.GET)

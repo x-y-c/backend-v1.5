@@ -1,6 +1,9 @@
 package yangchen.exam.service.question;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.ExamPaper;
 import yangchen.exam.entity.QuestionNew;
@@ -83,5 +86,12 @@ public class QuestionServiceImpl implements QuestionService {
             examNameList.add(questionInfo);
         }
         return examNameList;
+    }
+
+    @Override
+    public Page<QuestionNew> getPageQuestion(Integer pageNo, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo,pageSize);
+        Page<QuestionNew> all = questionRepo.findAll(pageable);
+        return all;
     }
 }

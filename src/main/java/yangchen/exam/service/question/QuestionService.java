@@ -1,5 +1,6 @@
 package yangchen.exam.service.question;
 
+import org.springframework.data.domain.Page;
 import yangchen.exam.entity.QuestionNew;
 import yangchen.exam.model.QuestionInfo;
 
@@ -59,4 +60,6 @@ public interface QuestionService {
 
 
     List<QuestionInfo> getQuestionNamesByExamPage(Integer examPageId);
+
+    Page<QuestionNew> getPageQuestion(Integer pageNo,Integer pageSize);
 }

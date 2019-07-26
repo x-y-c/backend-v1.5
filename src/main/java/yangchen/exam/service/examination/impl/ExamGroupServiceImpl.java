@@ -1,6 +1,10 @@
 package yangchen.exam.service.examination.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.ExamGroupNew;
 import yangchen.exam.repo.examGroupRepo;
@@ -43,6 +47,9 @@ public class ExamGroupServiceImpl implements ExamGroupService {
                 return examGroupRepo.findAll();
         }
 
+
+
+
     }
 
     @Override
@@ -52,6 +59,18 @@ public class ExamGroupServiceImpl implements ExamGroupService {
         return result;
 
     }
+
+    @Override
+    public Page<ExamGroupNew> getPageExamGroup(int currentPage, int pageSize) {
+        Sort sort = new Sort(Sort.Direction.DESC,"id");
+
+        Pageable pageable = PageRequest.of(currentPage,pageSize,sort);
+
+        Page<ExamGroupNew> all = examGroupRepo.findAll(pageable);
+        return all;
+    }
+
+
 
 
 }

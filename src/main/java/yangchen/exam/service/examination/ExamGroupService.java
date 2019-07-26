@@ -1,5 +1,8 @@
 package yangchen.exam.service.examination;
 
+import com.github.pagehelper.PageInfo;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import yangchen.exam.entity.ExamGroupNew;
 
 import java.util.List;
@@ -16,4 +19,6 @@ public interface ExamGroupService {
 
 
    List<ExamGroupNew> getExamGroup(Integer examGroupId);
+
+   Page<ExamGroupNew> getPageExamGroup(int currentPage, int pageSize);
 }
