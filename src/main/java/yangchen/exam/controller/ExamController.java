@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import yangchen.exam.entity.ExamGroupNew;
+import yangchen.exam.entity.ExamInfo;
 import yangchen.exam.model.*;
 import yangchen.exam.service.examInfo.ExamInfoService;
 import yangchen.exam.service.examination.ExamGroupService;
@@ -135,10 +136,10 @@ public class ExamController {
         return JsonResult.succResult(aBoolean);
     }
 
-    @RequestMapping(value = "/ttl", method = RequestMethod.GET)
+    @RequestMapping(value = "/examInfo", method = RequestMethod.GET)
     public JsonResult getTtl(@RequestParam Integer examinationId) {
-        Integer ttl = examInfoService.getTtl(examinationId);
-        return JsonResult.succResult(ttl);
+        ExamInfo examInfo = examInfoService.getExamInfoByExaminationId(examinationId);
+        return JsonResult.succResult(examInfo);
     }
 
     @RequestMapping(value = "/groupInfo",method = RequestMethod.GET)
