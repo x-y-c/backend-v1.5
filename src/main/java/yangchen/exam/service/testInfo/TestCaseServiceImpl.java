@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.TestCase;
 import yangchen.exam.repo.testCaseRepo;
-import yangchen.exam.service.testInfo.TestCaseService;
 
 import java.util.List;
 
@@ -32,8 +31,14 @@ public class TestCaseServiceImpl implements TestCaseService {
         return null;
     }
 
+//
+
     @Override
-    public List<TestCase> findByQid(Integer qid) {
-        return testCaseRepo.findByQid(qid);
+    public List<TestCase> findByQuestionId(String questionId) {
+        return testCaseRepo.findByQuestionId(questionId);
     }
 }
+
+//    public List<TestCase> findByQid(Integer qid) {
+//        return testCaseRepo.findByQid(qid);
+//    }

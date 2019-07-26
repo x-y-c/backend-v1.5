@@ -78,10 +78,10 @@ public class QuestionServiceImpl implements QuestionService {
         List<QuestionInfo> examNameList = new ArrayList<>();
         String titleId = exampaperByExamPaper.getTitleId();
         String[] split = titleId.split(",");
-        for (int i=0;i<split.length;i++) {
+        for (int i = 0; i < split.length; i++) {
             QuestionNew question = questionBaseService.getQuestionById(Integer.valueOf(split[i]));
             QuestionInfo questionInfo = new QuestionInfo();
-            questionInfo.setLabel("题目"+(i+1));
+            questionInfo.setLabel("题目" + (i + 1));
             questionInfo.setValue(question.getQuestionName());
             examNameList.add(questionInfo);
         }
@@ -93,5 +93,11 @@ public class QuestionServiceImpl implements QuestionService {
         Pageable pageable = PageRequest.of(pageNo,pageSize);
         Page<QuestionNew> all = questionRepo.findAll(pageable);
         return all;
+    }
+
+    @Override
+    public QuestionNew findByQuestionBh(String questionBh) {
+        QuestionNew questionResult = questionRepo.findByQuestionBh(questionBh);
+        return questionResult;
     }
 }

@@ -55,8 +55,8 @@ public class CompileServiceImpl implements CompileService {
         int succCount = 0;
 
         QuestionNew questionBy = questionService.getQuestionBy(examinationId, index);
-        submitService.addSubmit(Submit.builder().examinationId(examinationId).questionId(questionBy.getId()).src(src).build());
-        List<TestCase> TestCaseList = testCaseService.findByQid(questionBy.getId());
+        submitService.addSubmit(Submit.builder().examinationId(examinationId).questionId(questionBy.getQuestionBh()).src(src).build());
+        List<TestCase> TestCaseList = testCaseService.findByQuestionId(questionBy.getQuestionBh());
         CompileModel compileModel = new CompileModel();
         List<String> input = new ArrayList<>();
         List<String> output = new ArrayList<>();
@@ -64,8 +64,8 @@ public class CompileServiceImpl implements CompileService {
         //做了判空操作，保证测试用例不存在的情况
         if (TestCaseList != null && TestCaseList.size() > 0) {
             for (TestCase t : TestCaseList) {
-                input.add(t.getInput());
-                output.add(t.getOutput());
+                input.add(t.getTestCaseInput());
+                output.add(t.getTestCaseOutput());
             }
         } else {
             output.add("Hello World\n");
