@@ -16,7 +16,7 @@ public class StageEnumTest {
     @Test
     public void test(){
      System.out.println(StageEnum.getStageCode("阶段一"));
-     System.out.println(StageEnum.getStageName(1000301));
+     System.out.println(StageEnum.getStageName("1000301"));
     }
 
 }

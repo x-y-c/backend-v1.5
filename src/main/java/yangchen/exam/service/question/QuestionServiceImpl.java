@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import yangchen.exam.Enum.StageEnum;
 import yangchen.exam.entity.ExamPaper;
 import yangchen.exam.entity.QuestionNew;
 import yangchen.exam.model.QuestionInfo;
@@ -92,6 +93,10 @@ public class QuestionServiceImpl implements QuestionService {
     public Page<QuestionNew> getPageQuestion(Integer pageNo, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNo,pageSize);
         Page<QuestionNew> all = questionRepo.findAll(pageable);
+       all.forEach(questionNew -> {
+           questionNew.setStage(StageEnum.getStageName(questionNew.getStage()));
+       });
+
         return all;
     }
 

@@ -8,7 +8,7 @@ import org.springframework.cache.annotation.EnableCaching;
  * @author yc
  */
 @SpringBootApplication()
-@EnableCaching
+
 public class ExamApplication {
 
     public static void main(String[] args) {
