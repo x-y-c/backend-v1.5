@@ -105,8 +105,8 @@ public class QuestionController {
     }
 
     @RequestMapping(value = "/page",method = RequestMethod.GET)
-    public JsonResult getPagedQuestion(int pageNo,int pageLimit){
-        Page<QuestionNew> pageQuestion = questionService.getPageQuestion(pageNo - 1, pageLimit);
+    public JsonResult getPagedQuestion(int page,int pageLimit){
+        Page<QuestionNew> pageQuestion = questionService.getPageQuestion(page - 1, pageLimit);
         return JsonResult.succResult(pageQuestion);
     }
 

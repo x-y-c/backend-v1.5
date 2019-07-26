@@ -123,8 +123,8 @@ public class ExamController {
     }
 
     @RequestMapping(value = "/examGroup/page",method = RequestMethod.GET)
-    public JsonResult getPagedExamGroup(int pageNo,int pageLimit){
-        Page<ExamGroupNew> pageExamGroup = examGroupService.getPageExamGroup(pageNo-1, pageLimit);
+    public JsonResult getPagedExamGroup(int page,int pageLimit){
+        Page<ExamGroupNew> pageExamGroup = examGroupService.getPageExamGroup(page-1, pageLimit);
         return JsonResult.succResult(pageExamGroup);
 
     }
