@@ -97,7 +97,7 @@ public class ExcelServiceImpl {
             //阶段
             question.setStage((objects.get(2).toString()));
             //难度
-            question.setDifficulty(Integer.valueOf(objects.get(4).toString()));
+            question.setDifficulty((objects.get(4).toString()));
             //题目描述
             question.setQuestionDescription(objects.get(5).toString());
 
