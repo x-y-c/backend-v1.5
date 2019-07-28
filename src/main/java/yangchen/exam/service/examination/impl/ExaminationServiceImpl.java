@@ -120,7 +120,7 @@ public class ExaminationServiceImpl implements ExaminationService {
         Timestamp beginTime = examParam.getBeginTime();
         long time = beginTime.getTime();
         //examParam.getTtl() 单位是秒，时间戳的单位是毫秒，所以，取出ttl*1000，转换为ms；
-        long endTime = time + examParam.getTtl() * 1000;
+        long endTime = time + examParam.getTtl() * 1000*60;
         examGroup.setEndTime(new Timestamp(endTime));
         List<StudentNew> studentList = new ArrayList<>();
         List<String> grades = examParam.getGrades();
