@@ -1,25 +1,23 @@
-package yangchen.exam.repo;
+package yangchen.exam.service.examination;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-
 @SpringBootTest
 @RunWith(SpringJUnit4ClassRunner.class)
-public class examGroupRepoTest {
-
+public class ExamGroupServiceTest {
     @Autowired
-    private ExamGroupRepo examGroupRepo;
-
-    public static Logger LOGGER = LoggerFactory.getLogger(examGroupRepoTest.class);
+    ExamGroupService examGroupService;
 
     @Test
-    public void test() {
-        LOGGER.info(examGroupRepo.getAllExamGroupDesc().toString());
+    public void test(){
+        examGroupService.deleteExamInfo(19);
     }
+
+
+
+
 }

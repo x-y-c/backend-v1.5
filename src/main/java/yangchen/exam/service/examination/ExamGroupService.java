@@ -17,8 +17,13 @@ public interface ExamGroupService {
 
     List<ExamGroupNew> getAllExamGroup(Integer id);
 
+    List<ExamGroupNew> getExamGroup(Integer examGroupId);
 
-   List<ExamGroupNew> getExamGroup(Integer examGroupId);
+    Page<ExamGroupNew> getPageExamGroup(int currentPage, int pageSize);
 
-   Page<ExamGroupNew> getPageExamGroup(int currentPage, int pageSize);
+    void deleteExamInfo(Integer id);
+
+
+
+
 }

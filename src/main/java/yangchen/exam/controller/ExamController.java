@@ -100,14 +100,12 @@ public class ExamController {
 
     /**
      * 通过试卷id获取
-     *
      * @param id
      * @return
      */
 
     /**
      * 这里再包装一层，判断试卷是否已经进行作答了，如果作答了，返回一个boolean的值；
-     *
      * @param id
      * @return
      */
@@ -121,6 +119,7 @@ public class ExamController {
     public JsonResult getExamGroup(Integer id) {
         List<ExamGroupNew> allExamGroup = examGroupService.getAllExamGroup(id);
         return JsonResult.succResult(allExamGroup);
+        
     }
 
     @RequestMapping(value = "/examGroup/page",method = RequestMethod.GET)
@@ -145,6 +144,14 @@ public class ExamController {
     public JsonResult getExamGroupInfo(@RequestParam Integer id) {
         List<ExamGroupNew> examGroup = examGroupService.getExamGroup(id);
         return JsonResult.succResult(examGroup);
+    }
+
+    @RequestMapping(value = "/delete",method = RequestMethod.GET)
+    public JsonResult deleteExamGroupInfo(@RequestParam Integer id){
+
+        examGroupService.deleteExamInfo(id);
+
+        return JsonResult.succResult(null);
     }
 
 }

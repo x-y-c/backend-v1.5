@@ -14,7 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class examInfoRepoTest {
 
     @Autowired
-    private examInfoRepo examInfoRepo;
+    private ExamInfoRepo examInfoRepo;
     public static Logger LOGGER = LoggerFactory.getLogger(examInfoRepoTest.class);
 
     @Test

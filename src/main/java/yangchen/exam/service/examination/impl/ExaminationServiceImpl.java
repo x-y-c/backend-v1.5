@@ -8,6 +8,7 @@ import yangchen.exam.Enum.DifficultEnum;
 import yangchen.exam.Enum.StageEnum;
 import yangchen.exam.entity.*;
 import yangchen.exam.model.*;
+import yangchen.exam.repo.ExamInfoRepo;
 import yangchen.exam.repo.ExamPaperRepo;
 import yangchen.exam.service.examInfo.ExamInfoService;
 import yangchen.exam.service.examination.ExamGroupService;
@@ -51,7 +52,7 @@ public class ExaminationServiceImpl implements ExaminationService {
     private ScoreService scoreService;
 
     @Autowired
-    private yangchen.exam.repo.examInfoRepo examInfoRepo;
+    private ExamInfoRepo examInfoRepo;
 
     @Autowired
     private yangchen.exam.repo.questionRepo questionRepo;
