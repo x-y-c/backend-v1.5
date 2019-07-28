@@ -211,7 +211,7 @@ public class ExaminationServiceImpl implements ExaminationService {
         Timestamp beginTime = examParam.getBeginTime();
         long time = beginTime.getTime();
         //examParam.getTtl() 单位是秒，时间戳的单位是毫秒，所以，取出ttl*1000，转换为ms；
-        long endTime = time + examParam.getTtl() * 1000;
+        long endTime = time + examParam.getTtl() * 1000*60;
         examInfo.setExamEnd(new Timestamp(endTime));//截止时间
         examInfo.setDesc(examParam.getExamName());//题目
         ExamInfo examInfo1 = examInfoService.addExamInfo(examInfo);

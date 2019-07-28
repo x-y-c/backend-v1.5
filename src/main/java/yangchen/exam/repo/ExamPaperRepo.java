@@ -10,6 +10,8 @@ import java.util.List;
 public interface ExamPaperRepo extends JpaRepository<ExamPaper, Integer> {
     List<ExamPaper> findByFinished(Boolean finished);
 
+
+
     @Transactional
     @Modifying
     void deleteExamPaperByIdIn(List<Integer>id);
