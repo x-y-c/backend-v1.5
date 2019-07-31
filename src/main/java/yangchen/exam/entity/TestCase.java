@@ -12,24 +12,30 @@ import javax.persistence.*;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "test_case")
+@Table(name = "TestCase")
 @Data
 public class TestCase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Integer id;
+    @Column(name = "TestCaseBh")
+    private String testCaseBh;
 
-    @Column(name = "qid")
-    private Integer qid;
+    @Column(name = "ScoreWeight")
+    private Double scoreWeight;
 
-    @Column(name = "input")
-    private String input;
-    
-    @Column(name = "output")
-    private String output;
+    @Column(name = "TestCaseInput")
+    private String testCaseInput;
 
-    @Column(name = "score")
-    private Integer score;
+    @Column(name = "TestCaseOutput")
+    private String testCaseOutput;
+
+    @Column(name = "TestCaseTips")
+    private String testCaseTips;
+
+    @Column(name = "QuestionId")
+    private String questionId;
+
+    @Column(name = "Memo")
+    private String memo;
 }

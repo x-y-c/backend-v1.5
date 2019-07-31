@@ -34,7 +34,7 @@ public class Submit {
     private Long studentId;
 
     @Column(name = "question_id")
-    private Integer questionId;
+    private String questionId;
 
     @Column(name = "examination_id")
     private Integer examinationId;

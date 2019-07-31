@@ -1,9 +1,15 @@
 package yangchen.exam.service.examination.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.ExamGroupNew;
-import yangchen.exam.repo.examGroupRepo;
+import yangchen.exam.repo.ExamGroupRepo;
+import yangchen.exam.repo.ExamInfoRepo;
+import yangchen.exam.repo.ExamPaperRepo;
 import yangchen.exam.service.examination.ExamGroupService;
 
 import java.sql.Timestamp;
@@ -20,7 +26,13 @@ public class ExamGroupServiceImpl implements ExamGroupService {
 
 
     @Autowired
-    private examGroupRepo examGroupRepo;
+    private ExamGroupRepo examGroupRepo;
+
+    @Autowired
+    private ExamInfoRepo examInfoRepo;
+
+    @Autowired
+    private ExamPaperRepo examPaperRepo;
 
     @Override
     public ExamGroupNew addExamGroup(ExamGroupNew examGroup) {
@@ -43,6 +55,9 @@ public class ExamGroupServiceImpl implements ExamGroupService {
                 return examGroupRepo.findAll();
         }
 
+
+
+
     }
 
     @Override
@@ -50,6 +65,28 @@ public class ExamGroupServiceImpl implements ExamGroupService {
         List<ExamGroupNew> result = new ArrayList<>();
         result.add(examGroupRepo.findById(examGroupId).get());
         return result;
+
+    }
+
+    @Override
+    public Page<ExamGroupNew> getPageExamGroup(int currentPage, int pageSize) {
+        Sort sort = new Sort(Sort.Direction.DESC,"id");
+
+        Pageable pageable = PageRequest.of(currentPage,pageSize,sort);
+
+        Page<ExamGroupNew> all = examGroupRepo.findAll(pageable);
+        return all;
+    }
+
+    @Override
+    public void deleteExamInfo(Integer id) {
+
+
+        List<Integer> examPapers = examInfoRepo.searchExamPaper(id);
+        examInfoRepo.deleteExamInfoByExamGroupId(id);
+        examGroupRepo.deleteExamGroupNewById(id);
+        examPaperRepo.deleteExamPaperByIdIn(examPapers);
+
 
     }
 

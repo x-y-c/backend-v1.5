@@ -95,9 +95,9 @@ public class ExcelServiceImpl {
             //题目
             question.setQuestionName(objects.get(1).toString());
             //阶段
-            question.setStage(Integer.valueOf(objects.get(2).toString()));
+            question.setStage((objects.get(2).toString()));
             //难度
-            question.setDifficulty(Integer.valueOf(objects.get(4).toString()));
+            question.setDifficulty((objects.get(4).toString()));
             //题目描述
             question.setQuestionDescription(objects.get(5).toString());
 
@@ -130,7 +130,7 @@ public class ExcelServiceImpl {
              *
              *
              */
-            question.setStage(Integer.valueOf(objects.get(2).toString()));
+            question.setStage((objects.get(2).toString()));
             //question_new 表中取消了 knowledge参数
             //难度
 

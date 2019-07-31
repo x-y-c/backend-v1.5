@@ -3,6 +3,7 @@ package yangchen.exam.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -58,8 +59,8 @@ public class QuestionController {
 
 
     @RequestMapping(value = "/questionId", method = RequestMethod.GET)
-    public JsonResult findQuestionById(@RequestParam Integer id) {
-        QuestionNew questionById = questionService.findQuestionById(id);
+    public JsonResult findQuestionById(@RequestParam String id) {
+        QuestionNew questionById = questionService.findByQuestionBh(id);
         LOGGER.info("[{}] find question by Id,the ip = [{}]", UserUtil.getUserId(httpServletRequest), IpUtil.getIpAddr(httpServletRequest));
         return JsonResult.succResult(questionById);
     }
@@ -90,7 +91,7 @@ public class QuestionController {
      * @return
      */
     @RequestMapping(value = "/testInfo", method = RequestMethod.GET)
-    public JsonResult getTestCaseByQuestionId(@RequestParam Integer id) {
+    public JsonResult getTestCaseByQuestionId(@RequestParam String id) {
         List<TestCase> testCaseByQuestionId = testInfoService.getTestCaseByQuestionId(id);
         LOGGER.info("[{}] get testCaseBy questionId, the ip = [{}]", UserUtil.getUserId(httpServletRequest), IpUtil.getIpAddr(httpServletRequest));
         return JsonResult.succResult(testCaseByQuestionId);
@@ -103,10 +104,20 @@ public class QuestionController {
         return JsonResult.succResult(questionList);
     }
 
+    @RequestMapping(value = "/page",method = RequestMethod.GET)
+    public JsonResult getPagedQuestion(int page,int pageLimit){
+        Page<QuestionNew> pageQuestion = questionService.getPageQuestion(page - 1, pageLimit);
+        return JsonResult.succResult(pageQuestion);
+    }
+
+
     @RequestMapping(value = "/testCase", method = RequestMethod.GET)
-    public JsonResult getTestCase(@RequestParam Integer questionId) {
-        List<TestCase> byQid = testCaseService.findByQid(questionId);
+    public JsonResult getTestCase(@RequestParam String questionId) {
+        List<TestCase> byQid = testCaseService.findByQuestionId(questionId);
+
+
         return JsonResult.succResult(byQid);
+
     }
 
     /**

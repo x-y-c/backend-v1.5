@@ -19,5 +19,9 @@ public interface TestCaseService {
     TestCase updateTestCaseById(Integer testCaseId);
 
     //通过题目查找测试用例
-    List<TestCase> findByQid(Integer qid);
+//    List<TestCase> findByQid(Integer qid);
+
+
+    //通过questionBh查询测试用例；
+    List<TestCase> findByQuestionId(String questionId);
 }

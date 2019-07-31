@@ -1,11 +1,14 @@
 package yangchen.exam.controller;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import yangchen.exam.entity.ExamGroupNew;
+import yangchen.exam.entity.ExamInfo;
 import yangchen.exam.model.*;
 import yangchen.exam.service.examInfo.ExamInfoService;
 import yangchen.exam.service.examination.ExamGroupService;
@@ -43,8 +46,11 @@ public class ExamController {
     @RequestMapping(value = "/detail", method = RequestMethod.GET)
     public JsonResult getExamInfoByStudentId(@RequestParam Integer studentId) {
         List<ExaminationDetail> examinationDetails = examinationService.examInfoDetail(studentId);
+
+
         return JsonResult.succResult(examinationDetails);
     }
+
 
     @RequestMapping(value = "/finished", method = RequestMethod.GET)
     public JsonResult getFinishedExam(@RequestParam Integer studentId) {
@@ -97,14 +103,12 @@ public class ExamController {
 
     /**
      * 通过试卷id获取
-     *
      * @param id
      * @return
      */
 
     /**
      * 这里再包装一层，判断试卷是否已经进行作答了，如果作答了，返回一个boolean的值；
-     *
      * @param id
      * @return
      */
@@ -118,6 +122,14 @@ public class ExamController {
     public JsonResult getExamGroup(Integer id) {
         List<ExamGroupNew> allExamGroup = examGroupService.getAllExamGroup(id);
         return JsonResult.succResult(allExamGroup);
+        
+    }
+
+    @RequestMapping(value = "/examGroup/page",method = RequestMethod.GET)
+    public JsonResult getPagedExamGroup(int page,int pageLimit){
+        Page<ExamGroupNew> pageExamGroup = examGroupService.getPageExamGroup(page-1, pageLimit);
+        return JsonResult.succResult(pageExamGroup);
+
     }
 
     @RequestMapping(value = "/submit", method = RequestMethod.GET)
@@ -126,16 +138,23 @@ public class ExamController {
         return JsonResult.succResult(aBoolean);
     }
 
-    @RequestMapping(value = "/ttl", method = RequestMethod.GET)
+    @RequestMapping(value = {"/",""}, method = RequestMethod.GET)
     public JsonResult getTtl(@RequestParam Integer examinationId) {
-        Integer ttl = examInfoService.getTtl(examinationId);
-        return JsonResult.succResult(ttl);
+        ExamInfo examInfo = examInfoService.getExamInfoByExaminationId(examinationId);
+        return JsonResult.succResult(examInfo);
     }
-
     @RequestMapping(value = "/groupInfo",method = RequestMethod.GET)
     public JsonResult getExamGroupInfo(@RequestParam Integer id) {
         List<ExamGroupNew> examGroup = examGroupService.getExamGroup(id);
         return JsonResult.succResult(examGroup);
+    }
+
+    @RequestMapping(value = "/delete",method = RequestMethod.GET)
+    public JsonResult deleteExamGroupInfo(@RequestParam Integer id){
+
+        examGroupService.deleteExamInfo(id);
+
+        return JsonResult.succResult(null);
     }
 
 }

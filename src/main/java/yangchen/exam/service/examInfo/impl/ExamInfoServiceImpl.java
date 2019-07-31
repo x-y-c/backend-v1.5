@@ -5,7 +5,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.ExamInfo;
 import yangchen.exam.repo.ExamPaperRepo;
-import yangchen.exam.repo.examInfoRepo;
+import yangchen.exam.repo.ExamInfoRepo;
 import yangchen.exam.service.examInfo.ExamInfoService;
 
 import java.sql.Timestamp;
@@ -21,7 +21,7 @@ import java.util.List;
 public class ExamInfoServiceImpl implements ExamInfoService {
 
     @Autowired
-    private examInfoRepo examInfoRepo;
+    private ExamInfoRepo examInfoRepo;
 
     @Autowired
     private ExamPaperRepo examPaperRepo;

@@ -4,8 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import yangchen.exam.Enum.DifficultEnum;
+import yangchen.exam.Enum.StageEnum;
 import yangchen.exam.entity.*;
 import yangchen.exam.model.*;
+import yangchen.exam.repo.ExamInfoRepo;
 import yangchen.exam.repo.ExamPaperRepo;
 import yangchen.exam.service.examInfo.ExamInfoService;
 import yangchen.exam.service.examination.ExamGroupService;
@@ -49,7 +52,7 @@ public class ExaminationServiceImpl implements ExaminationService {
     private ScoreService scoreService;
 
     @Autowired
-    private yangchen.exam.repo.examInfoRepo examInfoRepo;
+    private ExamInfoRepo examInfoRepo;
 
     @Autowired
     private yangchen.exam.repo.questionRepo questionRepo;
@@ -118,7 +121,7 @@ public class ExaminationServiceImpl implements ExaminationService {
         Timestamp beginTime = examParam.getBeginTime();
         long time = beginTime.getTime();
         //examParam.getTtl() 单位是秒，时间戳的单位是毫秒，所以，取出ttl*1000，转换为ms；
-        long endTime = time + examParam.getTtl() * 1000;
+        long endTime = time + examParam.getTtl() * 1000*60;
         examGroup.setEndTime(new Timestamp(endTime));
         List<StudentNew> studentList = new ArrayList<>();
         List<String> grades = examParam.getGrades();
@@ -137,9 +140,13 @@ public class ExaminationServiceImpl implements ExaminationService {
         });
 
 
-        List<TwoTuple<Integer, Integer>> examList = examParam.getExam();
+        List<TwoTuple<String, String>> examList = examParam.getExam();
+        examList.forEach(examStageAndDiff->{
+            examStageAndDiff.setFirst(StageEnum.getStageCode(examStageAndDiff.getFirst()));
+            examStageAndDiff.setSecond(DifficultEnum.getDifficultCode(examStageAndDiff.getSecond()));
+        });
         List<List<QuestionNew>> questionList = new ArrayList<>();
-        for (TwoTuple<Integer, Integer> exam : examList) {
+        for (TwoTuple<String, String> exam : examList) {
             List<QuestionNew> result = questionRepo.findByStageAndDifficulty(exam.first, exam.second);
             questionList.add(result);
         }
@@ -204,7 +211,7 @@ public class ExaminationServiceImpl implements ExaminationService {
         Timestamp beginTime = examParam.getBeginTime();
         long time = beginTime.getTime();
         //examParam.getTtl() 单位是秒，时间戳的单位是毫秒，所以，取出ttl*1000，转换为ms；
-        long endTime = time + examParam.getTtl() * 1000;
+        long endTime = time + examParam.getTtl() * 1000*60;
         examInfo.setExamEnd(new Timestamp(endTime));//截止时间
         examInfo.setDesc(examParam.getExamName());//题目
         ExamInfo examInfo1 = examInfoService.addExamInfo(examInfo);

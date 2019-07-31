@@ -13,7 +13,6 @@ import yangchen.exam.entity.TestCase;
 import yangchen.exam.model.CompileFront;
 import yangchen.exam.model.CompileModel;
 import yangchen.exam.model.CompileResult;
-import yangchen.exam.model.Result;
 import yangchen.exam.service.http.IOkhttpService;
 import yangchen.exam.service.question.QuestionService;
 import yangchen.exam.service.score.ScoreService;
@@ -55,8 +54,8 @@ public class CompileServiceImpl implements CompileService {
         int succCount = 0;
 
         QuestionNew questionBy = questionService.getQuestionBy(examinationId, index);
-        submitService.addSubmit(Submit.builder().examinationId(examinationId).questionId(questionBy.getId()).src(src).build());
-        List<TestCase> TestCaseList = testCaseService.findByQid(questionBy.getId());
+        submitService.addSubmit(Submit.builder().examinationId(examinationId).questionId(questionBy.getQuestionBh()).src(src).build());
+        List<TestCase> TestCaseList = testCaseService.findByQuestionId(questionBy.getQuestionBh());
         CompileModel compileModel = new CompileModel();
         List<String> input = new ArrayList<>();
         List<String> output = new ArrayList<>();
@@ -64,8 +63,8 @@ public class CompileServiceImpl implements CompileService {
         //做了判空操作，保证测试用例不存在的情况
         if (TestCaseList != null && TestCaseList.size() > 0) {
             for (TestCase t : TestCaseList) {
-                input.add(t.getInput());
-                output.add(t.getOutput());
+                input.add(t.getTestCaseInput());
+                output.add(t.getTestCaseOutput());
             }
         } else {
             output.add("Hello World\n");
@@ -87,18 +86,19 @@ public class CompileServiceImpl implements CompileService {
         LOGGER.info(jsonResult);
         CompileResult compileResult = gson.fromJson(jsonResult, CompileResult.class);
         if (compileResult.getResult() != null) {
-            for (Result result : compileResult.getResult()) {
-                if (result.getResult().equals("0")) {
-                    succCount = succCount + 1;
+//            for (Result result : compileResult.getResult()) {
+            for (int i = 0; i < compileResult.getResult().size(); i++) {
+
+                if (compileResult.getResult().get(i).getResult().equals("0") || compileResult.getResult().get(i).getResult().equals("1")) {
+                    score = TestCaseList.get(i).getScoreWeight() + score;
                 }
             }
-            score = (double) succCount / compileResult.getResult().size();
+
         }
 
         Score score1 = new Score();
         score1.setExaminationId(examinationId);
         score1.setStudentId(studentId);
-        score = score * 100;
         score1.setScore((int) Math.round(score));
         score1.setIndex(index);
 //        score1.setSubmitTime(new Timestamp(System.currentTimeMillis()));

@@ -18,8 +18,8 @@ public class QuestionNew {
     private Integer id;
     private String customBh;
     private Integer questionType;
-    private Integer stage;
-    private Integer difficulty;
+    private String stage;
+    private String difficulty;
     @Column(name = "question_name")
     private String questionName;
     @Column(name = "question_description")
