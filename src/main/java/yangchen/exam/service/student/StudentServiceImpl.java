@@ -84,11 +84,12 @@ public class StudentServiceImpl implements studentService {
         student.setStudentName(studentInfo.getName());
         student.setStudentId(studentInfo.getStudentId());
         student.setPassword("123456");
-
         student.setStudentGrade(studentInfo.getGrade());
-
         return studentRepo.save(student);
     }
+
+
+
 
     @Override
     public List<StudentNew> getAllStudent() {

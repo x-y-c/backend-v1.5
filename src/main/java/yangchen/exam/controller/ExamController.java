@@ -46,8 +46,11 @@ public class ExamController {
     @RequestMapping(value = "/detail", method = RequestMethod.GET)
     public JsonResult getExamInfoByStudentId(@RequestParam Integer studentId) {
         List<ExaminationDetail> examinationDetails = examinationService.examInfoDetail(studentId);
+
+
         return JsonResult.succResult(examinationDetails);
     }
+
 
     @RequestMapping(value = "/finished", method = RequestMethod.GET)
     public JsonResult getFinishedExam(@RequestParam Integer studentId) {
