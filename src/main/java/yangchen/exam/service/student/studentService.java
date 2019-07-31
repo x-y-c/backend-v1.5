@@ -2,6 +2,7 @@ package yangchen.exam.service.student;
 
 import org.springframework.data.domain.Page;
 import yangchen.exam.entity.StudentNew;
+import yangchen.exam.model.JsonResult;
 import yangchen.exam.model.StudentInfo;
 
 import java.util.List;
@@ -38,7 +39,7 @@ public interface studentService {
 
     StudentNew addStudent(StudentInfo studentInfo);
 
-    StudentNew changePassword(Integer studentId, String oldpassword, String password);
+    JsonResult changePassword(Integer studentId, String oldpassword, String password);
 
     /**
      * 获取全部学生信息

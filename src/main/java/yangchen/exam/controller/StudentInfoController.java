@@ -78,12 +78,8 @@ public class StudentInfoController {
     @RequestMapping(value = "/password", method = RequestMethod.POST)
     public JsonResult updatePassword(@RequestParam Integer studentId, @RequestParam String oldpassword, @RequestParam String password) {
         LOGGER.info("[{}] change password", UserUtil.getUserId(request));
-        StudentNew student = studentService.changePassword(studentId, oldpassword, password);
-        if (student != null) {
-            return JsonResult.succResult(student);
-        } else {
-            return JsonResult.errorResult(ResultCode.USER_NOT_EXIST, "用户不存在", null);
-        }
+       return studentService.changePassword(studentId, oldpassword, password);
+
     }
 
     @RequestMapping(value = "/info", method = RequestMethod.GET)

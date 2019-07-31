@@ -7,6 +7,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.StudentNew;
+import yangchen.exam.model.JsonResult;
+import yangchen.exam.model.ResultCode;
 import yangchen.exam.model.StudentInfo;
 import yangchen.exam.repo.studentRepo;
 
@@ -20,7 +22,7 @@ public class StudentServiceImpl implements studentService {
     @Autowired
     private studentRepo studentRepo;
 
-@Cacheable(value = "student")
+    @Cacheable(value = "student")
     @Override
     public StudentNew getStudentByStudentId(Integer studentId) {
         return studentRepo.findByStudentId(studentId);
@@ -36,19 +38,19 @@ public class StudentServiceImpl implements studentService {
         return studentRepo.save(student);
     }
 
-    public StudentNew changePassword(Integer studentId, String oldpasswprd, String password) {
+    public JsonResult changePassword(Integer studentId, String oldpassword, String password) {
         StudentNew byStudentId = studentRepo.findByStudentId(studentId);
         if (byStudentId != null) {
-            if (byStudentId.getPassword().equals(oldpasswprd)) {
+            if (byStudentId.getPassword().equals(oldpassword)) {
                 byStudentId.setPassword(password);
                 StudentNew save = studentRepo.save(byStudentId);
-                return save;
+                return JsonResult.succResult(null);
             } else {
-                return null;
+                return JsonResult.errorResult(ResultCode.WRONG_PASSWORD, "旧密码错误", null);
             }
 
         } else {
-            return null;
+            return JsonResult.errorResult(ResultCode.USER_NOT_EXIST, "用户不存在", null);
         }
     }
 
