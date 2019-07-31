@@ -33,7 +33,7 @@ public class ExamInfoServiceImpl implements ExamInfoService {
 
     @Override
     public List<ExamInfo> getExamInfoByStudentId(Integer studentId) {
-        List<ExamInfo> byStudentNumber = examInfoRepo.findByStudentNumber(studentId);
+        List<ExamInfo> byStudentNumber = examInfoRepo.getExamGroup(studentId);
         return byStudentNumber;
     }
 

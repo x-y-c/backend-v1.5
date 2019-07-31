@@ -19,7 +19,7 @@ public class examInfoRepoTest {
 
     @Test
     public void test() {
-     LOGGER.info(   examInfoRepo.getByExamGroupId(16).toString());
+     LOGGER.info(   examInfoRepo.getExamGroup(2015011446).toString());
 
     }
 

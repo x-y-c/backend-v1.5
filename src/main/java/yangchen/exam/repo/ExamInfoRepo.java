@@ -14,7 +14,7 @@ public interface ExamInfoRepo extends JpaRepository<ExamInfo, Integer> {
 
     List<ExamInfo> findByStudentNumber(Integer studentId);
 
-    @Query(value = "select * from  exam_info where studentNumber = ? order by id desc ",nativeQuery = true)
+    @Query(value = "select * from  exam_info where student_number = ? order by id desc ",nativeQuery = true)
     List<ExamInfo> getExamGroup(Integer studentId);
 
     ExamInfo findByExaminationId(Integer examinationId);
