@@ -31,4 +31,8 @@ public class QuestionNew {
     @Column(name = "add_time")
     private Timestamp addTime;
     private String questionBh;
+
+    @Column(name = "question_details")
+    private String questionDetails;
+
 }
