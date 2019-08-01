@@ -241,7 +241,7 @@ public class ExaminationServiceImpl implements ExaminationService {
             QuestionNew questionById = questionService.findQuestionById(Integer.valueOf(title));
             if (questionById != null) {
                 QuestionDetail questionDetail = new QuestionDetail();
-                questionDetail.setQuestion(questionById.getQuestionDescription());
+                questionDetail.setQuestion(questionById.getQuestionDetails());
                 questionDetail.setTitle(questionById.getQuestionName());
                 result.add(questionDetail);
             }
