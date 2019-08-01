@@ -52,11 +52,11 @@ public class ExamController {
     }
 
 
-    @RequestMapping(value = "/finished", method = RequestMethod.GET)
-    public JsonResult getFinishedExam(@RequestParam Integer studentId) {
-        List<ExaminationDetail> finishedExamination = examinationService.getFinishedExamination(studentId);
-        return JsonResult.succResult(finishedExamination);
-    }
+//    @RequestMapping(value = "/finished", method = RequestMethod.GET)
+//    public JsonResult getFinishedExam(@RequestParam Integer studentId) {
+//        List<ExaminationDetail> finishedExamination = examinationService.getFinishedExamination(studentId);
+//        return JsonResult.succResult(finishedExamination);
+//    }
 
     @RequestMapping(value = "/unstarted", method = RequestMethod.GET)
     public JsonResult getUnstartExam(@RequestParam Integer studentId) {

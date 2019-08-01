@@ -90,12 +90,12 @@ public class ExaminationServiceImpl implements ExaminationService {
         return examinationDetails;
     }
 
-    @Override
-    public List<ExaminationDetail> getFinishedExamination(Integer studentId) {
-        List<ExamInfo> finishedExamInfo = examInfoService.getFinishedExamInfo(studentId);
-        List<ExaminationDetail> examinationDetails = changeExamInfo(finishedExamInfo);
-        return examinationDetails;
-    }
+//    @Override
+//    public List<ExaminationDetail> getFinishedExamination(Integer studentId) {
+//        List<ExamInfo> finishedExamInfo = examInfoService.getFinishedExamInfo(studentId);
+//        List<ExaminationDetail> examinationDetails = changeExamInfo(finishedExamInfo);
+//        return examinationDetails;
+//    }
 
     @Override
     public List<ExaminationDetail> getUnstartedExamination(Integer studentId) {

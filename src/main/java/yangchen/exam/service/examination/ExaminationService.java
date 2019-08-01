@@ -23,8 +23,8 @@ public interface ExaminationService {
     //结束的考试
     List<ExaminationDetail> getEndedExamination(Integer studentId);
 
-    //已完成的考试
-    List<ExaminationDetail> getFinishedExamination(Integer studentId);
+//    //已完成的考试
+//    List<ExaminationDetail> getFinishedExamination(Integer studentId);
 
     //未考试
     List<ExaminationDetail> getUnstartedExamination(Integer studentId);

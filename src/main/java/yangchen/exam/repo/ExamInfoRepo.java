@@ -28,10 +28,6 @@ public interface ExamInfoRepo extends JpaRepository<ExamInfo, Integer> {
 
     List<ExamInfo> findByStudentNumberAndExamEndBefore(Integer studentId, Timestamp timestamp);
 
-    @Query(value = "select  * from exam_info join examation on exam_info.examination_id=examation.id\n" +
-            "where examation.used=1 and  student_number=?", nativeQuery = true)
-    List<ExamInfo> getFinishedExam(Integer studentId);
-
     List<ExamInfo> getByExamGroupId(Integer examGroupId);
 
     @Transactional

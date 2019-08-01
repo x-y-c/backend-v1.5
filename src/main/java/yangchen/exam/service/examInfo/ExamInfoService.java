@@ -43,8 +43,8 @@ public interface ExamInfoService {
     //进行中
     List<ExamInfo> getIngExamInfo(Integer studentId, Timestamp timestamp);
 
-    //已结束
-    List<ExamInfo> getFinishedExamInfo(Integer studentId);
+//    //已结束
+//    List<ExamInfo> getFinishedExamInfo(Integer studentId);
 
     ExamInfo getExamInfoByExaminationId(Integer examinationId);
 

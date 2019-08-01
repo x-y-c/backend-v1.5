@@ -62,11 +62,11 @@ public class ExamInfoServiceImpl implements ExamInfoService {
         return result;
     }
 
-    @Override
-    public List<ExamInfo> getFinishedExamInfo(Integer studentId) {
-        List<ExamInfo> finishedExam = examInfoRepo.getFinishedExam(studentId);
-        return finishedExam;
-    }
+//    @Override
+//    public List<ExamInfo> getFinishedExamInfo(Integer studentId) {
+//        List<ExamInfo> finishedExam = examInfoRepo.getFinishedExam(studentId);
+//        return finishedExam;
+//    }
 
 
     @Cacheable(value = "examInfo")
