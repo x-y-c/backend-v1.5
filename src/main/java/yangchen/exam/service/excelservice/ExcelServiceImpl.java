@@ -13,14 +13,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.QuestionNew;
+import yangchen.exam.entity.StudentNew;
 import yangchen.exam.model.JsonResult;
-import yangchen.exam.model.StudentInfo;
 import yangchen.exam.service.question.QuestionService;
 import yangchen.exam.service.student.studentService;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -69,19 +70,18 @@ public class ExcelServiceImpl {
 
     public JsonResult huExcel(InputStream inputStream) {
         ExcelReader reader = ExcelUtil.getReader(inputStream);
+        List<StudentNew> studentList = new ArrayList<>();
         List<List<Object>> all = reader.read();
         for (int i = 1; i < all.size(); i++) {
             List<Object> objects = all.get(i);
-            StudentInfo studentInfo = new StudentInfo();
-            studentInfo.setStudentId(Integer.valueOf(objects.get(0).toString()));
-            studentInfo.setName(objects.get(1).toString());
-            studentInfo.setGrade(objects.get(2).toString());
-            studentInfo.setMajor(objects.get(3).toString());
-
-            studentService.addStudent(studentInfo);
+            StudentNew studentNew = new StudentNew();
+            studentNew.setStudentId(Integer.valueOf(objects.get(0).toString()));
+            studentNew.setStudentName(objects.get(1).toString());
+            studentNew.setStudentGrade(objects.get(2).toString());
+            studentNew.setPassword("123456");
+            studentList.add(studentNew);
         }
-
-        return JsonResult.succResult("添加成功", all.size() - 1);
+        return studentService.uploadStudents(studentList);
     }
 
     public void readerExcelForQuestion(String filePath) {

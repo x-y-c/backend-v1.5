@@ -20,10 +20,11 @@ public class ResultCode {
      * A0000 成功
      * R0001 用户不存在
      * R0002 密码错误
-     * R0003 没有权限
+     * R0003 参数错误
      */
     public static String SUCCESS = "A0000";
     public static String USER_NOT_EXIST = "R0001";
     public static String WRONG_PASSWORD = "R0002";
     public static String WRONG_PARAMS = "R0003";
+    public static String USER_EXIST = "R0004";
 }

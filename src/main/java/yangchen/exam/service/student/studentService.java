@@ -60,4 +60,7 @@ public interface studentService {
     List<String> initGrade();
 
 
+    JsonResult uploadStudents(List<StudentNew>studentNewsList);
+
+
 }

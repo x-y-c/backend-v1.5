@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import yangchen.exam.entity.StudentNew;
 import yangchen.exam.model.JsonResult;
-import yangchen.exam.model.ResultCode;
 import yangchen.exam.service.excelservice.ExcelServiceImpl;
 import yangchen.exam.service.student.studentService;
 import yangchen.exam.util.ExportUtil;
@@ -78,7 +77,7 @@ public class StudentInfoController {
     @RequestMapping(value = "/password", method = RequestMethod.POST)
     public JsonResult updatePassword(@RequestParam Integer studentId, @RequestParam String oldpassword, @RequestParam String password) {
         LOGGER.info("[{}] change password", UserUtil.getUserId(request));
-       return studentService.changePassword(studentId, oldpassword, password);
+        return studentService.changePassword(studentId, oldpassword, password);
 
     }
 
@@ -91,8 +90,7 @@ public class StudentInfoController {
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public JsonResult uploadStudent(@RequestParam MultipartFile file) throws IOException {
         InputStream inputStream = file.getInputStream();
-        JsonResult jsonResult = excelServiceimpl.huExcel(inputStream);
-        return jsonResult;
+        return excelServiceimpl.huExcel(inputStream);
     }
 
 

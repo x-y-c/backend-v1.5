@@ -91,8 +91,6 @@ public class StudentServiceImpl implements studentService {
     }
 
 
-
-
     @Override
     public List<StudentNew> getAllStudent() {
         return studentRepo.findAll();
@@ -108,5 +106,18 @@ public class StudentServiceImpl implements studentService {
     @Override
     public List<String> initGrade() {
         return studentRepo.getGrade();
+    }
+
+    @Override
+    public JsonResult uploadStudents(List<StudentNew> studentNewList) {
+
+        for (StudentNew studentNew : studentNewList) {
+            if (studentRepo.findByStudentId(studentNew.getStudentId()) != null) {
+                return JsonResult.errorResult(ResultCode.USER_EXIST, "excel中的学号已存在，请检查后导入", null);
+            }
+        }
+
+        List<StudentNew> studentNews = studentRepo.saveAll(studentNewList);
+        return JsonResult.succResult("添加成功",studentNews.size());
     }
 }
