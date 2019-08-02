@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import yangchen.exam.Enum.StageEnum;
 import yangchen.exam.entity.QuestionNew;
 import yangchen.exam.entity.TestCase;
 import yangchen.exam.model.JsonResult;
@@ -66,19 +67,12 @@ public class QuestionController {
     @RequestMapping(value = "/questionId", method = RequestMethod.GET)
     public JsonResult findQuestionById(@RequestParam String id) {
         QuestionNew questionById = questionService.findByQuestionBh(id);
-        LOGGER.info("[{}] find question by Id,the ip = [{}]", UserUtil.getUserId(httpServletRequest), IpUtil.getIpAddr(httpServletRequest));
+        questionById.setStage(StageEnum.getStageName(questionById.getStage()));
+        LOGGER.info("StageEnum.getStageName(questionById.getStage())",StageEnum.getStageName(questionById.getStage()));
+//        LOGGER.info("[{}] find question by Id,the ip = [{}]", UserUtil.getUserId(httpServletRequest), IpUtil.getIpAddr(httpServletRequest));
         return JsonResult.succResult(questionById);
     }
 
-//    @RequestMapping(value = "/remove", method = RequestMethod.POST)
-//    public JsonResult DeleteQuestionById(@RequestBody Integer id) {
-//        Boolean aBoolean = questionService.deleteQuestion(id);
-//        if (aBoolean) {
-//            LOGGER.info("[{}] delete question by id, the ip = [{}]", UserUtil.getUserId(httpServletRequest), IpUtil.getIpAddr(httpServletRequest));
-//            return JsonResult.succResult(null);
-//        }
-//        return JsonResult.errorResult("fail", "删除失败", null);
-//    }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public JsonResult updateQuestion(@RequestBody QuestionNew question) {
@@ -119,10 +113,7 @@ public class QuestionController {
     @RequestMapping(value = "/testCase", method = RequestMethod.GET)
     public JsonResult getTestCase(@RequestParam String questionId) {
         List<TestCase> byQid = testCaseService.findByQuestionId(questionId);
-
-
         return JsonResult.succResult(byQid);
-
     }
 
     /**
