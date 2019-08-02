@@ -11,6 +11,8 @@ import yangchen.exam.Enum.StageEnum;
 import yangchen.exam.entity.QuestionNew;
 import yangchen.exam.entity.TestCase;
 import yangchen.exam.model.JsonResult;
+import yangchen.exam.model.ResultCode;
+import yangchen.exam.service.FileUpload.FileUpAndDownService;
 import yangchen.exam.service.excelservice.ExcelServiceImpl;
 import yangchen.exam.service.question.QuestionService;
 import yangchen.exam.service.testInfo.TestCaseService;
@@ -21,7 +23,9 @@ import yangchen.exam.util.UserUtil;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: YC
@@ -49,6 +53,9 @@ public class QuestionController {
     @Autowired
     private ExcelServiceImpl excelService;
 
+    @Autowired
+    private FileUpAndDownService fileUpAndDownService;
+
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public JsonResult createQuestion(@RequestBody QuestionNew question) {
         QuestionNew questionResult = questionService.createQuestion(question);
@@ -57,8 +64,8 @@ public class QuestionController {
         return JsonResult.succResult(questionResult);
     }
 
-    @RequestMapping(value = "/delete",method = RequestMethod.GET)
-    public JsonResult deleteQuestionByQuestionBh(@RequestParam String questionBh){
+    @RequestMapping(value = "/delete", method = RequestMethod.GET)
+    public JsonResult deleteQuestionByQuestionBh(@RequestParam String questionBh) {
         questionService.deleteQuestion(questionBh);
         return JsonResult.succResult(null);
     }
@@ -103,8 +110,8 @@ public class QuestionController {
         return JsonResult.succResult(questionList);
     }
 
-    @RequestMapping(value = "/page",method = RequestMethod.GET)
-    public JsonResult getPagedQuestion(int page,int pageLimit){
+    @RequestMapping(value = "/page", method = RequestMethod.GET)
+    public JsonResult getPagedQuestion(int page, int pageLimit) {
         Page<QuestionNew> pageQuestion = questionService.getPageQuestion(page - 1, pageLimit);
         return JsonResult.succResult(pageQuestion);
     }
@@ -135,6 +142,63 @@ public class QuestionController {
         JsonResult jsonResult = excelService.uploadQuestion(inputStream);
         return JsonResult.succResult(jsonResult);
     }
+
+
+    @RequestMapping(value = "/image", method = RequestMethod.POST)
+    public JsonResult imageUpload(@RequestParam MultipartFile file1) {
+
+//        try {
+//            Map<String, Object> resultMap = upload(file);
+
+
+        Map<String, Object> returnMap = new HashMap<>();
+        try {
+            if (!file1.isEmpty()) {
+                Map<String, Object> picMap = fileUpAndDownService.uploadPicture(file1);
+                if (ResultCode.SUCCESS.equals(picMap.get("result"))) {
+                   return JsonResult.succResult(picMap);
+                } else {
+                    returnMap.put("result", ResultCode.NET_ERROR);
+                    returnMap.put("msg", picMap.get("result"));
+                }
+            } else {
+                LOGGER.info(">>>上传的图片为空文件");
+                returnMap.put("result", ResultCode.NET_ERROR);
+                returnMap.put("msg", ResultCode.FILE_UPLOAD_NULL);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOGGER.info(e.getMessage());
+        }
+        return JsonResult.errorResult(ResultCode.WRONG_PARAMS, "呜呜呜呜", returnMap);
+
+    }
+
+
+//    private  Map<String, Object> upload(MultipartFile file) throws ServiceException {
+//        Map<String, Object> returnMap = new HashMap<>();
+//        try {
+//
+//            if (!file.isEmpty()) {
+//                Map<String, Object> picMap = fileUpAndDownService.uploadPicture(file);
+//                if (ResultCode.SUCCESS.equals(picMap.get("result"))) {
+//                    return picMap;
+//                } else {
+//                    returnMap.put("result", ResultCode.NET_ERROR);
+//                    returnMap.put("msg", picMap.get("result"));
+//                }
+//            } else {
+//                LOGGER.info("》》》》》上传图片为空文件");
+//                returnMap.put("result", ResultCode.NET_ERROR);
+//                returnMap.put("msg", ResultCode.FILE_UPLOAD_NULL);
+//            }
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            throw new ServiceException(ResultCode.FILE_UPLOAD_NULL);
+//        }
+//        return returnMap;
+//    }
 
 
 }

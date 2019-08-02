@@ -21,10 +21,16 @@ public class ResultCode {
      * R0001 用户不存在
      * R0002 密码错误
      * R0003 参数错误
+     * R0004 用户已经存在
+     * R0005 网络错误
+     * R0006 上传图片为空
      */
     public static String SUCCESS = "A0000";
     public static String USER_NOT_EXIST = "R0001";
     public static String WRONG_PASSWORD = "R0002";
     public static String WRONG_PARAMS = "R0003";
     public static String USER_EXIST = "R0004";
+    public static String NET_ERROR = "R0005";
+    public static String FILE_UPLOAD_NULL = "R0006";
+
 }
