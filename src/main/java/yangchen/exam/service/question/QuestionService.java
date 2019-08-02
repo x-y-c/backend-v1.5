@@ -31,10 +31,10 @@ public interface QuestionService {
     /**
      * 删除题目，连同测试用例
      *
-     * @param id
+     * @param questionBh
      * @return
      */
-    Boolean deleteQuestion(Integer id);
+    void deleteQuestion(String questionBh);
 
 
     /**

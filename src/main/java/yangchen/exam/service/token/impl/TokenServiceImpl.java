@@ -1,7 +1,8 @@
-package yangchen.exam.service.token;
+package yangchen.exam.service.token.impl;
 
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.StudentNew;
+import yangchen.exam.service.token.TokenService;
 import yangchen.exam.util.JavaJWTUtil;
 
 /**

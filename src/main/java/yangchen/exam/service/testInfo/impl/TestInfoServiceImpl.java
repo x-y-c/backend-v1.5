@@ -1,4 +1,4 @@
-package yangchen.exam.service.testInfo;
+package yangchen.exam.service.testInfo.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

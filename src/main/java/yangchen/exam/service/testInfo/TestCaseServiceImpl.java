@@ -3,7 +3,7 @@ package yangchen.exam.service.testInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.TestCase;
-import yangchen.exam.repo.testCaseRepo;
+import yangchen.exam.repo.TestCaseRepo;
 
 import java.util.List;
 
@@ -14,16 +14,16 @@ import java.util.List;
 public class TestCaseServiceImpl implements TestCaseService {
 
     @Autowired
-    private testCaseRepo testCaseRepo;
+    private TestCaseRepo TestCaseRepo;
 
     @Override
     public TestCase addTestCase(TestCase testCase) {
-        return testCaseRepo.save(testCase);
+        return TestCaseRepo.save(testCase);
     }
 
     @Override
     public TestCase updateTestCase(TestCase testCase) {
-        return testCaseRepo.save(testCase);
+        return TestCaseRepo.save(testCase);
     }
 
     @Override
@@ -35,7 +35,7 @@ public class TestCaseServiceImpl implements TestCaseService {
 
     @Override
     public List<TestCase> findByQuestionId(String questionId) {
-        return testCaseRepo.findByQuestionId(questionId);
+        return TestCaseRepo.findByQuestionId(questionId);
     }
 }
 

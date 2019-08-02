@@ -81,12 +81,10 @@ public class ExamGroupServiceImpl implements ExamGroupService {
     @Override
     public void deleteExamInfo(Integer id) {
 
-
         List<Integer> examPapers = examInfoRepo.searchExamPaper(id);
         examInfoRepo.deleteExamInfoByExamGroupId(id);
         examGroupRepo.deleteExamGroupNewById(id);
         examPaperRepo.deleteExamPaperByIdIn(examPapers);
-
 
     }
 

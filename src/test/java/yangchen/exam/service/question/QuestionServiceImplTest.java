@@ -24,4 +24,10 @@ public class QuestionServiceImplTest {
 //        List<String> questionNamesByExamPage = questionService.getQuestionNamesByExamPage(32);
 //        LOGGER.info(questionNamesByExamPage.toString());
     }
+
+
+    @Test
+    public void test2(){
+        questionService.deleteQuestion("111111");
+    }
 }

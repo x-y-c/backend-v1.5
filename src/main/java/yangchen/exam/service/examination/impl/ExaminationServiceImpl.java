@@ -10,6 +10,7 @@ import yangchen.exam.entity.*;
 import yangchen.exam.model.*;
 import yangchen.exam.repo.ExamInfoRepo;
 import yangchen.exam.repo.ExamPaperRepo;
+import yangchen.exam.repo.QuestionRepo;
 import yangchen.exam.service.examInfo.ExamInfoService;
 import yangchen.exam.service.examination.ExamGroupService;
 import yangchen.exam.service.examination.ExaminationService;
@@ -55,7 +56,7 @@ public class ExaminationServiceImpl implements ExaminationService {
     private ExamInfoRepo examInfoRepo;
 
     @Autowired
-    private yangchen.exam.repo.questionRepo questionRepo;
+    private QuestionRepo questionRepo;
 
 
     @Override

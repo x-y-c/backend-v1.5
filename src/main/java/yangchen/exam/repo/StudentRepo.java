@@ -6,7 +6,7 @@ import yangchen.exam.entity.StudentNew;
 
 import java.util.List;
 
-public interface studentRepo extends JpaRepository<StudentNew, Integer> {
+public interface StudentRepo extends JpaRepository<StudentNew, Integer> {
 
     StudentNew findByStudentId(Integer studentId);
 

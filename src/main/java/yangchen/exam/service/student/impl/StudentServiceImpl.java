@@ -1,4 +1,4 @@
-package yangchen.exam.service.student;
+package yangchen.exam.service.student.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -10,7 +10,8 @@ import yangchen.exam.entity.StudentNew;
 import yangchen.exam.model.JsonResult;
 import yangchen.exam.model.ResultCode;
 import yangchen.exam.model.StudentInfo;
-import yangchen.exam.repo.studentRepo;
+import yangchen.exam.repo.StudentRepo;
+import yangchen.exam.service.student.studentService;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ import java.util.List;
 @Service
 public class StudentServiceImpl implements studentService {
     @Autowired
-    private studentRepo studentRepo;
+    private StudentRepo studentRepo;
 
     @Cacheable(value = "student")
     @Override

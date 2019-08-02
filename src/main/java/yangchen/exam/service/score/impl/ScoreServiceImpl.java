@@ -1,4 +1,4 @@
-package yangchen.exam.service.score;
+package yangchen.exam.service.score.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -7,7 +7,9 @@ import yangchen.exam.entity.Score;
 import yangchen.exam.model.ScoreAdmin;
 import yangchen.exam.model.ScoreDetail;
 import yangchen.exam.repo.ScoreRepo;
+import yangchen.exam.repo.StudentRepo;
 import yangchen.exam.service.examInfo.ExamInfoService;
+import yangchen.exam.service.score.ScoreService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +26,7 @@ public class ScoreServiceImpl implements ScoreService {
     private ScoreRepo scoreRepo;
 
     @Autowired
-    private yangchen.exam.repo.studentRepo studentRepo;
+    private StudentRepo studentRepo;
 
 
     @Autowired

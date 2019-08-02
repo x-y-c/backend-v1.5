@@ -15,7 +15,7 @@ public class testCaseRepoTest {
 
 
     @Autowired
-    private testCaseRepo testCaseRepo;
+    private TestCaseRepo testCaseRepo;
 
     public static Logger LOGGER = LoggerFactory.getLogger(testCaseRepoTest.class);
 

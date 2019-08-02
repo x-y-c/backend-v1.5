@@ -1,4 +1,4 @@
-package yangchen.exam.service.question;
+package yangchen.exam.service.question.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -9,8 +9,11 @@ import yangchen.exam.Enum.StageEnum;
 import yangchen.exam.entity.ExamPaper;
 import yangchen.exam.entity.QuestionNew;
 import yangchen.exam.model.QuestionInfo;
-import yangchen.exam.repo.questionRepo;
+import yangchen.exam.repo.QuestionRepo;
+import yangchen.exam.repo.TestCaseRepo;
 import yangchen.exam.service.examination.ExaminationService;
+import yangchen.exam.service.question.QuestionBaseService;
+import yangchen.exam.service.question.QuestionService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,14 +24,15 @@ import java.util.Optional;
  */
 @Service
 public class QuestionServiceImpl implements QuestionService {
+
     @Autowired
-    private questionRepo questionRepo;
-
-
+    private QuestionRepo questionRepo;
     @Autowired
     private QuestionBaseService questionBaseService;
     @Autowired
     private ExaminationService examinationService;
+    @Autowired
+    private TestCaseRepo TestCaseRepo;
 
 
     @Override
@@ -45,18 +49,22 @@ public class QuestionServiceImpl implements QuestionService {
 
 
     //如果删除成功，则该id对应的对象不存在
+    //删除题目的同时删除测试用例
+    //1.通过questionBH 定位 question 删掉
+    //2.通过testcaseBH == questionBH 定位 testcase 删掉
     @Override
-    public Boolean deleteQuestion(Integer id) {
-        questionRepo.deleteById(id);
-        return findQuestionById(id) == null;
+    public void deleteQuestion(String questionBh) {
+
+        questionRepo.deleteQuestionNewByQuestionBh(questionBh);
+        TestCaseRepo.deleteTestCaseByQuestionId(questionBh);
+
     }
+
 
     @Override
     public QuestionNew findQuestionById(Integer id) {
         Optional<QuestionNew> result = questionRepo.findById(id);
         return result.get();
-
-
     }
 
     @Override
@@ -96,7 +104,6 @@ public class QuestionServiceImpl implements QuestionService {
        all.forEach(questionNew -> {
            questionNew.setStage(StageEnum.getStageName(questionNew.getStage()));
        });
-
         return all;
     }
 

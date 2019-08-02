@@ -56,6 +56,11 @@ public class QuestionController {
         return JsonResult.succResult(questionResult);
     }
 
+    @RequestMapping(value = "/delete",method = RequestMethod.GET)
+    public JsonResult deleteQuestionByQuestionBh(@RequestParam String questionBh){
+        questionService.deleteQuestion(questionBh);
+        return JsonResult.succResult(null);
+    }
 
 
     @RequestMapping(value = "/questionId", method = RequestMethod.GET)
@@ -65,15 +70,15 @@ public class QuestionController {
         return JsonResult.succResult(questionById);
     }
 
-    @RequestMapping(value = "/remove", method = RequestMethod.POST)
-    public JsonResult DeleteQuestionById(@RequestBody Integer id) {
-        Boolean aBoolean = questionService.deleteQuestion(id);
-        if (aBoolean) {
-            LOGGER.info("[{}] delete question by id, the ip = [{}]", UserUtil.getUserId(httpServletRequest), IpUtil.getIpAddr(httpServletRequest));
-            return JsonResult.succResult(null);
-        }
-        return JsonResult.errorResult("fail", "删除失败", null);
-    }
+//    @RequestMapping(value = "/remove", method = RequestMethod.POST)
+//    public JsonResult DeleteQuestionById(@RequestBody Integer id) {
+//        Boolean aBoolean = questionService.deleteQuestion(id);
+//        if (aBoolean) {
+//            LOGGER.info("[{}] delete question by id, the ip = [{}]", UserUtil.getUserId(httpServletRequest), IpUtil.getIpAddr(httpServletRequest));
+//            return JsonResult.succResult(null);
+//        }
+//        return JsonResult.errorResult("fail", "删除失败", null);
+//    }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public JsonResult updateQuestion(@RequestBody QuestionNew question) {

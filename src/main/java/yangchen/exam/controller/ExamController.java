@@ -46,8 +46,6 @@ public class ExamController {
     @RequestMapping(value = "/detail", method = RequestMethod.GET)
     public JsonResult getExamInfoByStudentId(@RequestParam Integer studentId) {
         List<ExaminationDetail> examinationDetails = examinationService.examInfoDetail(studentId);
-
-
         return JsonResult.succResult(examinationDetails);
     }
 
@@ -151,9 +149,7 @@ public class ExamController {
 
     @RequestMapping(value = "/delete",method = RequestMethod.GET)
     public JsonResult deleteExamGroupInfo(@RequestParam Integer id){
-
         examGroupService.deleteExamInfo(id);
-
         return JsonResult.succResult(null);
     }
 
