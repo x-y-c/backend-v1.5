@@ -13,6 +13,7 @@ import yangchen.exam.service.score.ScoreService;
 import yangchen.exam.util.ExportUtil;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,6 +70,12 @@ public class ScoreController {
             System.out.println(e);
         }
         return "数据导出错误";
+    }
 
+
+
+    @GetMapping(value = "/excel")
+    public void downloadScoreExcel(HttpServletResponse response,@RequestParam Integer examGroupId) throws IOException {
+        scoreService.exportScore(response,examGroupId);
     }
 }

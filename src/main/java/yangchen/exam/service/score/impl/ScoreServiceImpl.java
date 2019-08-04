@@ -1,16 +1,26 @@
 package yangchen.exam.service.score.impl;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.io.IoUtil;
+import cn.hutool.poi.excel.ExcelUtil;
+import cn.hutool.poi.excel.ExcelWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.ExamInfo;
 import yangchen.exam.entity.Score;
+import yangchen.exam.model.ExcelScoreModel;
 import yangchen.exam.model.ScoreAdmin;
 import yangchen.exam.model.ScoreDetail;
+import yangchen.exam.repo.ExamGroupRepo;
 import yangchen.exam.repo.ScoreRepo;
 import yangchen.exam.repo.StudentRepo;
 import yangchen.exam.service.examInfo.ExamInfoService;
 import yangchen.exam.service.score.ScoreService;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +38,8 @@ public class ScoreServiceImpl implements ScoreService {
     @Autowired
     private StudentRepo studentRepo;
 
+    @Autowired
+    private ExamGroupRepo examGroupRepo;
 
     @Autowired
     private ExamInfoService examInfoService;
@@ -53,6 +65,44 @@ public class ScoreServiceImpl implements ScoreService {
         } else {
             return scoreRepo.save(score);
         }
+
+    }
+
+    @Override
+    public void exportScore(HttpServletResponse response, Integer examGroupId) throws IOException {
+        List<ExcelScoreModel> excelScoreModels = new ArrayList<>();
+        List<ExamInfo> examInfoByExamGroup = examInfoService.getExamInfoByExamGroup(examGroupId);
+        String examGroupName = examGroupRepo.findById(examGroupId).get().getExamDesc();
+        for (int i = 0; i <examInfoByExamGroup.size(); i++) {
+            excelScoreModels.add(ExcelScoreModel.builder()
+                    .id(i+1)
+                    .name(examInfoByExamGroup.get(i).getStudentName())
+                    .grade(studentRepo.getStudentGrade(examInfoByExamGroup.get(i).getStudentNumber()))
+                    .score(Double.valueOf(examInfoByExamGroup.get(i).getExaminationScore()))
+                    .studentID(examInfoByExamGroup.get(i).getStudentNumber())
+                    .build());
+        }
+
+        List<ExcelScoreModel> rows = CollUtil.newArrayList(excelScoreModels);
+
+        ExcelWriter writer = ExcelUtil.getWriter();
+        writer.addHeaderAlias("id", "序号");
+        writer.addHeaderAlias("name", "姓名");
+        writer.addHeaderAlias("grade", "班级");
+        writer.addHeaderAlias("score", "成绩");
+        writer.addHeaderAlias("studentID", "学号");
+        writer.write(rows, true);
+
+        response.setContentType("application/vnd.ms-excel;charset=utf-8");
+        String value = "attachment;filename=" + URLEncoder.encode(examGroupName+".xls","UTF-8");
+//        response.setHeader("Content-Disposition", "attachment; filename=" + java.net.URLEncoder.encode(fileName, "UTF-8"));
+                response.setHeader("Content-Disposition", value);
+        ServletOutputStream outputStream = response.getOutputStream();
+
+        writer.flush(outputStream, true);
+        writer.close();
+        IoUtil.close(outputStream);
+
 
     }
 

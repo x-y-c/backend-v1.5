@@ -13,8 +13,11 @@ public interface StudentRepo extends JpaRepository<StudentNew, Integer> {
     List<StudentNew> findByStudentGrade(String grade);
 
 
-    @Query(value = "select distinct student_grade from student_new",nativeQuery = true)
+    @Query(value = "select distinct student_grade from student_new", nativeQuery = true)
     List<String> getGrade();
+
+    @Query(value = "select student_grade from student_new where student_id=?1", nativeQuery = true)
+    String getStudentGrade(Integer studentId);
 
 
 }
