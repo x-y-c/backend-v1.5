@@ -5,6 +5,8 @@ import yangchen.exam.entity.Score;
 import yangchen.exam.model.ScoreAdmin;
 import yangchen.exam.model.ScoreDetail;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 //examId
@@ -17,6 +19,9 @@ public interface ScoreService {
     List<Score> findByExaminationAndStudentId(Integer examination, Integer studentId);
 
     Score saveOrUpdate(Score score);
+
+
+    void exportScore(HttpServletResponse response, Integer examGroupId) throws IOException;
 
 
     /**

@@ -74,14 +74,20 @@ public class QuestionServiceImpl implements QuestionService {
         String preQuestionDetails = questionNew.getPreQuestionDetails();
         //取出富文本编辑器中的<img>标签信息；(base64编码的字符串)
         String imgLabelContent = UrlImageUrl.getImgLabel(preQuestionDetails);
-        String randomName = UUID.randomUUID().toString().replace("-", "") + ".jpg";
-        String imagePath = imgPath + randomName;
-        Base64Util.saveImgByte(imgLabelContent, imagePath);
-        String urlImgInfo = UrlImageUrl.updateImageDomain(preQuestionDetails, randomName);
-        questionNew.setQuestionDetails(urlImgInfo);
+        if (imgLabelContent != null) {
+            String randomName = UUID.randomUUID().toString().replace("-", "") + ".jpg";
+            String imagePath = imgPath + randomName;
+            Base64Util.saveImgByte(imgLabelContent, imagePath);
+            String urlImgInfo = UrlImageUrl.updateImageDomain(preQuestionDetails, randomName);
+            questionNew.setQuestionDetails(urlImgInfo);
+            return questionRepo.save(questionNew);
+        } else {
+            questionNew.setQuestionDetails(preQuestionDetails);
+            return questionRepo.save(questionNew);
+
+        }
 
 
-        return questionRepo.save(questionNew);
     }
 
 
