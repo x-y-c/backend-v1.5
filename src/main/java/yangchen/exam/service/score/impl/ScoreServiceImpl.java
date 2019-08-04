@@ -95,13 +95,22 @@ public class ScoreServiceImpl implements ScoreService {
 
         response.setContentType("application/vnd.ms-excel;charset=utf-8");
         String value = "attachment;filename=" + URLEncoder.encode(examGroupName+".xls","UTF-8");
-//        response.setHeader("Content-Disposition", "attachment; filename=" + java.net.URLEncoder.encode(fileName, "UTF-8"));
                 response.setHeader("Content-Disposition", value);
         ServletOutputStream outputStream = response.getOutputStream();
 
         writer.flush(outputStream, true);
         writer.close();
         IoUtil.close(outputStream);
+
+    }
+
+
+
+    //todo
+    @Override
+    public void exportSubmit(HttpServletResponse response, Integer examGroupId) throws IOException {
+
+
 
 
     }

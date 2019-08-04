@@ -54,7 +54,7 @@ public class CompileServiceImpl implements CompileService {
         int succCount = 0;
 
         QuestionNew questionBy = questionService.getQuestionBy(examinationId, index);
-        submitService.addSubmit(Submit.builder().examinationId(examinationId).questionId(questionBy.getQuestionBh()).src(src).build());
+        submitService.addSubmit(Submit.builder().examinationId(examinationId).questionId(questionBy.getQuestionBh()).src(src).studentId(Long.valueOf(studentId)).build());
         List<TestCase> TestCaseList = testCaseService.findByQuestionId(questionBy.getQuestionBh());
         CompileModel compileModel = new CompileModel();
         List<String> input = new ArrayList<>();

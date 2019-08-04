@@ -23,6 +23,7 @@ public interface ScoreService {
 
     void exportScore(HttpServletResponse response, Integer examGroupId) throws IOException;
 
+    void exportSubmit(HttpServletResponse response, Integer examGroupId) throws  IOException;
 
     /**
      * 通过学号查询成绩
