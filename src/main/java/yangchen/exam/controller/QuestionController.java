@@ -163,8 +163,9 @@ public class QuestionController {
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public JsonResult uploadQuestion(@RequestBody QuestionNew questionNew) throws IOException {
+        LOGGER.info(questionNew.toString());
         QuestionNew question = questionService.saveQuestionWithImgDecode(questionNew);
-        return JsonResult.succResult(question != null);
+        return JsonResult.succResult(null);
     }
 
 

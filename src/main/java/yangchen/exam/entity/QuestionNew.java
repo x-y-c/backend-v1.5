@@ -35,7 +35,8 @@ public class QuestionNew {
     @Column(name = "question_details")
     private String questionDetails;
 
-    private String IsProgramBlank;
+    @Column(name = "IsProgramBlank")
+    private String isProgramBlank;
 
     @Column(name = "pre_question_details")
     private String preQuestionDetails;
