@@ -75,19 +75,11 @@ public class QuestionController {
     public JsonResult findQuestionById(@RequestParam String id) {
         QuestionNew questionById = questionService.findByQuestionBh(id);
         questionById.setStage(StageEnum.getStageName(questionById.getStage()));
-        LOGGER.info("StageEnum.getStageName(questionById.getStage())",StageEnum.getStageName(questionById.getStage()));
+        LOGGER.info("StageEnum.getStageName(questionById.getStage())", StageEnum.getStageName(questionById.getStage()));
 //        LOGGER.info("[{}] find question by Id,the ip = [{}]", UserUtil.getUserId(httpServletRequest), IpUtil.getIpAddr(httpServletRequest));
         return JsonResult.succResult(questionById);
     }
 
-
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public JsonResult updateQuestion(@RequestBody QuestionNew question) {
-        QuestionNew questionResult = questionService.updateQuestion(question);
-        LOGGER.info("[{} ]update question , the ip = [{}]", UserUtil.getUserId(httpServletRequest), IpUtil.getIpAddr(httpServletRequest));
-        return JsonResult.succResult(questionResult);
-
-    }
 
     /**
      * //通过题目查看测试用例
@@ -146,17 +138,12 @@ public class QuestionController {
 
     @RequestMapping(value = "/image", method = RequestMethod.POST)
     public JsonResult imageUpload(@RequestParam MultipartFile file1) {
-
-//        try {
-//            Map<String, Object> resultMap = upload(file);
-
-
         Map<String, Object> returnMap = new HashMap<>();
         try {
             if (!file1.isEmpty()) {
                 Map<String, Object> picMap = fileUpAndDownService.uploadPicture(file1);
                 if (ResultCode.SUCCESS.equals(picMap.get("result"))) {
-                   return JsonResult.succResult(picMap);
+                    return JsonResult.succResult(picMap);
                 } else {
                     returnMap.put("result", ResultCode.NET_ERROR);
                     returnMap.put("msg", picMap.get("result"));
@@ -174,31 +161,11 @@ public class QuestionController {
 
     }
 
-
-//    private  Map<String, Object> upload(MultipartFile file) throws ServiceException {
-//        Map<String, Object> returnMap = new HashMap<>();
-//        try {
-//
-//            if (!file.isEmpty()) {
-//                Map<String, Object> picMap = fileUpAndDownService.uploadPicture(file);
-//                if (ResultCode.SUCCESS.equals(picMap.get("result"))) {
-//                    return picMap;
-//                } else {
-//                    returnMap.put("result", ResultCode.NET_ERROR);
-//                    returnMap.put("msg", picMap.get("result"));
-//                }
-//            } else {
-//                LOGGER.info("》》》》》上传图片为空文件");
-//                returnMap.put("result", ResultCode.NET_ERROR);
-//                returnMap.put("msg", ResultCode.FILE_UPLOAD_NULL);
-//            }
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            throw new ServiceException(ResultCode.FILE_UPLOAD_NULL);
-//        }
-//        return returnMap;
-//    }
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    public JsonResult uploadQuestion(@RequestBody QuestionNew questionNew) throws IOException {
+        QuestionNew question = questionService.saveQuestionWithImgDecode(questionNew);
+        return JsonResult.succResult(question != null);
+    }
 
 
 }

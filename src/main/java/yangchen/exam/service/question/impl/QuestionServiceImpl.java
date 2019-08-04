@@ -1,6 +1,7 @@
 package yangchen.exam.service.question.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,10 +15,14 @@ import yangchen.exam.repo.TestCaseRepo;
 import yangchen.exam.service.examination.ExaminationService;
 import yangchen.exam.service.question.QuestionBaseService;
 import yangchen.exam.service.question.QuestionService;
+import yangchen.exam.util.Base64Util;
+import yangchen.exam.util.UrlImageUrl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * @author yc
@@ -34,6 +39,8 @@ public class QuestionServiceImpl implements QuestionService {
     @Autowired
     private TestCaseRepo TestCaseRepo;
 
+    @Value("${image.base64.path}")
+    private String imgPath;
 
     @Override
     public QuestionNew createQuestion(QuestionNew question) {
@@ -58,6 +65,23 @@ public class QuestionServiceImpl implements QuestionService {
         questionRepo.deleteQuestionNewByQuestionBh(questionBh);
         TestCaseRepo.deleteTestCaseByQuestionId(questionBh);
 
+    }
+
+    @Override
+    public QuestionNew saveQuestionWithImgDecode(QuestionNew questionNew) throws IOException {
+
+        //preQuestionDetails是 前端富文本编辑器中返回的数据；
+        String preQuestionDetails = questionNew.getPreQuestionDetails();
+        //取出富文本编辑器中的<img>标签信息；(base64编码的字符串)
+        String imgLabelContent = UrlImageUrl.getImgLabel(preQuestionDetails);
+        String randomName = UUID.randomUUID().toString().replace("-", "") + ".jpg";
+        String imagePath = imgPath + randomName;
+        Base64Util.saveImgByte(imgLabelContent, imagePath);
+        String urlImgInfo = UrlImageUrl.updateImageDomain(preQuestionDetails, randomName);
+        questionNew.setQuestionDetails(urlImgInfo);
+
+
+        return questionRepo.save(questionNew);
     }
 
 
@@ -99,11 +123,11 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public Page<QuestionNew> getPageQuestion(Integer pageNo, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNo,pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<QuestionNew> all = questionRepo.findAll(pageable);
-       all.forEach(questionNew -> {
-           questionNew.setStage(StageEnum.getStageName(questionNew.getStage()));
-       });
+        all.forEach(questionNew -> {
+            questionNew.setStage(StageEnum.getStageName(questionNew.getStage()));
+        });
         return all;
     }
 

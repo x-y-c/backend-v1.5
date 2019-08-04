@@ -20,4 +20,28 @@ public class UrlImageUrl {
         }
         return document.toString();
     }
+
+    public static String updateImageDomain(String htmlStr, String updateKey) {
+        Document document = Jsoup.parse(htmlStr);
+        Elements srcs = document.select("img[src]");
+        String domainStr = "http://119.3.217.233:2048";
+        for (Element element : srcs) {
+            String imgUrl = element.attr("src");
+            imgUrl = domainStr + updateKey;
+            element.attr("src", imgUrl);
+        }
+        return document.toString();
+    }
+
+
+    public static String getImgLabel(String htmlStr) {
+        Document document = Jsoup.parse(htmlStr);
+        Elements srcs = document.select("img[src]");
+        String imgStr = null;
+        for (Element element : srcs) {
+            imgStr = element.attr("src");
+        }
+        return imgStr;
+
+    }
 }

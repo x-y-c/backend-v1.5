@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import yangchen.exam.entity.QuestionNew;
 import yangchen.exam.model.QuestionInfo;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -38,6 +39,16 @@ public interface QuestionService {
 
 
     /**
+     * 保存questionNew 信息，前端把图片以base64的形式传给后台，后台需要将base64--->image ，
+     * 然后将pre_question_details 字段修改保存到 question_details
+     *
+     * @param questionNew
+     * @return
+     */
+    QuestionNew saveQuestionWithImgDecode(QuestionNew questionNew) throws IOException;
+
+
+    /**
      * 通过id查找题目
      *
      * @param id
@@ -62,5 +73,5 @@ public interface QuestionService {
 
     QuestionNew findByQuestionBh(String questionBh);
 
-    Page<QuestionNew> getPageQuestion(Integer pageNo,Integer pageSize);
+    Page<QuestionNew> getPageQuestion(Integer pageNo, Integer pageSize);
 }
