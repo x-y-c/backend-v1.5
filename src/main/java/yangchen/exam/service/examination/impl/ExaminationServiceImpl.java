@@ -148,7 +148,8 @@ public class ExaminationServiceImpl implements ExaminationService {
         });
         List<List<QuestionNew>> questionList = new ArrayList<>();
         for (TwoTuple<String, String> exam : examList) {
-            List<QuestionNew> result = questionRepo.findByStageAndDifficulty(exam.first, exam.second);
+            //List<QuestionNew> result = questionRepo.findByStageAndDifficulty(exam.first, exam.second);
+            List<QuestionNew> result = questionRepo.findByStageAndDifficultyAndQuestionType(exam.first,exam.second,"1000206");
             questionList.add(result);
         }
         ExamGroupNew examGroup1 = examGroupService.addExamGroup(examGroup);
@@ -173,7 +174,6 @@ public class ExaminationServiceImpl implements ExaminationService {
             List<QuestionInfo> questionNamesByExamPages = questionService.getQuestionNamesByExamPage(examInfo.getExaminationId());
             examPageInfo.setQuestionList(questionNamesByExamPages);
             examInforesult.add(examPageInfo);
-
         }
         return examInforesult;
     }
@@ -207,6 +207,7 @@ public class ExaminationServiceImpl implements ExaminationService {
         examInfo.setExaminationId(savedExamPaper.getId());//试卷编号
         examInfo.setExamStart(examParam.getBeginTime());
         examInfo.setExamGroupId(examPaperId);
+        examInfo.setExaminationScore(0);
 
 
         Timestamp beginTime = examParam.getBeginTime();
@@ -277,7 +278,12 @@ public class ExaminationServiceImpl implements ExaminationService {
         for (Score score1 : byExaminationAndStudentId) {
             finalScore = finalScore + score1.getScore();
         }
-        finalScore = finalScore / byExaminationAndStudentId.size();
+        if(byExaminationAndStudentId.size()==0){
+            finalScore = 0;
+        }
+        else {
+            finalScore = finalScore / byExaminationAndStudentId.size();
+        }
         ExamInfo examInfoByExaminationId = examInfoService.getExamInfoByExaminationId(examination.getId());
         examInfoByExaminationId.setExaminationScore(finalScore);
         examInfoRepo.save(examInfoByExaminationId);

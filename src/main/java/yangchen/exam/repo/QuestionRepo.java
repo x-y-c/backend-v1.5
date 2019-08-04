@@ -14,6 +14,8 @@ public interface QuestionRepo extends JpaRepository<QuestionNew, Integer> {
 
     List<QuestionNew> findByStageAndDifficulty(String stage, String difficulty);
 
+    List<QuestionNew> findByStageAndDifficultyAndQuestionType(String stage,String difficulty,String questionType);
+
     QuestionNew findByQuestionBh(String questionBh);
 
 

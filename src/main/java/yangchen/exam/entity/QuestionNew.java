@@ -17,7 +17,7 @@ public class QuestionNew {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String customBh;
-    private Integer questionType;
+    private String questionType;
     private String stage;
     private String difficulty;
     @Column(name = "question_name")
