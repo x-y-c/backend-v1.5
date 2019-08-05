@@ -70,6 +70,7 @@ public interface QuestionService {
 
     List<QuestionInfo> getQuestionNamesByExamPage(Integer examPageId);
 
+    List<String> getQuestionBhList(Integer examPaperId);
 
     QuestionNew findByQuestionBh(String questionBh);
 

@@ -7,14 +7,16 @@ import cn.hutool.poi.excel.ExcelWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.ExamInfo;
+import yangchen.exam.entity.QuestionNew;
 import yangchen.exam.entity.Score;
+import yangchen.exam.entity.Submit;
 import yangchen.exam.model.ExcelScoreModel;
+import yangchen.exam.model.ExcelSubmitModel;
 import yangchen.exam.model.ScoreAdmin;
 import yangchen.exam.model.ScoreDetail;
-import yangchen.exam.repo.ExamGroupRepo;
-import yangchen.exam.repo.ScoreRepo;
-import yangchen.exam.repo.StudentRepo;
+import yangchen.exam.repo.*;
 import yangchen.exam.service.examInfo.ExamInfoService;
+import yangchen.exam.service.question.QuestionService;
 import yangchen.exam.service.score.ScoreService;
 
 import javax.servlet.ServletOutputStream;
@@ -43,6 +45,14 @@ public class ScoreServiceImpl implements ScoreService {
 
     @Autowired
     private ExamInfoService examInfoService;
+
+    @Autowired
+    private SubmitRepo submitRepo;
+    @Autowired
+    private QuestionRepo questionRepo;
+
+    @Autowired
+    private QuestionService questionService;
 
     @Override
     public Score saveScore(Score score) {
@@ -73,9 +83,9 @@ public class ScoreServiceImpl implements ScoreService {
         List<ExcelScoreModel> excelScoreModels = new ArrayList<>();
         List<ExamInfo> examInfoByExamGroup = examInfoService.getExamInfoByExamGroup(examGroupId);
         String examGroupName = examGroupRepo.findById(examGroupId).get().getExamDesc();
-        for (int i = 0; i <examInfoByExamGroup.size(); i++) {
+        for (int i = 0; i < examInfoByExamGroup.size(); i++) {
             excelScoreModels.add(ExcelScoreModel.builder()
-                    .id(i+1)
+                    .id(i + 1)
                     .name(examInfoByExamGroup.get(i).getStudentName())
                     .grade(studentRepo.getStudentGrade(examInfoByExamGroup.get(i).getStudentNumber()))
                     .score(Double.valueOf(examInfoByExamGroup.get(i).getExaminationScore()))
@@ -94,8 +104,8 @@ public class ScoreServiceImpl implements ScoreService {
         writer.write(rows, true);
 
         response.setContentType("application/vnd.ms-excel;charset=utf-8");
-        String value = "attachment;filename=" + URLEncoder.encode(examGroupName+".xls","UTF-8");
-                response.setHeader("Content-Disposition", value);
+        String value = "attachment;filename=" + URLEncoder.encode(examGroupName + ".xls", "UTF-8");
+        response.setHeader("Content-Disposition", value);
         ServletOutputStream outputStream = response.getOutputStream();
 
         writer.flush(outputStream, true);
@@ -105,12 +115,57 @@ public class ScoreServiceImpl implements ScoreService {
     }
 
 
-
     //todo
     @Override
-    public void exportSubmit(HttpServletResponse response, Integer examGroupId) throws IOException {
+    public List<ExcelSubmitModel> exportSubmit(Integer examGroupId) throws IOException {
+        /**
+         * examnationId --> examInfo
+         * examGroupId-->submit
+         * studentId,questionId-->score
+         * question-->question_new
+         */
+
+        List<ExcelSubmitModel> result = new ArrayList<>();
+        List<ExamInfo> examInfoByExamGroup = examInfoService.getExamInfoByExamGroup(examGroupId);
+
+        for (ExamInfo examInfo : examInfoByExamGroup) {
+            Integer examinationId = examInfo.getExaminationId();
+            /**
+             * 通过试卷id获取 题目编号
+             */
+            List<String> questionBhList = questionService.getQuestionBhList(examinationId);
 
 
+//            List<Submit> submitList = submitRepo.findByExaminationId(examinationId);
+            List<Submit> submitList = new ArrayList<>();
+            for (String questionBh : questionBhList) {
+                Submit lastSubmit = submitRepo.getLastSubmit(examinationId, questionBh);
+                if (lastSubmit == null) {
+
+                    submitList.add(Submit.builder().questionId(questionBh).studentId(Long.valueOf(examInfo.getStudentNumber())).build());
+                } else {
+                    submitList.add(lastSubmit);
+                }
+            }
+            for (Submit submit : submitList) {
+                QuestionNew question = questionRepo.findByQuestionBh(submit.getQuestionId());
+                Score score = scoreRepo.findByStudentIdAndQuestionId(examInfo.getStudentNumber(), question.getQuestionBh());
+                if (score == null) {
+                    score.setScore(0);
+                }
+
+                result.add(ExcelSubmitModel.builder()
+                        .questionBh(submit.getQuestionId())
+                        .src(submit.getSrc())
+                        .questionDesc(question.getQuestionDescription())
+                        .questionName(question.getQuestionName())
+                        .score(Double.valueOf(score.getScore()))
+                        .build());
+
+            }
+
+        }
+        return result;
 
 
     }

@@ -10,6 +10,7 @@ import yangchen.exam.Enum.StageEnum;
 import yangchen.exam.entity.ExamPaper;
 import yangchen.exam.entity.QuestionNew;
 import yangchen.exam.model.QuestionInfo;
+import yangchen.exam.repo.ExamPaperRepo;
 import yangchen.exam.repo.QuestionRepo;
 import yangchen.exam.repo.TestCaseRepo;
 import yangchen.exam.service.examination.ExaminationService;
@@ -38,6 +39,9 @@ public class QuestionServiceImpl implements QuestionService {
     private ExaminationService examinationService;
     @Autowired
     private TestCaseRepo TestCaseRepo;
+
+    @Autowired
+    private ExamPaperRepo examPaperRepo;
 
     @Value("${image.base64.path}")
     private String imgPath;
@@ -125,6 +129,19 @@ public class QuestionServiceImpl implements QuestionService {
             examNameList.add(questionInfo);
         }
         return examNameList;
+    }
+
+    @Override
+    public List<String> getQuestionBhList(Integer examPaperId) {
+        List<String> questionBhList = new ArrayList<>();
+        ExamPaper examPaper = examPaperRepo.findById(examPaperId).get();
+        String titleId = examPaper.getTitleId();
+        String[] titleArray = titleId.split(",");
+        for (String title : titleArray) {
+            QuestionNew questionNew = questionRepo.findById(Integer.valueOf(title)).get();
+            questionBhList.add(questionNew.getQuestionBh());
+        }
+        return questionBhList;
     }
 
     @Override

@@ -2,6 +2,7 @@ package yangchen.exam.service.score;
 
 
 import yangchen.exam.entity.Score;
+import yangchen.exam.model.ExcelSubmitModel;
 import yangchen.exam.model.ScoreAdmin;
 import yangchen.exam.model.ScoreDetail;
 
@@ -23,7 +24,7 @@ public interface ScoreService {
 
     void exportScore(HttpServletResponse response, Integer examGroupId) throws IOException;
 
-    void exportSubmit(HttpServletResponse response, Integer examGroupId) throws  IOException;
+    List<ExcelSubmitModel> exportSubmit(Integer examGroupId) throws  IOException;
 
     /**
      * 通过学号查询成绩

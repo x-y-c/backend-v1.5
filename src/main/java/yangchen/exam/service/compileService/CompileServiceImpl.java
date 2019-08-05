@@ -101,6 +101,7 @@ public class CompileServiceImpl implements CompileService {
         score1.setStudentId(studentId);
         score1.setScore((int) Math.round(score));
         score1.setIndex(index);
+        score1.setQuestionId(questionBy.getQuestionBh());
 //        score1.setSubmitTime(new Timestamp(System.currentTimeMillis()));
         scoreService.saveOrUpdate(score1);
 

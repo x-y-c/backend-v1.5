@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 
 /**
  * @author YC
@@ -38,4 +37,7 @@ public class Score {
 
     @Column(name = "number")
     private Integer index;
+
+    @Column(name = "question_id")
+    private String questionId;
 }
