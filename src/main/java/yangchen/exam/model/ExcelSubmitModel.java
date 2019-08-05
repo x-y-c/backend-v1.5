@@ -14,7 +14,7 @@ public class ExcelSubmitModel {
 
     private String questionBh;
     private String questionName;
-    private String Stage;
+    private String stage;
     private String questionDesc;
     private String src;
     private Double score;

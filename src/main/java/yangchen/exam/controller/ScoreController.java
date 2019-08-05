@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import yangchen.exam.model.ExcelSubmitModel;
 import yangchen.exam.model.JsonResult;
 import yangchen.exam.model.ScoreAdmin;
 import yangchen.exam.model.ScoreDetail;
@@ -77,5 +78,11 @@ public class ScoreController {
     @GetMapping(value = "/excel")
     public void downloadScoreExcel(HttpServletResponse response,@RequestParam Integer examGroupId) throws IOException {
         scoreService.exportScore(response,examGroupId);
+    }
+
+
+    @GetMapping("/xuyang")
+    public void downloadSubmit(HttpServletResponse response,@RequestParam Integer id) throws IOException {
+        List<ExcelSubmitModel> excelSubmitModels = scoreService.exportSubmit(response,id);
     }
 }

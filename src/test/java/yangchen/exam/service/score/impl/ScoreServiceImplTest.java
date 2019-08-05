@@ -21,9 +21,9 @@ public class ScoreServiceImplTest {
 
     @Test
     public void test() throws IOException {
-        HttpServletResponse response;
-        List<ExcelSubmitModel> excelSubmitModels = scoreService.exportSubmit(2);
-        System.out.println(excelSubmitModels.toString());
+//        HttpServletResponse response;
+////        List<ExcelSubmitModel> excelSubmitModels = scoreService.exportSubmit(2);
+//        System.out.println(excelSubmitModels.size());
 
     }
 

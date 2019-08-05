@@ -6,6 +6,7 @@ import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import yangchen.exam.Enum.StageEnum;
 import yangchen.exam.entity.ExamInfo;
 import yangchen.exam.entity.QuestionNew;
 import yangchen.exam.entity.Score;
@@ -117,7 +118,7 @@ public class ScoreServiceImpl implements ScoreService {
 
     //todo
     @Override
-    public List<ExcelSubmitModel> exportSubmit(Integer examGroupId) throws IOException {
+    public List<ExcelSubmitModel> exportSubmit(HttpServletResponse response, Integer examGroupId) throws IOException {
         /**
          * examnationId --> examInfo
          * examGroupId-->submit
@@ -142,7 +143,7 @@ public class ScoreServiceImpl implements ScoreService {
                 Submit lastSubmit = submitRepo.getLastSubmit(examinationId, questionBh);
                 if (lastSubmit == null) {
 
-                    submitList.add(Submit.builder().questionId(questionBh).studentId(Long.valueOf(examInfo.getStudentNumber())).build());
+                    submitList.add(Submit.builder().questionId(questionBh).studentId(Long.valueOf(examInfo.getStudentNumber())).src("未提交").build());
                 } else {
                     submitList.add(lastSubmit);
                 }
@@ -151,6 +152,7 @@ public class ScoreServiceImpl implements ScoreService {
                 QuestionNew question = questionRepo.findByQuestionBh(submit.getQuestionId());
                 Score score = scoreRepo.findByStudentIdAndQuestionId(examInfo.getStudentNumber(), question.getQuestionBh());
                 if (score == null) {
+                    score = new Score();
                     score.setScore(0);
                 }
 
@@ -160,11 +162,66 @@ public class ScoreServiceImpl implements ScoreService {
                         .questionDesc(question.getQuestionDescription())
                         .questionName(question.getQuestionName())
                         .score(Double.valueOf(score.getScore()))
+                        .stage(StageEnum.getStageName(question.getStage()))
                         .build());
+
 
             }
 
+
+            /**
+             * private String questionBh;
+             *     private String questionName;
+             *     private String stage;
+             *     private String questionDesc;
+             *     private String src;
+             *     private Double score;
+             */
+
+
+//            ExcelWriter writer = ExcelUtil.getWriter();
+//            writer.addHeaderAlias("questionBh", "题目编号");
+//            writer.addHeaderAlias("questionName", "题目名称");
+//            writer.addHeaderAlias("stage", "阶段");
+//            writer.addHeaderAlias("questionDesc", "题目描述");
+//            writer.addHeaderAlias("src", "学生代码");
+//            writer.addHeaderAlias("score", "成绩");
+//
+//            List<ExcelSubmitModel> rows = CollUtil.newArrayList(result);
+//            writer.write(rows, true);
+//
+//
+//            response.setContentType("application/vnd.ms-excel;charset=utf-8");
+//            String value = "attachment;filename=" + URLEncoder.encode(examInfo.getDesc()+"_"+examInfo.getStudentNumber()+"_"+examInfo.getStudentNumber() + ".xls", "UTF-8");
+//            response.setHeader("Content-Disposition", value);
+//            ServletOutputStream outputStream = response.getOutputStream();
+//
+//            writer.flush(outputStream, true);
+//            writer.close();
+//            IoUtil.close(outputStream);
+
         }
+
+        ExcelWriter writer = ExcelUtil.getWriter();
+        writer.addHeaderAlias("questionBh", "题目编号");
+        writer.addHeaderAlias("questionName", "题目名称");
+        writer.addHeaderAlias("stage", "阶段");
+        writer.addHeaderAlias("questionDesc", "题目描述");
+        writer.addHeaderAlias("src", "学生代码");
+        writer.addHeaderAlias("score", "成绩");
+
+        List<ExcelSubmitModel> rows = CollUtil.newArrayList(result);
+        writer.write(rows, true);
+
+
+        response.setContentType("application/vnd.ms-excel;charset=utf-8");
+        String value = "attachment;filename=" + URLEncoder.encode("略略略"+ ".xls", "UTF-8");
+        response.setHeader("Content-Disposition", value);
+        ServletOutputStream outputStream = response.getOutputStream();
+
+        writer.flush(outputStream, true);
+        writer.close();
+        IoUtil.close(outputStream);
         return result;
 
 
