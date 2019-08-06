@@ -24,6 +24,6 @@ public interface ExamGroupService {
 
     void deleteExamInfo(Integer id);
 
-    ExamGroupNew updateExamInfo(Integer id,String examDesc, Integer examTime, Timestamp beginTime);
+    void updateExamInfo(Integer id,String examDesc, Integer examTime, Timestamp beginTime);
 
 }

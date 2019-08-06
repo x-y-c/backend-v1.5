@@ -43,5 +43,5 @@ public interface ExamGroupRepo extends JpaRepository<ExamGroupNew, Integer> {
 
     @Modifying
     @Query(value = "update exam_group_new set exam_description=?1,exam_time=?2,begin_time=?3 where id=?4",nativeQuery = true)
-    ExamGroupNew updateExamGroup(String examDesc,Integer examTime,Timestamp beginTime,Integer id);
+    void updateExamGroup(String examDesc,Integer examTime,Timestamp beginTime,Integer id);
 }

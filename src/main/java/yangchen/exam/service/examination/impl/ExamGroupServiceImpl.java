@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import yangchen.exam.entity.ExamGroupNew;
 import yangchen.exam.repo.ExamGroupRepo;
 import yangchen.exam.repo.ExamInfoRepo;
@@ -56,8 +57,6 @@ public class ExamGroupServiceImpl implements ExamGroupService {
         }
 
 
-
-
     }
 
     @Override
@@ -70,9 +69,9 @@ public class ExamGroupServiceImpl implements ExamGroupService {
 
     @Override
     public Page<ExamGroupNew> getPageExamGroup(int currentPage, int pageSize) {
-        Sort sort = new Sort(Sort.Direction.DESC,"id");
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
 
-        Pageable pageable = PageRequest.of(currentPage,pageSize,sort);
+        Pageable pageable = PageRequest.of(currentPage, pageSize, sort);
 
         Page<ExamGroupNew> all = examGroupRepo.findAll(pageable);
         return all;
@@ -89,9 +88,9 @@ public class ExamGroupServiceImpl implements ExamGroupService {
     }
 
     @Override
-    public ExamGroupNew updateExamInfo(Integer id,String examDesc, Integer examTime, Timestamp beginTime) {
-        ExamGroupNew examGroupNew = examGroupRepo.updateExamGroup(examDesc,examTime,beginTime,id);
-        return examGroupNew;
+    @Transactional
+    public void updateExamInfo(Integer id, String examDesc, Integer examTime, Timestamp beginTime) {
+        examGroupRepo.updateExamGroup(examDesc, examTime, beginTime, id);
     }
 
 

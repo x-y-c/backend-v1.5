@@ -153,11 +153,10 @@ public class ExamController {
         examGroupService.deleteExamInfo(id);
         return JsonResult.succResult(null);
     }
-
-    @RequestMapping(value = "/update",method = RequestMethod.GET)
-    public JsonResult updateExamGroupInfo(@RequestParam Integer id,String examDesc, Integer examTime,Timestamp beginTime){
-        ExamGroupNew examGroup= examGroupService.updateExamInfo(id,examDesc,examTime,beginTime);
-        return JsonResult.succResult(examGroup);
+    @RequestMapping(value = "/update",method = RequestMethod.POST)
+    public JsonResult updateExamGroupInfo(@RequestBody ExamGroupNew examGroupNew){
+        examGroupService.updateExamInfo(examGroupNew.getId(),examGroupNew.getExamDesc(),examGroupNew.getExamTime(),examGroupNew.getBeginTime());
+        return JsonResult.succResult(null);
     }
 
 }
