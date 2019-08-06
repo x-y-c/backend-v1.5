@@ -14,6 +14,7 @@ import yangchen.exam.service.examInfo.ExamInfoService;
 import yangchen.exam.service.examination.ExamGroupService;
 import yangchen.exam.service.examination.ExaminationService;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -151,6 +152,12 @@ public class ExamController {
     public JsonResult deleteExamGroupInfo(@RequestParam Integer id){
         examGroupService.deleteExamInfo(id);
         return JsonResult.succResult(null);
+    }
+
+    @RequestMapping(value = "/update",method = RequestMethod.GET)
+    public JsonResult updateExamGroupInfo(@RequestParam Integer id,String examDesc, Integer examTime,Timestamp beginTime){
+        ExamGroupNew examGroup= examGroupService.updateExamInfo(id,examDesc,examTime,beginTime);
+        return JsonResult.succResult(examGroup);
     }
 
 }

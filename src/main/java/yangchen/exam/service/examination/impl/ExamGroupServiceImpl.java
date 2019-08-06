@@ -88,6 +88,12 @@ public class ExamGroupServiceImpl implements ExamGroupService {
 
     }
 
+    @Override
+    public ExamGroupNew updateExamInfo(Integer id,String examDesc, Integer examTime, Timestamp beginTime) {
+        ExamGroupNew examGroupNew = examGroupRepo.updateExamGroup(examDesc,examTime,beginTime,id);
+        return examGroupNew;
+    }
+
 
 }
 

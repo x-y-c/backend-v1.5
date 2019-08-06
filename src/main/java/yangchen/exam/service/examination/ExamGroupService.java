@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import yangchen.exam.entity.ExamGroupNew;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -23,7 +24,6 @@ public interface ExamGroupService {
 
     void deleteExamInfo(Integer id);
 
-
-
+    ExamGroupNew updateExamInfo(Integer id,String examDesc, Integer examTime, Timestamp beginTime);
 
 }
