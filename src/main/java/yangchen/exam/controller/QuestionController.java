@@ -1,5 +1,6 @@
 package yangchen.exam.controller;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -166,6 +167,23 @@ public class QuestionController {
 //        LOGGER.info(questionNew.toString());
         QuestionNew question = questionService.saveQuestionWithImgDecode(questionNew);
         return JsonResult.succResult(question != null);
+    }
+
+
+    @RequestMapping(value = "/stage", method = RequestMethod.GET)
+    public JsonResult searchStage(@RequestParam(required = false)String stage,int page, int pageLimit){
+        LOGGER.info("[{}],[{}],[{}]",stage,page,pageLimit);
+        if(StringUtils.isEmpty(stage)){
+            Page<QuestionNew> pageQuestion = questionService.getPageQuestion(page-1, pageLimit);
+            return JsonResult.succResult(pageQuestion);
+
+        }
+        Page<QuestionNew> stageQuestionPage = questionService.getStageQuestionPage(stage, page-1, pageLimit);
+
+//        questionNewList.forEach(questionNew -> {
+//            questionNew.setStage(StageEnum.getStageName(questionNew.getStage()));
+//        });
+        return JsonResult.succResult(stageQuestionPage);
     }
 
 
