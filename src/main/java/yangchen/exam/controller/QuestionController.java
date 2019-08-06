@@ -172,7 +172,7 @@ public class QuestionController {
 
     @RequestMapping(value = "/stage", method = RequestMethod.GET)
     public JsonResult searchStage(@RequestParam(required = false)String stage,int page, int pageLimit){
-        LOGGER.info("[{}],[{}],[{}]",stage,page,pageLimit);
+//        LOGGER.info("[{}],[{}],[{}]",stage,page,pageLimit);
         if(StringUtils.isEmpty(stage)){
             Page<QuestionNew> pageQuestion = questionService.getPageQuestion(page-1, pageLimit);
             return JsonResult.succResult(pageQuestion);

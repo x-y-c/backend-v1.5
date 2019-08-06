@@ -104,14 +104,14 @@ public class StudentInfoController {
     public String findByCSV(HttpServletResponse response) {
         List<Map<String, Object>> dataList = null;
         List<StudentNew> students = studentService.getAllStudent();
-        String sTitle = "Id,学号,姓名,密码,专业，班级";
-        String fName = "by_";
-        String mapKey = "id,studentId,name,password,major,grade";
+        String sTitle = "学号,姓名,密码,班级";
+        String fName = "学生信息";
+        String mapKey = "studentId,name,password,grade";
         dataList = new ArrayList<>();
         Map<String, Object> map = null;
         for (StudentNew student : students) {
             map = new HashMap<String, Object>();
-            map.put("id", student.getId());
+
             map.put("studentId", student.getStudentId());
             map.put("name", student.getStudentName());
             map.put("password", student.getPassword());

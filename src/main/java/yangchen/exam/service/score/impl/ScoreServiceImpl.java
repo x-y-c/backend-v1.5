@@ -213,9 +213,8 @@ public class ScoreServiceImpl implements ScoreService {
         List<ExcelSubmitModel> rows = CollUtil.newArrayList(result);
         writer.write(rows, true);
 
-
         response.setContentType("application/vnd.ms-excel;charset=utf-8");
-        String value = "attachment;filename=" + URLEncoder.encode("略略略"+ ".xls", "UTF-8");
+        String value = "attachment;filename=" + URLEncoder.encode("学生提交记录导出（总）"+ ".xls", "UTF-8");
         response.setHeader("Content-Disposition", value);
         ServletOutputStream outputStream = response.getOutputStream();
 
