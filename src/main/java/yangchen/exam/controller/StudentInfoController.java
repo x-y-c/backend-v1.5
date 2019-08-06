@@ -1,5 +1,6 @@
 package yangchen.exam.controller;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,12 +54,15 @@ public class StudentInfoController {
     }
 
     @RequestMapping(value = "/page", method = RequestMethod.GET)
-    public JsonResult getPagedStudent(Integer page, Integer pageLimit) {
+    public JsonResult getPagedStudent(@RequestParam(required = false) String grade, Integer page, Integer pageLimit) {
         LOGGER.info("[{}]查询分页信息", request.getHeader("userId"));
-        if (pageLimit == null) {
-            pageLimit = 10;
+        LOGGER.error("[{}],[{}],[{}]", grade, page, pageLimit);
+        if (StringUtils.isEmpty(grade)) {
+            return JsonResult.succResult(studentService.getPage(page, pageLimit));
+        } else {
+            return JsonResult.succResult(studentService.getGradePage(grade, page, pageLimit));
         }
-        return JsonResult.succResult(studentService.getPage(page, pageLimit));
+
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
@@ -67,8 +71,8 @@ public class StudentInfoController {
         return JsonResult.succResult(studentService.addStudent(student));
     }
 
-    @RequestMapping(value = "/delete" , method = RequestMethod.GET)
-    public JsonResult deleteUserByStudentId(@RequestParam Integer studentId){
+    @RequestMapping(value = "/delete", method = RequestMethod.GET)
+    public JsonResult deleteUserByStudentId(@RequestParam Integer studentId) {
         studentService.deleteStudentInfo(studentId);
         return JsonResult.succResult(null);
     }

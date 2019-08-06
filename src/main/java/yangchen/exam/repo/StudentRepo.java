@@ -1,6 +1,7 @@
 package yangchen.exam.repo;
 
-import org.hibernate.annotations.SQLDelete;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -21,6 +22,9 @@ public interface StudentRepo extends JpaRepository<StudentNew, Integer> {
 
     @Query(value = "select student_grade from student_new where student_id=?1", nativeQuery = true)
     String getStudentGrade(Integer studentId);
+
+
+    Page<StudentNew> findByStudentGrade(String grade, Pageable pageable);
 
     @Transactional
     @Modifying

@@ -57,6 +57,8 @@ public interface studentService {
      */
     Page<StudentNew> getPage(Integer pageNum, Integer pageLimit);
 
+    Page<StudentNew> getGradePage(String grade,Integer pageNum,Integer pageLimit);
+
     List<String> initGrade();
 
 
