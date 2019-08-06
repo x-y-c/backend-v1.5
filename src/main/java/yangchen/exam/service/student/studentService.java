@@ -31,7 +31,7 @@ public interface studentService {
     StudentNew changeStudentInfo(StudentNew student);
 
     //删除学生信息
-    void deleteStudentInfo(StudentNew student);
+    void deleteStudentInfo(Integer studentId);
 
 
     //添加学生

@@ -67,6 +67,12 @@ public class StudentInfoController {
         return JsonResult.succResult(studentService.addStudent(student));
     }
 
+    @RequestMapping(value = "/delete" , method = RequestMethod.GET)
+    public JsonResult deleteUserByStudentId(@RequestParam Integer studentId){
+        studentService.deleteStudentInfo(studentId);
+        return JsonResult.succResult(null);
+    }
+
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public JsonResult updateStudent(@RequestBody StudentNew student) {

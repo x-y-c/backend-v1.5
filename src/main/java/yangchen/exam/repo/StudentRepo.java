@@ -1,7 +1,10 @@
 package yangchen.exam.repo;
 
+import org.hibernate.annotations.SQLDelete;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 import yangchen.exam.entity.StudentNew;
 
 import java.util.List;
@@ -19,5 +22,8 @@ public interface StudentRepo extends JpaRepository<StudentNew, Integer> {
     @Query(value = "select student_grade from student_new where student_id=?1", nativeQuery = true)
     String getStudentGrade(Integer studentId);
 
+    @Transactional
+    @Modifying
+    void deleteStudentNewById(Integer id);
 
 }

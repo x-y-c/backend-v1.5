@@ -56,8 +56,8 @@ public class StudentServiceImpl implements studentService {
     }
 
     @Override
-    public void deleteStudentInfo(StudentNew student) {
-        studentRepo.delete(student);
+    public void deleteStudentInfo(Integer id) {
+        studentRepo.deleteStudentNewById(id);
     }
 
     @Override
