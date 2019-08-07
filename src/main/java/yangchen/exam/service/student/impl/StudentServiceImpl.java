@@ -105,6 +105,12 @@ public class StudentServiceImpl implements studentService {
     }
 
     @Override
+    public Page<StudentNew> getGradePage(String grade, Integer pageNum, Integer pageLimit) {
+        Pageable pageable = PageRequest.of(pageNum - 1, pageLimit);
+        return studentRepo.findByStudentGrade(grade, pageable);
+    }
+
+    @Override
     public List<String> initGrade() {
         return studentRepo.getGrade();
     }
@@ -119,6 +125,6 @@ public class StudentServiceImpl implements studentService {
         }
 
         List<StudentNew> studentNews = studentRepo.saveAll(studentNewList);
-        return JsonResult.succResult("添加成功",studentNews.size());
+        return JsonResult.succResult("添加成功", studentNews.size());
     }
 }

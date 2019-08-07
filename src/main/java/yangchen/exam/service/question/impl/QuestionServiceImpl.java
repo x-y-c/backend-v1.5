@@ -155,6 +155,22 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
+    public Page<QuestionNew> getStageQuestionPage(String stage, Integer pageNo, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+
+        Page<QuestionNew> all = questionRepo.findByStage(StageEnum.getStageCode(stage), pageable);
+        all.forEach(questionNew -> {
+            questionNew.setStage(StageEnum.getStageName(questionNew.getStage()));
+        });
+        return all;
+    }
+
+    @Override
+    public List<QuestionNew> searchStage(String stage) {
+        return questionRepo.findByStage(StageEnum.getStageCode(stage));
+    }
+
+    @Override
     public QuestionNew findByQuestionBh(String questionBh) {
         QuestionNew questionResult = questionRepo.findByQuestionBh(questionBh);
         return questionResult;

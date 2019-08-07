@@ -1,5 +1,6 @@
 package yangchen.exam.controller;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,12 +54,15 @@ public class StudentInfoController {
     }
 
     @RequestMapping(value = "/page", method = RequestMethod.GET)
-    public JsonResult getPagedStudent(Integer page, Integer pageLimit) {
+    public JsonResult getPagedStudent(@RequestParam(required = false) String grade, Integer page, Integer pageLimit) {
         LOGGER.info("[{}]查询分页信息", request.getHeader("userId"));
-        if (pageLimit == null) {
-            pageLimit = 10;
+        LOGGER.error("[{}],[{}],[{}]", grade, page, pageLimit);
+        if (StringUtils.isEmpty(grade)) {
+            return JsonResult.succResult(studentService.getPage(page, pageLimit));
+        } else {
+            return JsonResult.succResult(studentService.getGradePage(grade, page, pageLimit));
         }
-        return JsonResult.succResult(studentService.getPage(page, pageLimit));
+
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
@@ -67,8 +71,8 @@ public class StudentInfoController {
         return JsonResult.succResult(studentService.addStudent(student));
     }
 
-    @RequestMapping(value = "/delete" , method = RequestMethod.GET)
-    public JsonResult deleteUserByStudentId(@RequestParam Integer studentId){
+    @RequestMapping(value = "/delete", method = RequestMethod.GET)
+    public JsonResult deleteUserByStudentId(@RequestParam Integer studentId) {
         studentService.deleteStudentInfo(studentId);
         return JsonResult.succResult(null);
     }
@@ -104,14 +108,14 @@ public class StudentInfoController {
     public String findByCSV(HttpServletResponse response) {
         List<Map<String, Object>> dataList = null;
         List<StudentNew> students = studentService.getAllStudent();
-        String sTitle = "Id,学号,姓名,密码,专业，班级";
-        String fName = "by_";
-        String mapKey = "id,studentId,name,password,major,grade";
+        String sTitle = "学号,姓名,密码,班级";
+        String fName = "学生信息";
+        String mapKey = "studentId,name,password,grade";
         dataList = new ArrayList<>();
         Map<String, Object> map = null;
         for (StudentNew student : students) {
             map = new HashMap<String, Object>();
-            map.put("id", student.getId());
+
             map.put("studentId", student.getStudentId());
             map.put("name", student.getStudentName());
             map.put("password", student.getPassword());
