@@ -48,8 +48,10 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public QuestionNew createQuestion(QuestionNew question) {
-        QuestionNew save = questionRepo.save(question);
-        return save;
+        String questionBh = UUID.randomUUID().toString().replace("-", "");
+        question.setQuestionBh(questionBh);
+        QuestionNew questionNew = questionRepo.save(question);
+        return questionNew;
     }
 
     @Override
@@ -78,6 +80,8 @@ public class QuestionServiceImpl implements QuestionService {
         String preQuestionDetails = questionNew.getPreQuestionDetails();
         //取出富文本编辑器中的<img>标签信息；(base64编码的字符串)
         String imgLabelContent = UrlImageUrl.getImgLabel(preQuestionDetails);
+        String questionBh = UUID.randomUUID().toString().replace("-", "");
+        questionNew.setQuestionBh(questionBh);
         if (imgLabelContent != null) {
             String randomName = UUID.randomUUID().toString().replace("-", "") + ".jpg";
             String imagePath = imgPath + randomName;

@@ -20,11 +20,11 @@ public class UrlImageUrl {
         }
         return document.toString();
     }
-
+//todo 地址放在配置文件
     public static String updateImageDomain(String htmlStr, String updateKey) {
         Document document = Jsoup.parse(htmlStr);
         Elements srcs = document.select("img[src]");
-        String domainStr = "http://119.3.217.233:2048";
+        String domainStr = "http://119.3.217.233:2048/";
         for (Element element : srcs) {
             String imgUrl = element.attr("src");
             imgUrl = domainStr + updateKey;
