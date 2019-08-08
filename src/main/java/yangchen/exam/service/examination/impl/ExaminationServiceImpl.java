@@ -122,7 +122,7 @@ public class ExaminationServiceImpl implements ExaminationService {
         Timestamp beginTime = examParam.getBeginTime();
         long time = beginTime.getTime();
         //examParam.getTtl() 单位是秒，时间戳的单位是毫秒，所以，取出ttl*1000，转换为ms；
-        long endTime = time + examParam.getTtl() * 1000*60;
+        long endTime = time + examParam.getTtl() * 1000 * 60;
         examGroup.setEndTime(new Timestamp(endTime));
         List<StudentNew> studentList = new ArrayList<>();
         List<String> grades = examParam.getGrades();
@@ -142,14 +142,14 @@ public class ExaminationServiceImpl implements ExaminationService {
 
 
         List<TwoTuple<String, String>> examList = examParam.getExam();
-        examList.forEach(examStageAndDiff->{
+        examList.forEach(examStageAndDiff -> {
             examStageAndDiff.setFirst(StageEnum.getStageCode(examStageAndDiff.getFirst()));
             examStageAndDiff.setSecond(DifficultEnum.getDifficultCode(examStageAndDiff.getSecond()));
         });
         List<List<QuestionNew>> questionList = new ArrayList<>();
         for (TwoTuple<String, String> exam : examList) {
             //List<QuestionNew> result = questionRepo.findByStageAndDifficulty(exam.first, exam.second);
-            List<QuestionNew> result = questionRepo.findByStageAndDifficultyAndQuestionType(exam.first,exam.second,"1000206");
+            List<QuestionNew> result = questionRepo.findByStageAndDifficultyAndQuestionType(exam.first, exam.second, "1000206");
             questionList.add(result);
         }
         ExamGroupNew examGroup1 = examGroupService.addExamGroup(examGroup);
@@ -213,7 +213,7 @@ public class ExaminationServiceImpl implements ExaminationService {
         Timestamp beginTime = examParam.getBeginTime();
         long time = beginTime.getTime();
         //examParam.getTtl() 单位是秒，时间戳的单位是毫秒，所以，取出ttl*1000，转换为ms；
-        long endTime = time + examParam.getTtl() * 1000*60;
+        long endTime = time + examParam.getTtl() * 1000 * 60;
         examInfo.setExamEnd(new Timestamp(endTime));//截止时间
         examInfo.setDesc(examParam.getExamName());//题目
         ExamInfo examInfo1 = examInfoService.addExamInfo(examInfo);
@@ -278,11 +278,14 @@ public class ExaminationServiceImpl implements ExaminationService {
         for (Score score1 : byExaminationAndStudentId) {
             finalScore = finalScore + score1.getScore();
         }
-        if(byExaminationAndStudentId.size()==0){
+        if (byExaminationAndStudentId.size() == 0) {
             finalScore = 0;
-        }
-        else {
-            finalScore = finalScore / byExaminationAndStudentId.size();
+        } else {
+            /**
+             * 题目数就是5道题啊，总成成绩= 每道题成绩/总题数，
+             * 但是题目数就是5道，所以，可以直接除以5
+             */
+            finalScore = finalScore / 5;
         }
         ExamInfo examInfoByExaminationId = examInfoService.getExamInfoByExaminationId(examination.getId());
         examInfoByExaminationId.setExaminationScore(finalScore);

@@ -16,6 +16,7 @@ import yangchen.exam.entity.Teacher;
 import yangchen.exam.model.JsonResult;
 import yangchen.exam.model.ResultCode;
 import yangchen.exam.model.UserBaseInfo;
+import yangchen.exam.service.UA.UAService;
 import yangchen.exam.service.student.studentService;
 import yangchen.exam.service.teacher.TeacherService;
 import yangchen.exam.service.token.TokenService;
@@ -23,6 +24,7 @@ import yangchen.exam.util.IpUtil;
 import yangchen.exam.util.JavaJWTUtil;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 /**
  * @author yc
@@ -42,6 +44,9 @@ public class UserController {
 
     @Autowired
     private HttpServletRequest request;
+
+    @Autowired
+    private UAService uaService;
 
 
     private static Logger LOGGER = LoggerFactory.getLogger(UserController.class);
@@ -89,5 +94,13 @@ public class UserController {
     @RequestMapping(value = "/getMessage")
     public JsonResult getMessage() {
         return JsonResult.succResult("验证成功", null);
+    }
+
+
+    @RequestMapping(value = "/testUA/xy",method = RequestMethod.GET)
+    public void  test() throws IOException {
+
+        String header = request.getHeader("User-Agent");
+        uaService.testUa(header);
     }
 }

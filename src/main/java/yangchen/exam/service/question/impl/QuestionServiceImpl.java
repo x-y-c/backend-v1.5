@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import yangchen.exam.Enum.DifficultEnum;
 import yangchen.exam.Enum.QuestionTypeEnum;
@@ -152,7 +153,8 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public Page<QuestionNew> getPageQuestion(Integer pageNo, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
         Page<QuestionNew> all = questionRepo.findAll(pageable);
         all.forEach(questionNew -> {
             questionNew.setStage(StageEnum.getStageName(questionNew.getStage()));
@@ -164,8 +166,8 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public Page<QuestionNew> getStageQuestionPage(String stage, Integer pageNo, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
-
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
         Page<QuestionNew> all = questionRepo.findByStage(StageEnum.getStageCode(stage), pageable);
         all.forEach(questionNew -> {
             questionNew.setStage(StageEnum.getStageName(questionNew.getStage()));
