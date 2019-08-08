@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import yangchen.exam.Enum.DifficultEnum;
+import yangchen.exam.Enum.QuestionTypeEnum;
 import yangchen.exam.Enum.StageEnum;
 import yangchen.exam.entity.QuestionNew;
 import yangchen.exam.entity.TestCase;
@@ -27,6 +29,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * @Author: YC
@@ -76,8 +79,10 @@ public class QuestionController {
     public JsonResult findQuestionById(@RequestParam String id) {
         QuestionNew questionById = questionService.findByQuestionBh(id);
         questionById.setStage(StageEnum.getStageName(questionById.getStage()));
+        questionById.setDifficulty(DifficultEnum.getDifficultName(questionById.getDifficulty()));
+        questionById.setQuestionType(QuestionTypeEnum.getQuestionTypeName(questionById.getQuestionType()));
         LOGGER.info("StageEnum.getStageName(questionById.getStage())", StageEnum.getStageName(questionById.getStage()));
-//        LOGGER.info("[{}] find question by Id,the ip = [{}]", UserUtil.getUserId(httpServletRequest), IpUtil.getIpAddr(httpServletRequest));
+        //LOGGER.info("[{}] find question by Id,the ip = [{}]", UserUtil.getUserId(httpServletRequest), IpUtil.getIpAddr(httpServletRequest));
         return JsonResult.succResult(questionById);
     }
 
@@ -164,9 +169,16 @@ public class QuestionController {
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public JsonResult uploadQuestion(@RequestBody QuestionNew questionNew) throws IOException {
-//        LOGGER.info(questionNew.toString());
-        QuestionNew question = questionService.saveQuestionWithImgDecode(questionNew);
-        return JsonResult.succResult(question != null);
+        LOGGER.info(questionNew.toString());
+        QuestionNew question = questionService.findByQuestionBh(questionNew.getQuestionBh());
+        if(question!=null){
+            questionNew.setId(question.getId());
+        }else {
+            String questionBh = UUID.randomUUID().toString().replace("-", "");
+            questionNew.setQuestionBh(questionBh);
+        }
+        QuestionNew questionResult = questionService.saveQuestionWithImgDecode(questionNew);
+        return JsonResult.succResult(questionResult!=null);
     }
 
 

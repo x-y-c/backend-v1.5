@@ -2,11 +2,11 @@ package yangchen.exam.Enum;
 
 public enum QuestionTypeEnum {
 
-    DIFFICULT_ONE("初级","1000401"),
-    DIFFICULT_TWO("简单","1000402"),
-    DIFFICULT_THREE("普通","1000403"),
-    DIFFICULT_FOUR("困难","1000404"),
-    DIFFICULT_FIVE("最难","1000405");
+    QUESTION_TIANKONG("填空题","1000204"),
+    QUESTION_CODING("编程题","1000206"),
+    QUESTION_PANDUAN("判断题","1000203"),
+    QUESTION_XUANZE("选择题","100020101"),
+    QUESTION_CESHI("测试","1000205");
 
 
     private String questionTypeName;
@@ -52,8 +52,6 @@ public enum QuestionTypeEnum {
     public void setQuestionTypeCode(String questionTypeCode){
         this.questionTypeCode = questionTypeCode;
     }
-
-
 
 
 

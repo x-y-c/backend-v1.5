@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import yangchen.exam.Enum.DifficultEnum;
+import yangchen.exam.Enum.QuestionTypeEnum;
 import yangchen.exam.Enum.StageEnum;
 import yangchen.exam.entity.ExamPaper;
 import yangchen.exam.entity.QuestionNew;
@@ -80,8 +82,9 @@ public class QuestionServiceImpl implements QuestionService {
         String preQuestionDetails = questionNew.getPreQuestionDetails();
         //取出富文本编辑器中的<img>标签信息；(base64编码的字符串)
         String imgLabelContent = UrlImageUrl.getImgLabel(preQuestionDetails);
-        String questionBh = UUID.randomUUID().toString().replace("-", "");
-        questionNew.setQuestionBh(questionBh);
+        questionNew.setStage(StageEnum.getStageCode(questionNew.getStage()));
+        questionNew.setDifficulty(DifficultEnum.getDifficultCode(questionNew.getDifficulty()));
+        questionNew.setQuestionType(QuestionTypeEnum.getQuestionTypeCode(questionNew.getQuestionType()));
         if (imgLabelContent != null) {
             String randomName = UUID.randomUUID().toString().replace("-", "") + ".jpg";
             String imagePath = imgPath + randomName;
@@ -92,7 +95,6 @@ public class QuestionServiceImpl implements QuestionService {
         } else {
             questionNew.setQuestionDetails(preQuestionDetails);
             return questionRepo.save(questionNew);
-
         }
 
 
@@ -154,6 +156,8 @@ public class QuestionServiceImpl implements QuestionService {
         Page<QuestionNew> all = questionRepo.findAll(pageable);
         all.forEach(questionNew -> {
             questionNew.setStage(StageEnum.getStageName(questionNew.getStage()));
+            questionNew.setDifficulty(DifficultEnum.getDifficultName(questionNew.getDifficulty()));
+            questionNew.setQuestionType(QuestionTypeEnum.getQuestionTypeName(questionNew.getQuestionType()));
         });
         return all;
     }
@@ -165,6 +169,8 @@ public class QuestionServiceImpl implements QuestionService {
         Page<QuestionNew> all = questionRepo.findByStage(StageEnum.getStageCode(stage), pageable);
         all.forEach(questionNew -> {
             questionNew.setStage(StageEnum.getStageName(questionNew.getStage()));
+            questionNew.setDifficulty(DifficultEnum.getDifficultName(questionNew.getDifficulty()));
+            questionNew.setQuestionType(QuestionTypeEnum.getQuestionTypeName(questionNew.getQuestionType()));
         });
         return all;
     }
