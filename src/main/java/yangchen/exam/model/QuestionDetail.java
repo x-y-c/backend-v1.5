@@ -15,4 +15,6 @@ import lombok.NoArgsConstructor;
 public class QuestionDetail {
     private String title;
     private String question;
+    private String id;
+    private String customBh;
 }

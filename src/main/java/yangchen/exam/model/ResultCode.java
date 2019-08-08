@@ -32,5 +32,6 @@ public class ResultCode {
     public static String USER_EXIST = "R0004";
     public static String NET_ERROR = "R0005";
     public static String FILE_UPLOAD_NULL = "R0006";
+    public static String OVER_ENDTIME = "R0007";
 
 }

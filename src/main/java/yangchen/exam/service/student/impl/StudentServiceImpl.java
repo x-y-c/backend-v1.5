@@ -5,6 +5,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.StudentNew;
 import yangchen.exam.model.JsonResult;
@@ -100,13 +101,15 @@ public class StudentServiceImpl implements studentService {
 
     @Override
     public Page<StudentNew> getPage(Integer pageNum, Integer pageLimit) {
-        Pageable pageable = PageRequest.of(pageNum - 1, pageLimit);
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
+        Pageable pageable = PageRequest.of(pageNum - 1, pageLimit, sort);
         return studentRepo.findAll(pageable);
     }
 
     @Override
     public Page<StudentNew> getGradePage(String grade, Integer pageNum, Integer pageLimit) {
-        Pageable pageable = PageRequest.of(pageNum - 1, pageLimit);
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
+        Pageable pageable = PageRequest.of(pageNum - 1, pageLimit,sort);
         return studentRepo.findByStudentGrade(grade, pageable);
     }
 

@@ -245,6 +245,8 @@ public class ExaminationServiceImpl implements ExaminationService {
                 QuestionDetail questionDetail = new QuestionDetail();
                 questionDetail.setQuestion(questionById.getQuestionDetails());
                 questionDetail.setTitle(questionById.getQuestionName());
+                questionDetail.setCustomBh(questionById.getCustomBh());
+                questionDetail.setId(String.valueOf(questionById.getId()));
                 result.add(questionDetail);
             }
         }

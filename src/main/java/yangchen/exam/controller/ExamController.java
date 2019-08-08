@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import yangchen.exam.entity.ExamGroupNew;
 import yangchen.exam.entity.ExamInfo;
 import yangchen.exam.model.*;
+import yangchen.exam.repo.ExamGroupRepo;
 import yangchen.exam.service.examInfo.ExamInfoService;
 import yangchen.exam.service.examination.ExamGroupService;
 import yangchen.exam.service.examination.ExaminationService;
@@ -34,6 +35,9 @@ public class ExamController {
 
     @Autowired
     private ExamInfoService examInfoService;
+
+    @Autowired
+    private ExamGroupRepo examGroupRepo;
 
     public static final Logger LOGGER = LoggerFactory.getLogger(ExamController.class);
 
@@ -108,6 +112,7 @@ public class ExamController {
 
     /**
      * 这里再包装一层，判断试卷是否已经进行作答了，如果作答了，返回一个boolean的值；
+     *
      * @param id
      * @return
      */
@@ -121,12 +126,12 @@ public class ExamController {
     public JsonResult getExamGroup(Integer id) {
         List<ExamGroupNew> allExamGroup = examGroupService.getAllExamGroup(id);
         return JsonResult.succResult(allExamGroup);
-        
+
     }
 
-    @RequestMapping(value = "/examGroup/page",method = RequestMethod.GET)
-    public JsonResult getPagedExamGroup(int page,int pageLimit){
-        Page<ExamGroupNew> pageExamGroup = examGroupService.getPageExamGroup(page-1, pageLimit);
+    @RequestMapping(value = "/examGroup/page", method = RequestMethod.GET)
+    public JsonResult getPagedExamGroup(int page, int pageLimit) {
+        Page<ExamGroupNew> pageExamGroup = examGroupService.getPageExamGroup(page - 1, pageLimit);
         return JsonResult.succResult(pageExamGroup);
 
     }
@@ -137,26 +142,39 @@ public class ExamController {
         return JsonResult.succResult(aBoolean);
     }
 
-    @RequestMapping(value = {"/",""}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/", ""}, method = RequestMethod.GET)
     public JsonResult getTtl(@RequestParam Integer examinationId) {
         ExamInfo examInfo = examInfoService.getExamInfoByExaminationId(examinationId);
         return JsonResult.succResult(examInfo);
     }
-    @RequestMapping(value = "/groupInfo",method = RequestMethod.GET)
+
+    @RequestMapping(value = "/groupInfo", method = RequestMethod.GET)
     public JsonResult getExamGroupInfo(@RequestParam Integer id) {
         List<ExamGroupNew> examGroup = examGroupService.getExamGroup(id);
         return JsonResult.succResult(examGroup);
     }
 
-    @RequestMapping(value = "/delete",method = RequestMethod.GET)
-    public JsonResult deleteExamGroupInfo(@RequestParam Integer id){
+    @RequestMapping(value = "/delete", method = RequestMethod.GET)
+    public JsonResult deleteExamGroupInfo(@RequestParam Integer id) {
         examGroupService.deleteExamInfo(id);
         return JsonResult.succResult(null);
     }
-    @RequestMapping(value = "/update",method = RequestMethod.POST)
-    public JsonResult updateExamGroupInfo(@RequestBody ExamGroupNew examGroupNew){
-        examGroupService.updateExamInfo(examGroupNew.getId(),examGroupNew.getExamDesc(),examGroupNew.getExamTime(),examGroupNew.getBeginTime());
+
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    public JsonResult updateExamGroupInfo(@RequestBody ExamGroupNew examGroupNew) {
+        examGroupService.updateExamInfo(examGroupNew.getId(), examGroupNew.getExamDesc(), examGroupNew.getExamTime(), examGroupNew.getBeginTime());
         return JsonResult.succResult(null);
+    }
+
+    @RequestMapping(value = "/edit", method = RequestMethod.GET)
+    public JsonResult editExamGroupInfo(@RequestParam String examGroupId) {
+        ExamGroupNew examGroupNew = examGroupRepo.findById(Integer.valueOf(examGroupId)).get();
+        LOGGER.info(examGroupId.toString());
+        if (examGroupNew.getEndTime().before(new Timestamp(System.currentTimeMillis()))) {
+            return JsonResult.errorResult(ResultCode.OVER_ENDTIME,"over",null);
+        } else {
+            return JsonResult.succResult(null);
+        }
     }
 
 }
