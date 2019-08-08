@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ExcelScoreModel {
     private Integer id;
-    private String grade;
     private Integer studentID;
+    private String grade;
     private String name;
     private Double score;
 }

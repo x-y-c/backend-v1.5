@@ -12,6 +12,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ExcelSubmitModel {
 
+    private Integer studentNumber;
+    private String studentName;
+    private Integer examPaperId;
     private String questionBh;
     private String questionName;
     private String stage;

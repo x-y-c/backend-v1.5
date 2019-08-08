@@ -98,10 +98,11 @@ public class ScoreServiceImpl implements ScoreService {
 
         ExcelWriter writer = ExcelUtil.getWriter();
         writer.addHeaderAlias("id", "序号");
-        writer.addHeaderAlias("name", "姓名");
         writer.addHeaderAlias("grade", "班级");
-        writer.addHeaderAlias("score", "成绩");
         writer.addHeaderAlias("studentID", "学号");
+        writer.addHeaderAlias("name", "姓名");
+        writer.addHeaderAlias("score", "成绩");
+
         writer.write(rows, true);
 
         response.setContentType("application/vnd.ms-excel;charset=utf-8");
@@ -125,6 +126,8 @@ public class ScoreServiceImpl implements ScoreService {
          * studentId,questionId-->score
          * question-->question_new
          */
+
+        String examDesc = "";
 
         List<ExcelSubmitModel> result = new ArrayList<>();
         List<ExamInfo> examInfoByExamGroup = examInfoService.getExamInfoByExamGroup(examGroupId);
@@ -163,9 +166,13 @@ public class ScoreServiceImpl implements ScoreService {
                         .questionName(question.getQuestionName())
                         .score(Double.valueOf(score.getScore()))
                         .stage(StageEnum.getStageName(question.getStage()))
+                        .examPaperId(examinationId)
+                        .studentNumber(examInfo.getStudentNumber())
+                        .studentName(examInfo.getStudentName())
                         .build());
 
 
+                examDesc = examInfo.getDesc();
             }
 
 
@@ -203,6 +210,9 @@ public class ScoreServiceImpl implements ScoreService {
         }
 
         ExcelWriter writer = ExcelUtil.getWriter();
+        writer.addHeaderAlias("studentNumber","学号");
+        writer.addHeaderAlias("studentName","姓名");
+        writer.addHeaderAlias("examPaperId","试卷编号");
         writer.addHeaderAlias("questionBh", "题目编号");
         writer.addHeaderAlias("questionName", "题目名称");
         writer.addHeaderAlias("stage", "阶段");
@@ -214,7 +224,7 @@ public class ScoreServiceImpl implements ScoreService {
         writer.write(rows, true);
 
         response.setContentType("application/vnd.ms-excel;charset=utf-8");
-        String value = "attachment;filename=" + URLEncoder.encode("学生提交记录导出（总）"+ ".xls", "UTF-8");
+        String value = "attachment;filename=" + URLEncoder.encode(examDesc+"_学生提交记录导出（总）"+ ".xls", "UTF-8");
         response.setHeader("Content-Disposition", value);
         ServletOutputStream outputStream = response.getOutputStream();
 
