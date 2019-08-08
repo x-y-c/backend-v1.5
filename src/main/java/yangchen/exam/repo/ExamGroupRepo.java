@@ -42,6 +42,6 @@ public interface ExamGroupRepo extends JpaRepository<ExamGroupNew, Integer> {
     void deleteExamGroupNewById(Integer id);
 
     @Modifying
-    @Query(value = "update exam_group_new set exam_description=?1,exam_time=?2,begin_time=?3 where id=?4",nativeQuery = true)
-    void updateExamGroup(String examDesc,Integer examTime,Timestamp beginTime,Integer id);
+    @Query(value = "update exam_group_new set exam_description=?1,exam_time=?2,begin_time=?3 ,end_time=?4 where id=?5",nativeQuery = true)
+    void updateExamGroup(String examDesc,Integer examTime,Timestamp beginTime,Timestamp endTime,Integer id);
 }

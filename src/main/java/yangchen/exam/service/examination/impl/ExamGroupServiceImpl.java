@@ -90,7 +90,8 @@ public class ExamGroupServiceImpl implements ExamGroupService {
     @Override
     @Transactional
     public void updateExamInfo(Integer id, String examDesc, Integer examTime, Timestamp beginTime) {
-        examGroupRepo.updateExamGroup(examDesc, examTime, beginTime, id);
+        Timestamp endTime = new Timestamp(beginTime.getTime() + examTime * 60 * 1000);
+        examGroupRepo.updateExamGroup(examDesc, examTime, beginTime, endTime, id);
     }
 
 

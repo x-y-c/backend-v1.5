@@ -144,7 +144,7 @@ public class ExamController {
 
     @RequestMapping(value = {"/", ""}, method = RequestMethod.GET)
     public JsonResult getTtl(@RequestParam Integer examinationId) {
-        ExamInfo examInfo = examInfoService.getExamInfoByExaminationId(examinationId);
+        ExamInfoResult examInfo = examInfoService.getExamInfoResultByExaminationId(examinationId);
         return JsonResult.succResult(examInfo);
     }
 

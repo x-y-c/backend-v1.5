@@ -7,10 +7,7 @@ import cn.hutool.poi.excel.ExcelWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yangchen.exam.Enum.StageEnum;
-import yangchen.exam.entity.ExamInfo;
-import yangchen.exam.entity.QuestionNew;
-import yangchen.exam.entity.Score;
-import yangchen.exam.entity.Submit;
+import yangchen.exam.entity.*;
 import yangchen.exam.model.ExcelScoreModel;
 import yangchen.exam.model.ExcelSubmitModel;
 import yangchen.exam.model.ScoreAdmin;
@@ -171,8 +168,9 @@ public class ScoreServiceImpl implements ScoreService {
                         .studentName(examInfo.getStudentName())
                         .build());
 
+                ExamGroupNew examGroupNew = examGroupRepo.findById(examInfo.getExamGroupId()).get();
 
-                examDesc = examInfo.getDesc();
+                examDesc = examGroupNew.getExamDesc();
             }
 
 
@@ -186,33 +184,12 @@ public class ScoreServiceImpl implements ScoreService {
              */
 
 
-//            ExcelWriter writer = ExcelUtil.getWriter();
-//            writer.addHeaderAlias("questionBh", "题目编号");
-//            writer.addHeaderAlias("questionName", "题目名称");
-//            writer.addHeaderAlias("stage", "阶段");
-//            writer.addHeaderAlias("questionDesc", "题目描述");
-//            writer.addHeaderAlias("src", "学生代码");
-//            writer.addHeaderAlias("score", "成绩");
-//
-//            List<ExcelSubmitModel> rows = CollUtil.newArrayList(result);
-//            writer.write(rows, true);
-//
-//
-//            response.setContentType("application/vnd.ms-excel;charset=utf-8");
-//            String value = "attachment;filename=" + URLEncoder.encode(examInfo.getDesc()+"_"+examInfo.getStudentNumber()+"_"+examInfo.getStudentNumber() + ".xls", "UTF-8");
-//            response.setHeader("Content-Disposition", value);
-//            ServletOutputStream outputStream = response.getOutputStream();
-//
-//            writer.flush(outputStream, true);
-//            writer.close();
-//            IoUtil.close(outputStream);
-
         }
 
         ExcelWriter writer = ExcelUtil.getWriter();
-        writer.addHeaderAlias("studentNumber","学号");
-        writer.addHeaderAlias("studentName","姓名");
-        writer.addHeaderAlias("examPaperId","试卷编号");
+        writer.addHeaderAlias("studentNumber", "学号");
+        writer.addHeaderAlias("studentName", "姓名");
+        writer.addHeaderAlias("examPaperId", "试卷编号");
         writer.addHeaderAlias("questionBh", "题目编号");
         writer.addHeaderAlias("questionName", "题目名称");
         writer.addHeaderAlias("stage", "阶段");
@@ -224,7 +201,7 @@ public class ScoreServiceImpl implements ScoreService {
         writer.write(rows, true);
 
         response.setContentType("application/vnd.ms-excel;charset=utf-8");
-        String value = "attachment;filename=" + URLEncoder.encode(examDesc+"_学生提交记录导出（总）"+ ".xls", "UTF-8");
+        String value = "attachment;filename=" + URLEncoder.encode(examDesc + "_学生提交记录导出（总）" + ".xls", "UTF-8");
         response.setHeader("Content-Disposition", value);
         ServletOutputStream outputStream = response.getOutputStream();
 
@@ -244,7 +221,7 @@ public class ScoreServiceImpl implements ScoreService {
             if (examInfo.getExaminationScore() != null) {
                 ScoreDetail scoreDetail = new ScoreDetail();
                 scoreDetail.setScore(Double.valueOf(examInfo.getExaminationScore()));
-                scoreDetail.setExamName(examInfo.getDesc());
+                scoreDetail.setExamName(examGroupRepo.findById(examInfo.getExamGroupId()).get().getExamDesc());
                 result.add(scoreDetail);
             }
         });
@@ -257,7 +234,7 @@ public class ScoreServiceImpl implements ScoreService {
         List<ScoreAdmin> result = new ArrayList<>(examInfoByExamGroup.size());
         examInfoByExamGroup.forEach(examInfo -> {
             ScoreAdmin scoreAdmin = new ScoreAdmin();
-            scoreAdmin.setExamDesc(examInfo.getDesc());
+            scoreAdmin.setExamDesc(examGroupRepo.findById(examInfo.getExamGroupId()).get().getExamDesc());
             scoreAdmin.setScore(examInfo.getExaminationScore());
             scoreAdmin.setStudentName(examInfo.getStudentName());
             scoreAdmin.setStudentId(examInfo.getStudentNumber());

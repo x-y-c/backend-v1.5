@@ -8,6 +8,7 @@ import yangchen.exam.Enum.DifficultEnum;
 import yangchen.exam.Enum.StageEnum;
 import yangchen.exam.entity.*;
 import yangchen.exam.model.*;
+import yangchen.exam.repo.ExamGroupRepo;
 import yangchen.exam.repo.ExamInfoRepo;
 import yangchen.exam.repo.ExamPaperRepo;
 import yangchen.exam.repo.QuestionRepo;
@@ -58,6 +59,9 @@ public class ExaminationServiceImpl implements ExaminationService {
     @Autowired
     private QuestionRepo questionRepo;
 
+    @Autowired
+    private ExamGroupRepo examGroupRepo;
+
 
     @Override
     public List<ExaminationDetail> examInfoDetail(Integer studentId) {
@@ -67,16 +71,17 @@ public class ExaminationServiceImpl implements ExaminationService {
     }
 
 
-    public static List<ExaminationDetail> changeExamInfo(List<ExamInfo> list) {
+    public  List<ExaminationDetail> changeExamInfo(List<ExamInfo> list) {
         List<ExaminationDetail> examinationDetails = new ArrayList<>(list.size());
         for (ExamInfo examInfo : list) {
+            ExamGroupNew examGroupNew = examGroupRepo.findById(examInfo.getExamGroupId()).get();
             ExaminationDetail examinationDetail = new ExaminationDetail();
             examinationDetail.setCategory(examInfo.getCategory());
             examinationDetail.setId(examInfo.getExaminationId());
-            examinationDetail.setDesc(examInfo.getDesc());
-            examinationDetail.setEnd(examInfo.getExamEnd());
-            examinationDetail.setStart(examInfo.getExamStart());
-            examinationDetail.setTtl(examInfo.getTtl());
+            examinationDetail.setDesc(examGroupNew.getExamDesc());
+            examinationDetail.setEnd(examGroupNew.getEndTime());
+            examinationDetail.setStart(examGroupNew.getBeginTime());
+            examinationDetail.setTtl(Long.valueOf(examGroupNew.getExamTime()));
             examinationDetails.add(examinationDetail);
         }
         return examinationDetails;
@@ -203,19 +208,10 @@ public class ExaminationServiceImpl implements ExaminationService {
         ExamInfo examInfo = new ExamInfo();
         examInfo.setStudentName(student.getStudentName());//姓名
         examInfo.setStudentNumber(student.getStudentId());//学号
-        examInfo.setTtl(Long.valueOf(examParam.getTtl()));//时长
         examInfo.setExaminationId(savedExamPaper.getId());//试卷编号
-        examInfo.setExamStart(examParam.getBeginTime());
         examInfo.setExamGroupId(examPaperId);
         examInfo.setExaminationScore(0);
 
-
-        Timestamp beginTime = examParam.getBeginTime();
-        long time = beginTime.getTime();
-        //examParam.getTtl() 单位是秒，时间戳的单位是毫秒，所以，取出ttl*1000，转换为ms；
-        long endTime = time + examParam.getTtl() * 1000 * 60;
-        examInfo.setExamEnd(new Timestamp(endTime));//截止时间
-        examInfo.setDesc(examParam.getExamName());//题目
         ExamInfo examInfo1 = examInfoService.addExamInfo(examInfo);
         return examInfo1 != null;
 

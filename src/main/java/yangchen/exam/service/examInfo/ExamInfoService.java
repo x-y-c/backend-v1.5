@@ -7,6 +7,7 @@ package yangchen.exam.service.examInfo;
  */
 
 import yangchen.exam.entity.ExamInfo;
+import yangchen.exam.model.ExamInfoResult;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -45,6 +46,8 @@ public interface ExamInfoService {
 
 //    //已结束
 //    List<ExamInfo> getFinishedExamInfo(Integer studentId);
+
+    ExamInfoResult getExamInfoResultByExaminationId(Integer examinationId);
 
     ExamInfo getExamInfoByExaminationId(Integer examinationId);
 

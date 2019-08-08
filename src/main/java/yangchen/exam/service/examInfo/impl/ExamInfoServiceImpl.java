@@ -3,9 +3,12 @@ package yangchen.exam.service.examInfo.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import yangchen.exam.entity.ExamGroupNew;
 import yangchen.exam.entity.ExamInfo;
-import yangchen.exam.repo.ExamPaperRepo;
+import yangchen.exam.model.ExamInfoResult;
+import yangchen.exam.repo.ExamGroupRepo;
 import yangchen.exam.repo.ExamInfoRepo;
+import yangchen.exam.repo.ExamPaperRepo;
 import yangchen.exam.service.examInfo.ExamInfoService;
 
 import java.sql.Timestamp;
@@ -26,6 +29,9 @@ public class ExamInfoServiceImpl implements ExamInfoService {
     @Autowired
     private ExamPaperRepo examPaperRepo;
 
+    @Autowired
+    private ExamGroupRepo examGroupRepo;
+
     @Override
     public ExamInfo addExamInfo(ExamInfo examInfo) {
         return examInfoRepo.save(examInfo);
@@ -39,19 +45,42 @@ public class ExamInfoServiceImpl implements ExamInfoService {
 
     @Override
     public List<ExamInfo> getEndedExamInfo(Integer studentId, Timestamp timestamp) {
-        List<ExamInfo> endExam = examInfoRepo.findByStudentNumberAndExamEndBefore(studentId, timestamp);
+        List<ExamInfo> examInfoList = examInfoRepo.findByStudentNumber(studentId);
+        List<ExamInfo> endExam = new ArrayList<>(examInfoList.size());
+        examInfoList.parallelStream().forEach(examInfo -> {
+            ExamGroupNew examGroupNew = examGroupRepo.findById(examInfo.getExamGroupId()).get();
+            if (examGroupNew.getEndTime().before(timestamp)) {
+                endExam.add(examInfo);
+            }
+        });
         return endExam;
     }
 
     @Override
     public List<ExamInfo> getUnstartExamInfo(Integer studentId, Timestamp timestamp) {
-        List<ExamInfo> unstartedExam = examInfoRepo.findByStudentNumberAndExamStartAfter(studentId, timestamp);
+        List<ExamInfo> examInfoList = examInfoRepo.findByStudentNumber(studentId);
+        List<ExamInfo> unstartedExam = new ArrayList<>(examInfoList.size());
+        examInfoList.parallelStream().forEach(examInfo -> {
+            ExamGroupNew examGroupNew = examGroupRepo.findById(examInfo.getExamGroupId()).get();
+            if (examGroupNew.getBeginTime().after(timestamp)) {
+                unstartedExam.add(examInfo);
+            }
+        });
+
         return unstartedExam;
     }
 
     @Override
     public List<ExamInfo> getIngExamInfo(Integer studentId, Timestamp timestamp) {
-        List<ExamInfo> doingExam = examInfoRepo.findByStudentNumberAndExamStartBeforeAndExamEndAfter(studentId, timestamp, new Timestamp(System.currentTimeMillis()));
+        List<ExamInfo> examInfoList = examInfoRepo.findByStudentNumber(studentId);
+        List<ExamInfo> doingExam = new ArrayList<>(examInfoList.size());
+        examInfoList.parallelStream().forEach(examInfo -> {
+            ExamGroupNew examGroupNew = examGroupRepo.findById(examInfo.getExamGroupId()).get();
+            if (examGroupNew.getBeginTime().before(timestamp) && examGroupNew.getEndTime().after(timestamp)) {
+                doingExam.add(examInfo);
+            }
+        });
+//        List<ExamInfo> doingExam = examInfoRepo.findByStudentNumberAndExamStartBeforeAndExamEndAfter(studentId, timestamp, new Timestamp(System.currentTimeMillis()));
         List<ExamInfo> result = new ArrayList<>(doingExam.size());
         doingExam.forEach(examInfo -> {
             //符合时间，且没有交卷的
@@ -62,19 +91,22 @@ public class ExamInfoServiceImpl implements ExamInfoService {
         return result;
     }
 
-//    @Override
-//    public List<ExamInfo> getFinishedExamInfo(Integer studentId) {
-//        List<ExamInfo> finishedExam = examInfoRepo.getFinishedExam(studentId);
-//        return finishedExam;
-//    }
-
-
     @Cacheable(value = "examInfo")
     @Override
+    public ExamInfoResult getExamInfoResultByExaminationId(Integer examinationId) {
+        ExamInfo examInfo = examInfoRepo.findByExaminationId(examinationId);
+        ExamInfoResult examInfoResult = new ExamInfoResult(examInfo);
+        ExamGroupNew examGroupNew = examGroupRepo.findById(examInfo.getExamGroupId()).get();
+        examInfoResult.setExamStart(examGroupNew.getBeginTime());
+        examInfoResult.setExamEnd(examGroupNew.getEndTime());
+        return examInfoResult;
+    }
+
     public ExamInfo getExamInfoByExaminationId(Integer examinationId) {
         return examInfoRepo.findByExaminationId(examinationId);
     }
-@Cacheable(value = "examInfoLists")
+
+    @Cacheable(value = "examInfoLists")
     @Override
     public List<ExamInfo> getExamInfoByExamGroupId(Integer examGroupId) {
         List<ExamInfo> examInfoList = examInfoRepo.findByExamGroupId(examGroupId);
@@ -90,6 +122,7 @@ public class ExamInfoServiceImpl implements ExamInfoService {
     @Override
     public Integer getTtl(Integer examinationId) {
         ExamInfo byExaminationId = examInfoRepo.findByExaminationId(examinationId);
-        return Math.toIntExact(byExaminationId.getTtl());
+        ExamGroupNew examGroupNew = examGroupRepo.findById(byExaminationId.getExamGroupId()).get();
+        return Math.toIntExact(examGroupNew.getExamTime());
     }
 }

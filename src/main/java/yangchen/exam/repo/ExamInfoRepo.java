@@ -21,15 +21,6 @@ public interface ExamInfoRepo extends JpaRepository<ExamInfo, Integer> {
 
     List<ExamInfo> findByExamGroupId(Integer examGroupId);
 
-
-    List<ExamInfo> findByStudentNumberAndExamStartAfter(Integer studentId, Timestamp timestamp);
-
-    List<ExamInfo> findByStudentNumberAndExamStartBeforeAndExamEndAfter(Integer studentId, Timestamp timestamp, Timestamp endTime);
-
-    List<ExamInfo> findByStudentNumberAndExamEndBefore(Integer studentId, Timestamp timestamp);
-
-    List<ExamInfo> getByExamGroupId(Integer examGroupId);
-
     @Transactional
     @Modifying
     void deleteExamInfoByExamGroupId(Integer id);
