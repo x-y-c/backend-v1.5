@@ -16,12 +16,16 @@ import yangchen.exam.repo.*;
 import yangchen.exam.service.examInfo.ExamInfoService;
 import yangchen.exam.service.question.QuestionService;
 import yangchen.exam.service.score.ScoreService;
+import yangchen.exam.util.ZipUtil;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -123,13 +127,13 @@ public class ScoreServiceImpl implements ScoreService {
          * studentId,questionId-->score
          * question-->question_new
          */
-
+        HashMap<String, ByteArrayOutputStream> excel = new HashMap<>();
         String examDesc = "";
 
-        List<ExcelSubmitModel> result = new ArrayList<>();
         List<ExamInfo> examInfoByExamGroup = examInfoService.getExamInfoByExamGroup(examGroupId);
 
         for (ExamInfo examInfo : examInfoByExamGroup) {
+        List<ExcelSubmitModel> result = new ArrayList<>();
             Integer examinationId = examInfo.getExaminationId();
             /**
              * 通过试卷id获取 题目编号
@@ -183,32 +187,43 @@ public class ScoreServiceImpl implements ScoreService {
              *     private Double score;
              */
 
+            ByteArrayOutputStream byteArrayInputStream = new ByteArrayOutputStream();
+            ExcelWriter writer = ExcelUtil.getWriter();
+            writer.addHeaderAlias("studentNumber", "学号");
+            writer.addHeaderAlias("studentName", "姓名");
+            writer.addHeaderAlias("examPaperId", "试卷编号");
+            writer.addHeaderAlias("questionBh", "题目编号");
+            writer.addHeaderAlias("questionName", "题目名称");
+            writer.addHeaderAlias("stage", "阶段");
+            writer.addHeaderAlias("questionDesc", "题目描述");
+            writer.addHeaderAlias("src", "学生代码");
+            writer.addHeaderAlias("score", "成绩");
 
+            List<ExcelSubmitModel> rows = CollUtil.newArrayList(result);
+            writer.write(rows, true);
+            writer.flush(byteArrayInputStream, true);
+            writer.close();
+            excel.put(examInfo.getStudentName() + ".xls", byteArrayInputStream);
+
+            System.out.println(byteArrayInputStream.size());
+            byteArrayInputStream.close();
         }
+        ByteArrayOutputStream zip = ZipUtil.zip(excel, new File("d://test8.zip"));
 
-        ExcelWriter writer = ExcelUtil.getWriter();
-        writer.addHeaderAlias("studentNumber", "学号");
-        writer.addHeaderAlias("studentName", "姓名");
-        writer.addHeaderAlias("examPaperId", "试卷编号");
-        writer.addHeaderAlias("questionBh", "题目编号");
-        writer.addHeaderAlias("questionName", "题目名称");
-        writer.addHeaderAlias("stage", "阶段");
-        writer.addHeaderAlias("questionDesc", "题目描述");
-        writer.addHeaderAlias("src", "学生代码");
-        writer.addHeaderAlias("score", "成绩");
+        response.setHeader("Content-Disposition","attachment;filename="+"test.zip");
+        response.setContentType("application/zip");
+        response.getOutputStream().write(zip.toByteArray());
 
-        List<ExcelSubmitModel> rows = CollUtil.newArrayList(result);
-        writer.write(rows, true);
 
-        response.setContentType("application/vnd.ms-excel;charset=utf-8");
-        String value = "attachment;filename=" + URLEncoder.encode(examDesc + "_学生提交记录导出（总）" + ".xls", "UTF-8");
-        response.setHeader("Content-Disposition", value);
-        ServletOutputStream outputStream = response.getOutputStream();
+//        response.setContentType("application/vnd.ms-excel;charset=utf-8");
+//        String value = "attachment;filename=" + URLEncoder.encode(examDesc + "_学生提交记录导出（总）" + ".xls", "UTF-8");
+//        response.setHeader("Content-Disposition", value);
+//        ServletOutputStream outputStream = response.getOutputStream();
+//
+//        writer.flush(outputStream, true);
+//        writer.close();
 
-        writer.flush(outputStream, true);
-        writer.close();
-        IoUtil.close(outputStream);
-        return result;
+        return null;
 
 
     }
