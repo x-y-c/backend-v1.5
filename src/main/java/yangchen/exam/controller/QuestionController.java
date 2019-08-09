@@ -15,6 +15,7 @@ import yangchen.exam.entity.QuestionNew;
 import yangchen.exam.entity.TestCase;
 import yangchen.exam.model.JsonResult;
 import yangchen.exam.model.ResultCode;
+import yangchen.exam.repo.QuestionRepo;
 import yangchen.exam.service.FileUpload.FileUpAndDownService;
 import yangchen.exam.service.excelservice.ExcelServiceImpl;
 import yangchen.exam.service.question.QuestionService;
@@ -59,6 +60,9 @@ public class QuestionController {
     private ExcelServiceImpl excelService;
 
     @Autowired
+    private QuestionRepo questionRepo;
+
+    @Autowired
     private FileUpAndDownService fileUpAndDownService;
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -82,8 +86,8 @@ public class QuestionController {
         questionById.setStage(StageEnum.getStageName(questionById.getStage()));
         questionById.setDifficulty(DifficultEnum.getDifficultName(questionById.getDifficulty()));
         questionById.setQuestionType(QuestionTypeEnum.getQuestionTypeName(questionById.getQuestionType()));
-        if(!StringUtils.isEmpty(questionById.getSourceCode())){
-        questionById.setSourceCode(DecodeSourceCode.getCode(questionById.getSourceCode()));
+        if (!StringUtils.isEmpty(questionById.getSourceCode())) {
+            questionById.setSourceCode(DecodeSourceCode.getCode(questionById.getSourceCode()));
         }
         LOGGER.info("StageEnum.getStageName(questionById.getStage())", StageEnum.getStageName(questionById.getStage()));
         //LOGGER.info("[{}] find question by Id,the ip = [{}]", UserUtil.getUserId(httpServletRequest), IpUtil.getIpAddr(httpServletRequest));
@@ -108,7 +112,7 @@ public class QuestionController {
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public JsonResult getAllQuestion() {
-        List<QuestionNew> questionList = questionService.findQuestionAll();
+        List<QuestionNew> questionList = questionRepo.findByActivedIsTrue();
         return JsonResult.succResult(questionList);
     }
 

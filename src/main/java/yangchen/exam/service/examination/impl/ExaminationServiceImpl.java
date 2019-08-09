@@ -153,8 +153,7 @@ public class ExaminationServiceImpl implements ExaminationService {
         });
         List<List<QuestionNew>> questionList = new ArrayList<>();
         for (TwoTuple<String, String> exam : examList) {
-            //List<QuestionNew> result = questionRepo.findByStageAndDifficulty(exam.first, exam.second);
-            List<QuestionNew> result = questionRepo.findByStageAndDifficultyAndQuestionType(exam.first, exam.second, "1000206");
+            List<QuestionNew> result = questionRepo.findByStageAndDifficultyAndQuestionTypeAndActivedIsTrue(exam.first, exam.second, "1000206");
             questionList.add(result);
         }
         ExamGroupNew examGroup1 = examGroupService.addExamGroup(examGroup);
@@ -234,7 +233,6 @@ public class ExaminationServiceImpl implements ExaminationService {
         String titles = byId.get().getTitleId();
         String[] split = titles.split(",");
         LOGGER.info(String.valueOf(split.length));
-//        LOGGER.info(split[0] + "\n" + split[1] + "\n" + split[2] + "\n");
         for (String title : split) {
             QuestionNew questionById = questionService.findQuestionById(Integer.valueOf(title));
             if (questionById != null) {
