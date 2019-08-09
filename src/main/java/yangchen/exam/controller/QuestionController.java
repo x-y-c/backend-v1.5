@@ -1,6 +1,7 @@
 package yangchen.exam.controller;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -182,7 +183,7 @@ public class QuestionController {
        /*
        修改sourceCode 格式
         */
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().disableHtmlEscaping().create();
         SourceCode sourceCode = new SourceCode();
         String code = questionNew.getSourceCode();
         List<SourceCodeInfo> key = new ArrayList<>();
