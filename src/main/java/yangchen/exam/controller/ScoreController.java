@@ -85,4 +85,9 @@ public class ScoreController {
     public void downloadSubmit(HttpServletResponse response,@RequestParam Integer id) throws IOException {
         List<ExcelSubmitModel> excelSubmitModels = scoreService.exportSubmit(response,id);
     }
+
+    @GetMapping("/xyc")
+    public void downloadSubmitAll(HttpServletResponse response,@RequestParam Integer id)throws IOException{
+        scoreService.exportSubmitAll(response,id);
+    }
 }

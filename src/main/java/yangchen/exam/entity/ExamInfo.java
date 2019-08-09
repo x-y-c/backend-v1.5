@@ -44,10 +44,6 @@ public class ExamInfo {
     private Integer examinationScore;
 
 
-    @Column(name = "category")
-    private String category;
-
-
     @PrePersist
     private void init() {
         createdAt = new Timestamp(System.currentTimeMillis());

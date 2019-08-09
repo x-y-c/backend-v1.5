@@ -80,6 +80,12 @@ public class ScoreServiceImpl implements ScoreService {
 
     }
 
+    /**
+     * 导出学生成绩信息Excel
+     * @param response    浏览器response
+     * @param examGroupId
+     * @throws IOException
+     */
     @Override
     public void exportScore(HttpServletResponse response, Integer examGroupId) throws IOException {
         List<ExcelScoreModel> excelScoreModels = new ArrayList<>();
@@ -118,7 +124,9 @@ public class ScoreServiceImpl implements ScoreService {
     }
 
 
-    //todo
+   /*
+   导出每个学生的提交zip
+    */
     @Override
     public List<ExcelSubmitModel> exportSubmit(HttpServletResponse response, Integer examGroupId) throws IOException {
         /**
@@ -133,15 +141,13 @@ public class ScoreServiceImpl implements ScoreService {
         List<ExamInfo> examInfoByExamGroup = examInfoService.getExamInfoByExamGroup(examGroupId);
 
         for (ExamInfo examInfo : examInfoByExamGroup) {
-        List<ExcelSubmitModel> result = new ArrayList<>();
+            List<ExcelSubmitModel> result = new ArrayList<>();
             Integer examinationId = examInfo.getExaminationId();
             /**
              * 通过试卷id获取 题目编号
              */
             List<String> questionBhList = questionService.getQuestionBhList(examinationId);
 
-
-//            List<Submit> submitList = submitRepo.findByExaminationId(examinationId);
             List<Submit> submitList = new ArrayList<>();
             for (String questionBh : questionBhList) {
                 Submit lastSubmit = submitRepo.getLastSubmit(examinationId, questionBh);
@@ -165,7 +171,7 @@ public class ScoreServiceImpl implements ScoreService {
                         .src(submit.getSrc())
                         .questionDesc(question.getQuestionDescription())
                         .questionName(question.getQuestionName())
-                        .score(Double.valueOf(score.getScore()))
+                        .score(Double.valueOf(score.getScore()) / 5)
                         .stage(StageEnum.getStageName(question.getStage()))
                         .examPaperId(examinationId)
                         .studentNumber(examInfo.getStudentNumber())
@@ -199,18 +205,19 @@ public class ScoreServiceImpl implements ScoreService {
             writer.addHeaderAlias("src", "学生代码");
             writer.addHeaderAlias("score", "成绩");
 
+            result.add(ExcelSubmitModel.builder().score(Double.valueOf(examInfo.getExaminationScore())).build());
             List<ExcelSubmitModel> rows = CollUtil.newArrayList(result);
             writer.write(rows, true);
             writer.flush(byteArrayInputStream, true);
             writer.close();
-            excel.put(examInfo.getStudentName() + ".xls", byteArrayInputStream);
+            excel.put(examDesc+"_"+examInfo.getStudentNumber()+"_"+examInfo.getStudentName() + ".xls", byteArrayInputStream);
 
             System.out.println(byteArrayInputStream.size());
             byteArrayInputStream.close();
         }
         ByteArrayOutputStream zip = ZipUtil.zip(excel, new File("d://test8.zip"));
 
-        response.setHeader("Content-Disposition","attachment;filename="+"test.zip");
+        response.setHeader("Content-Disposition", "attachment;filename="+ URLEncoder.encode( examDesc + "_学生提交记录.zip","utf-8"));
         response.setContentType("application/zip");
         response.getOutputStream().write(zip.toByteArray());
 
@@ -227,6 +234,108 @@ public class ScoreServiceImpl implements ScoreService {
 
 
     }
+
+
+    @Override
+    public List<ExcelSubmitModel> exportSubmitAll(HttpServletResponse response, Integer examGroupId) throws IOException {
+        /**
+         * examnationId --> examInfo
+         * examGroupId-->submit
+         * studentId,questionId-->score
+         * question-->question_new
+         */
+
+        String examDesc = "";
+
+        List<ExcelSubmitModel> result = new ArrayList<>();
+        List<ExamInfo> examInfoByExamGroup = examInfoService.getExamInfoByExamGroup(examGroupId);
+
+        for (ExamInfo examInfo : examInfoByExamGroup) {
+            Integer examinationId = examInfo.getExaminationId();
+            /**
+             * 通过试卷id获取 题目编号
+             */
+            List<String> questionBhList = questionService.getQuestionBhList(examinationId);
+
+            List<Submit> submitList = new ArrayList<>();
+            for (String questionBh : questionBhList) {
+                Submit lastSubmit = submitRepo.getLastSubmit(examinationId, questionBh);
+                if (lastSubmit == null) {
+
+                    submitList.add(Submit.builder().questionId(questionBh).studentId(Long.valueOf(examInfo.getStudentNumber())).src("未提交").build());
+                } else {
+                    submitList.add(lastSubmit);
+                }
+            }
+            for (Submit submit : submitList) {
+                QuestionNew question = questionRepo.findByQuestionBh(submit.getQuestionId());
+                Score score = scoreRepo.findByStudentIdAndQuestionId(examInfo.getStudentNumber(), question.getQuestionBh());
+                if (score == null) {
+                    score = new Score();
+                    score.setScore(0);
+                }
+
+                result.add(ExcelSubmitModel.builder()
+                        .questionBh(submit.getQuestionId())
+                        .src(submit.getSrc())
+                        .questionDesc(question.getQuestionDescription())
+                        .questionName(question.getQuestionName())
+                        .score(Double.valueOf(score.getScore())/5)
+                        .stage(StageEnum.getStageName(question.getStage()))
+                        .examPaperId(examinationId)
+                        .studentNumber(examInfo.getStudentNumber())
+                        .studentName(examInfo.getStudentName())
+                        .build());
+
+                ExamGroupNew examGroupNew = examGroupRepo.findById(examInfo.getExamGroupId()).get();
+
+                examDesc = examGroupNew.getExamDesc();
+            }
+
+            /**
+             * private String questionBh;
+             *     private String questionName;
+             *     private String stage;
+             *     private String questionDesc;
+             *     private String src;
+             *     private Double score;
+             */
+
+
+        }
+        ExcelWriter writer = ExcelUtil.getWriter();
+        writer.addHeaderAlias("studentNumber", "学号");
+        writer.addHeaderAlias("studentName", "姓名");
+        writer.addHeaderAlias("examPaperId", "试卷编号");
+        writer.addHeaderAlias("questionBh", "题目编号");
+        writer.addHeaderAlias("questionName", "题目名称");
+        writer.addHeaderAlias("stage", "阶段");
+        writer.addHeaderAlias("questionDesc", "题目描述");
+        writer.addHeaderAlias("src", "学生代码");
+        writer.addHeaderAlias("score", "成绩");
+
+        List<ExcelSubmitModel> rows = CollUtil.newArrayList(result);
+        writer.write(rows, true);
+
+        response.setContentType("application/vnd.ms-excel;charset=utf-8");
+        String value = "attachment;filename=" + URLEncoder.encode(examDesc + "_学生提交记录导出（总）" + ".xls", "UTF-8");
+        response.setHeader("Content-Disposition", value);
+        ServletOutputStream outputStream = response.getOutputStream();
+
+        writer.flush(outputStream, true);
+        writer.close();
+        IoUtil.close(outputStream);
+        return result;
+    }
+
+
+
+
+
+
+
+
+
 
     @Override
     public List<ScoreDetail> getScoreDetailByStudentId(Integer studentId) {

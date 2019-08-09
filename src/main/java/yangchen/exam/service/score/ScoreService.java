@@ -26,6 +26,8 @@ public interface ScoreService {
 
     List<ExcelSubmitModel> exportSubmit(HttpServletResponse response, Integer examGroupId) throws IOException;
 
+    List<ExcelSubmitModel> exportSubmitAll(HttpServletResponse response, Integer examGroupId) throws IOException;
+
     /**
      * 通过学号查询成绩
      *

@@ -76,7 +76,6 @@ public class ExaminationServiceImpl implements ExaminationService {
         for (ExamInfo examInfo : list) {
             ExamGroupNew examGroupNew = examGroupRepo.findById(examInfo.getExamGroupId()).get();
             ExaminationDetail examinationDetail = new ExaminationDetail();
-            examinationDetail.setCategory(examInfo.getCategory());
             examinationDetail.setId(examInfo.getExaminationId());
             examinationDetail.setDesc(examGroupNew.getExamDesc());
             examinationDetail.setEnd(examGroupNew.getEndTime());
