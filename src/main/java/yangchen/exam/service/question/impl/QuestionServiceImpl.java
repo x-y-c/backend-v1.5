@@ -178,6 +178,45 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
+    public Page<QuestionNew> getIdQuestionPage(String value, Integer pageNo, Integer pageSize) {
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<QuestionNew> all = questionRepo.findById(Integer.valueOf(value), pageable);
+        all.forEach(questionNew -> {
+            questionNew.setStage(StageEnum.getStageName(questionNew.getStage()));
+            questionNew.setDifficulty(DifficultEnum.getDifficultName(questionNew.getDifficulty()));
+            questionNew.setQuestionType(QuestionTypeEnum.getQuestionTypeName(questionNew.getQuestionType()));
+        });
+        return all;
+    }
+
+    @Override
+    public Page<QuestionNew> getTitleQuestionPage(String value, Integer pageNo, Integer pageSize) {
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<QuestionNew> all = questionRepo.findByQuestionName(value, pageable);
+        all.forEach(questionNew -> {
+            questionNew.setStage(StageEnum.getStageName(questionNew.getStage()));
+            questionNew.setDifficulty(DifficultEnum.getDifficultName(questionNew.getDifficulty()));
+            questionNew.setQuestionType(QuestionTypeEnum.getQuestionTypeName(questionNew.getQuestionType()));
+        });
+        return all;
+    }
+
+    @Override
+    public Page<QuestionNew> getCustomBhQuestionPage(String value, Integer pageNo, Integer pageSize) {
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<QuestionNew> all = questionRepo.findByCustomBh(value, pageable);
+        all.forEach(questionNew -> {
+            questionNew.setStage(StageEnum.getStageName(questionNew.getStage()));
+            questionNew.setDifficulty(DifficultEnum.getDifficultName(questionNew.getDifficulty()));
+            questionNew.setQuestionType(QuestionTypeEnum.getQuestionTypeName(questionNew.getQuestionType()));
+        });
+        return all;
+    }
+
+    @Override
     public List<QuestionNew> searchStage(String stage) {
         return questionRepo.findByStage(StageEnum.getStageCode(stage));
     }

@@ -22,6 +22,12 @@ public interface QuestionRepo extends JpaRepository<QuestionNew, Integer> {
 
     Page<QuestionNew> findByStage(String stage, Pageable pageable);
 
+    Page<QuestionNew> findById(Integer id, Pageable pageable);
+
+    Page<QuestionNew> findByCustomBh(String customBh, Pageable pageable);
+
+    Page<QuestionNew> findByQuestionName(String questionName, Pageable pageable);
+
     List<QuestionNew> findByStage(String stage);
 
 

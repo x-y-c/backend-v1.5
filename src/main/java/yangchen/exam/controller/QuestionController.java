@@ -15,6 +15,7 @@ import yangchen.exam.entity.QuestionNew;
 import yangchen.exam.entity.TestCase;
 import yangchen.exam.model.JsonResult;
 import yangchen.exam.model.ResultCode;
+import yangchen.exam.repo.QuestionRepo;
 import yangchen.exam.service.FileUpload.FileUpAndDownService;
 import yangchen.exam.service.excelservice.ExcelServiceImpl;
 import yangchen.exam.service.question.QuestionService;
@@ -60,6 +61,9 @@ public class QuestionController {
 
     @Autowired
     private FileUpAndDownService fileUpAndDownService;
+
+    @Autowired
+    private QuestionRepo questionRepo;
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public JsonResult createQuestion(@RequestBody QuestionNew question) {
@@ -186,21 +190,33 @@ public class QuestionController {
     }
 
 
-    @RequestMapping(value = "/stage", method = RequestMethod.GET)
-    public JsonResult searchStage(@RequestParam(required = false) String stage, int page, int pageLimit) {
-//        LOGGER.info("[{}],[{}],[{}]",stage,page,pageLimit);
-        if (StringUtils.isEmpty(stage)) {
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    public JsonResult searchStage(@RequestParam(required = false) String condition,@RequestParam(required = false)String value, int page, int pageLimit) {
+        LOGGER.info("[{}],[{}],[{}],[{}]",condition,value,page,pageLimit);
+        if (StringUtils.isEmpty(value)||StringUtils.isEmpty(condition)) {
             Page<QuestionNew> pageQuestion = questionService.getPageQuestion(page - 1, pageLimit);
             return JsonResult.succResult(pageQuestion);
-
         }
-        Page<QuestionNew> stageQuestionPage = questionService.getStageQuestionPage(stage, page - 1, pageLimit);
+        else if(condition.equals("阶段")) {
+            Page<QuestionNew> stageQuestionPage = questionService.getStageQuestionPage(value, page - 1, pageLimit);
+            return JsonResult.succResult(stageQuestionPage);
+        }
+        else if(condition.equals("题号")) {
+            Page<QuestionNew> idQuestionPage = questionService.getIdQuestionPage(value,page - 1,pageLimit);
+            return JsonResult.succResult(idQuestionPage);
+        }
+        else if(condition.equals("题目")) {
+            Page<QuestionNew> titleQuestionPage = questionService.getTitleQuestionPage(value,page - 1,pageLimit);
+            return JsonResult.succResult(titleQuestionPage);
+        }
+        else if(condition.equals("出题人")) {
+            Page<QuestionNew> customBhQuestionPage = questionService.getCustomBhQuestionPage(value,page - 1,pageLimit);
+            return JsonResult.succResult(customBhQuestionPage);
+        }
+        else {
 
-//        questionNewList.forEach(questionNew -> {
-//            questionNew.setStage(StageEnum.getStageName(questionNew.getStage()));
-//        });
-        return JsonResult.succResult(stageQuestionPage);
+            return JsonResult.succResult(null);
+        }
     }
-
 
 }
