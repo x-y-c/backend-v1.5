@@ -1,7 +1,6 @@
 package yangchen.exam.util;
 
 import com.google.gson.Gson;
-import org.apache.commons.text.StringEscapeUtils;
 import yangchen.exam.model.SourceCode;
 
 /**
