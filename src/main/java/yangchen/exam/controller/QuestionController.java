@@ -20,6 +20,7 @@ import yangchen.exam.service.excelservice.ExcelServiceImpl;
 import yangchen.exam.service.question.QuestionService;
 import yangchen.exam.service.testInfo.TestCaseService;
 import yangchen.exam.service.testInfo.TestInfoService;
+import yangchen.exam.util.DecodeSourceCode;
 import yangchen.exam.util.IpUtil;
 import yangchen.exam.util.UserUtil;
 
@@ -81,6 +82,7 @@ public class QuestionController {
         questionById.setStage(StageEnum.getStageName(questionById.getStage()));
         questionById.setDifficulty(DifficultEnum.getDifficultName(questionById.getDifficulty()));
         questionById.setQuestionType(QuestionTypeEnum.getQuestionTypeName(questionById.getQuestionType()));
+        questionById.setSourceCode(DecodeSourceCode.getCode(questionById.getSourceCode()));
         LOGGER.info("StageEnum.getStageName(questionById.getStage())", StageEnum.getStageName(questionById.getStage()));
         //LOGGER.info("[{}] find question by Id,the ip = [{}]", UserUtil.getUserId(httpServletRequest), IpUtil.getIpAddr(httpServletRequest));
         return JsonResult.succResult(questionById);
@@ -171,26 +173,26 @@ public class QuestionController {
     public JsonResult uploadQuestion(@RequestBody QuestionNew questionNew) throws IOException {
         LOGGER.info(questionNew.toString());
         QuestionNew question = questionService.findByQuestionBh(questionNew.getQuestionBh());
-        if(question!=null){
+        if (question != null) {
             questionNew.setId(question.getId());
-        }else {
+        } else {
             String questionBh = UUID.randomUUID().toString().replace("-", "");
             questionNew.setQuestionBh(questionBh);
         }
         QuestionNew questionResult = questionService.saveQuestionWithImgDecode(questionNew);
-        return JsonResult.succResult(questionResult!=null);
+        return JsonResult.succResult(questionResult != null);
     }
 
 
     @RequestMapping(value = "/stage", method = RequestMethod.GET)
-    public JsonResult searchStage(@RequestParam(required = false)String stage,int page, int pageLimit){
+    public JsonResult searchStage(@RequestParam(required = false) String stage, int page, int pageLimit) {
 //        LOGGER.info("[{}],[{}],[{}]",stage,page,pageLimit);
-        if(StringUtils.isEmpty(stage)){
-            Page<QuestionNew> pageQuestion = questionService.getPageQuestion(page-1, pageLimit);
+        if (StringUtils.isEmpty(stage)) {
+            Page<QuestionNew> pageQuestion = questionService.getPageQuestion(page - 1, pageLimit);
             return JsonResult.succResult(pageQuestion);
 
         }
-        Page<QuestionNew> stageQuestionPage = questionService.getStageQuestionPage(stage, page-1, pageLimit);
+        Page<QuestionNew> stageQuestionPage = questionService.getStageQuestionPage(stage, page - 1, pageLimit);
 
 //        questionNewList.forEach(questionNew -> {
 //            questionNew.setStage(StageEnum.getStageName(questionNew.getStage()));
