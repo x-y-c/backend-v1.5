@@ -60,10 +60,10 @@ public class QuestionController {
     private ExcelServiceImpl excelService;
 
     @Autowired
-    private FileUpAndDownService fileUpAndDownService;
+    private QuestionRepo questionRepo;
 
     @Autowired
-    private QuestionRepo questionRepo;
+    private FileUpAndDownService fileUpAndDownService;
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public JsonResult createQuestion(@RequestBody QuestionNew question) {
@@ -86,8 +86,8 @@ public class QuestionController {
         questionById.setStage(StageEnum.getStageName(questionById.getStage()));
         questionById.setDifficulty(DifficultEnum.getDifficultName(questionById.getDifficulty()));
         questionById.setQuestionType(QuestionTypeEnum.getQuestionTypeName(questionById.getQuestionType()));
-        if(!StringUtils.isEmpty(questionById.getSourceCode())){
-        questionById.setSourceCode(DecodeSourceCode.getCode(questionById.getSourceCode()));
+        if (!StringUtils.isEmpty(questionById.getSourceCode())) {
+            questionById.setSourceCode(DecodeSourceCode.getCode(questionById.getSourceCode()));
         }
         LOGGER.info("StageEnum.getStageName(questionById.getStage())", StageEnum.getStageName(questionById.getStage()));
         //LOGGER.info("[{}] find question by Id,the ip = [{}]", UserUtil.getUserId(httpServletRequest), IpUtil.getIpAddr(httpServletRequest));
@@ -112,7 +112,7 @@ public class QuestionController {
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public JsonResult getAllQuestion() {
-        List<QuestionNew> questionList = questionService.findQuestionAll();
+        List<QuestionNew> questionList = questionRepo.findByActivedIsTrue();
         return JsonResult.succResult(questionList);
     }
 

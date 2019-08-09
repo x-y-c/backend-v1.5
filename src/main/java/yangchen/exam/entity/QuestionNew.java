@@ -40,4 +40,7 @@ public class QuestionNew {
 
     @Column(name = "pre_question_details")
     private String preQuestionDetails;
+
+    @Column(name = "actived")
+    private Boolean actived;
 }
