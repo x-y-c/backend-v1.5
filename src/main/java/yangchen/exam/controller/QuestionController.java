@@ -1,5 +1,6 @@
 package yangchen.exam.controller;
 
+import com.google.gson.Gson;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,8 @@ import yangchen.exam.entity.QuestionNew;
 import yangchen.exam.entity.TestCase;
 import yangchen.exam.model.JsonResult;
 import yangchen.exam.model.ResultCode;
+import yangchen.exam.model.SourceCode;
+import yangchen.exam.model.SourceCodeInfo;
 import yangchen.exam.repo.QuestionRepo;
 import yangchen.exam.service.FileUpload.FileUpAndDownService;
 import yangchen.exam.service.excelservice.ExcelServiceImpl;
@@ -28,10 +31,7 @@ import yangchen.exam.util.UserUtil;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @Author: YC
@@ -177,43 +177,61 @@ public class QuestionController {
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public JsonResult uploadQuestion(@RequestBody QuestionNew questionNew) throws IOException {
+
         LOGGER.info(questionNew.toString());
+       /*
+       修改sourceCode 格式
+        */
+        Gson gson = new Gson();
+        SourceCode sourceCode = new SourceCode();
+        String code = questionNew.getSourceCode();
+        List<SourceCodeInfo> key = new ArrayList<>();
+        SourceCodeInfo sourceCodeInfo = new SourceCodeInfo();
+        sourceCodeInfo.setCode(code);
+        sourceCodeInfo.setFileName("main.c");
+        key.add(sourceCodeInfo);
+        sourceCode.setKey(key);
+        String s = gson.toJson(sourceCode).toString();
+        questionNew.setSourceCode(s);
+        questionNew.setActived(Boolean.TRUE);
+
         QuestionNew question = questionService.findByQuestionBh(questionNew.getQuestionBh());
         if (question != null) {
+            //更新
             questionNew.setId(question.getId());
         } else {
             String questionBh = UUID.randomUUID().toString().replace("-", "");
             questionNew.setQuestionBh(questionBh);
         }
+
         QuestionNew questionResult = questionService.saveQuestionWithImgDecode(questionNew);
-        return JsonResult.succResult(questionResult != null);
+        if (questionResult != null){
+        return JsonResult.succResult(null);
+        }else {
+            return JsonResult.errorResult(ResultCode.WRONG_PARAMS,"添加失败",null);
+        }
     }
 
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public JsonResult searchStage(@RequestParam(required = false) String condition,@RequestParam(required = false)String value, int page, int pageLimit) {
-        LOGGER.info("[{}],[{}],[{}],[{}]",condition,value,page,pageLimit);
-        if (StringUtils.isEmpty(value)||StringUtils.isEmpty(condition)) {
+    public JsonResult searchStage(@RequestParam(required = false) String condition, @RequestParam(required = false) String value, int page, int pageLimit) {
+        LOGGER.info("[{}],[{}],[{}],[{}]", condition, value, page, pageLimit);
+        if (StringUtils.isEmpty(value) || StringUtils.isEmpty(condition)) {
             Page<QuestionNew> pageQuestion = questionService.getPageQuestion(page - 1, pageLimit);
             return JsonResult.succResult(pageQuestion);
-        }
-        else if(condition.equals("阶段")) {
+        } else if (condition.equals("阶段")) {
             Page<QuestionNew> stageQuestionPage = questionService.getStageQuestionPage(value, page - 1, pageLimit);
             return JsonResult.succResult(stageQuestionPage);
-        }
-        else if(condition.equals("题号")) {
-            Page<QuestionNew> idQuestionPage = questionService.getIdQuestionPage(value,page - 1,pageLimit);
+        } else if (condition.equals("题号")) {
+            Page<QuestionNew> idQuestionPage = questionService.getIdQuestionPage(value, page - 1, pageLimit);
             return JsonResult.succResult(idQuestionPage);
-        }
-        else if(condition.equals("题目")) {
-            Page<QuestionNew> titleQuestionPage = questionService.getTitleQuestionPage(value,page - 1,pageLimit);
+        } else if (condition.equals("题目")) {
+            Page<QuestionNew> titleQuestionPage = questionService.getTitleQuestionPage(value, page - 1, pageLimit);
             return JsonResult.succResult(titleQuestionPage);
-        }
-        else if(condition.equals("出题人")) {
-            Page<QuestionNew> customBhQuestionPage = questionService.getCustomBhQuestionPage(value,page - 1,pageLimit);
+        } else if (condition.equals("出题人")) {
+            Page<QuestionNew> customBhQuestionPage = questionService.getCustomBhQuestionPage(value, page - 1, pageLimit);
             return JsonResult.succResult(customBhQuestionPage);
-        }
-        else {
+        } else {
 
             return JsonResult.succResult(null);
         }
