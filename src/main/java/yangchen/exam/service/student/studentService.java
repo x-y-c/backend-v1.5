@@ -5,6 +5,8 @@ import yangchen.exam.entity.StudentNew;
 import yangchen.exam.model.JsonResult;
 import yangchen.exam.model.StudentInfo;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -64,5 +66,6 @@ public interface studentService {
 
     JsonResult uploadStudents(List<StudentNew>studentNewsList);
 
+    void downloadStudents(HttpServletResponse response,String grade) throws IOException;
 
 }

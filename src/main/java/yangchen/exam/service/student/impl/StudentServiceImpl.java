@@ -1,5 +1,10 @@
 package yangchen.exam.service.student.impl;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.io.IoUtil;
+import cn.hutool.poi.excel.ExcelUtil;
+import cn.hutool.poi.excel.ExcelWriter;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -8,12 +13,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.StudentNew;
+import yangchen.exam.model.ExcelScoreModel;
 import yangchen.exam.model.JsonResult;
 import yangchen.exam.model.ResultCode;
 import yangchen.exam.model.StudentInfo;
 import yangchen.exam.repo.StudentRepo;
 import yangchen.exam.service.student.studentService;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -129,5 +140,34 @@ public class StudentServiceImpl implements studentService {
 
         List<StudentNew> studentNews = studentRepo.saveAll(studentNewList);
         return JsonResult.succResult("添加成功", studentNews.size());
+    }
+
+    @Override
+    public void downloadStudents(HttpServletResponse response, String grade) throws IOException {
+        List<StudentNew> studentNew = new ArrayList<StudentNew>();
+        if(StringUtils.isEmpty(grade)){
+            studentNew = studentRepo.findAll();
+        }else {
+            studentNew = studentRepo.findByStudentGrade(grade);
+        }
+            List<StudentNew> rows = CollUtil.newArrayList(studentNew);
+
+            ExcelWriter writer = ExcelUtil.getWriter();
+            writer.addHeaderAlias("studentId", "学号");
+            writer.addHeaderAlias("studentName", "姓名");
+            writer.addHeaderAlias("password", "密码");
+            writer.addHeaderAlias("studentGrade", "班级");
+
+            writer.write(rows, true);
+
+        response.setContentType("application/vnd.ms-excel;charset=utf-8");
+        String value = "attachment;filename=" + URLEncoder.encode("学生名单" + ".xls", "UTF-8");
+        response.setHeader("Content-Disposition", value);
+        ServletOutputStream outputStream = response.getOutputStream();
+
+        writer.flush(outputStream, true);
+        writer.close();
+        IoUtil.close(outputStream);
+
     }
 }
