@@ -133,7 +133,7 @@ public class ExamController {
         IpAddr ip = new IpAddr();
         ExamInfo examInfo = examInfoService.getExamInfoByExaminationId(id);
         Optional<ExamGroupNew> examGroupNew = examGroupRepo.findById(examInfo.getExamGroupId());
-        ip.setIpAddr(IpUtil.getIpAddr(request));
+        ip.setIpAddress(IpUtil.getIpAddr(request));
         ip.setBrowser(UserAgentUtil.parse(request.getHeader("user-agent")).getBrowser().getName());
         ip.setStudentId(studentNumber);
         ip.setExamGroupId(examInfo.getExamGroupId());
