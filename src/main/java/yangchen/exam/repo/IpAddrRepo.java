@@ -9,5 +9,7 @@ public interface IpAddrRepo extends JpaRepository<IpAddr, Integer> {
 
     List<IpAddr> findByExamGroupId(Integer examGroupId);
 
+    List<IpAddr> findByExamGroupIdAndStudentId(Integer examGroupId,Integer studentNumber);
+
 
 }
