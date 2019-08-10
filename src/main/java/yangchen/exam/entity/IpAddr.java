@@ -3,7 +3,6 @@ package yangchen.exam.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
 import java.sql.Timestamp;
 
@@ -33,6 +32,9 @@ public class IpAddr {
 
     @Column(name = "exam_group_id")
     private Integer examGroupId;
+
+    @Column(name = "exam_group_desc")
+    private String examGroupDesc;
 
     @PrePersist
     public void init() {

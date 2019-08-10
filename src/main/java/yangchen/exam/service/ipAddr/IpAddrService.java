@@ -2,10 +2,11 @@ package yangchen.exam.service.ipAddr;
 
 import yangchen.exam.entity.IpAddr;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Set;
 
 public interface IpAddrService {
 
-    List<IpAddr> searchIp(Integer examGroupId);
+    HashMap<Integer, Set<String>> searchIp(Integer examGroupId);
 
 }

@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import yangchen.exam.entity.ExamGroupNew;
+import yangchen.exam.entity.ExamInfo;
 import yangchen.exam.entity.IpAddr;
 import yangchen.exam.model.*;
 import yangchen.exam.repo.ExamGroupRepo;
@@ -21,6 +22,7 @@ import yangchen.exam.util.IpUtil;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author YC
@@ -129,10 +131,13 @@ public class ExamController {
     @RequestMapping(value = "/question", method = RequestMethod.GET)
     public JsonResult getQuestionInfo(Integer id, Integer studentNumber) {
         IpAddr ip = new IpAddr();
+        ExamInfo examInfo = examInfoService.getExamInfoByExaminationId(id);
+        Optional<ExamGroupNew> examGroupNew = examGroupRepo.findById(examInfo.getExamGroupId());
         ip.setIpAddr(IpUtil.getIpAddr(request));
         ip.setBrowser(UserAgentUtil.parse(request.getHeader("user-agent")).getBrowser().getName());
         ip.setStudentId(studentNumber);
-        ip.setExamGroupId(examInfoService.getExamInfoByExaminationId(id).getExamGroupId());
+        ip.setExamGroupId(examInfo.getExamGroupId());
+        ip.setExamGroupDesc(examGroupNew.get().getExamDesc());
         ipAddrRepo.save(ip);
         return examinationService.getQuestionInfoResult(studentNumber, id);
     }
