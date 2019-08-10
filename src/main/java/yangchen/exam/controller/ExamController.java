@@ -1,6 +1,7 @@
 package yangchen.exam.controller;
 
 
+import cn.hutool.http.useragent.UserAgentUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,13 +9,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import yangchen.exam.entity.ExamGroupNew;
-import yangchen.exam.entity.ExamInfo;
+import yangchen.exam.entity.IpAddr;
 import yangchen.exam.model.*;
 import yangchen.exam.repo.ExamGroupRepo;
+import yangchen.exam.repo.IpAddrRepo;
 import yangchen.exam.service.examInfo.ExamInfoService;
 import yangchen.exam.service.examination.ExamGroupService;
 import yangchen.exam.service.examination.ExaminationService;
+import yangchen.exam.util.IpUtil;
 
+import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -38,6 +42,12 @@ public class ExamController {
 
     @Autowired
     private ExamGroupRepo examGroupRepo;
+
+    @Autowired
+    private HttpServletRequest request;
+
+    @Autowired
+    private IpAddrRepo ipAddrRepo;
 
     public static final Logger LOGGER = LoggerFactory.getLogger(ExamController.class);
 
@@ -117,9 +127,14 @@ public class ExamController {
      * @return
      */
     @RequestMapping(value = "/question", method = RequestMethod.GET)
-    public JsonResult getQuestionInfo(Integer id) {
-        QuestionResult questionInfoResult = examinationService.getQuestionInfoResult(id);
-        return JsonResult.succResult(questionInfoResult);
+    public JsonResult getQuestionInfo(Integer id, Integer studentNumber) {
+        IpAddr ip = new IpAddr();
+        ip.setIpAddr(IpUtil.getIpAddr(request));
+        ip.setBrowser(UserAgentUtil.parse(request.getHeader("user-agent")).getBrowser().getName());
+        ip.setStudentId(studentNumber);
+        ip.setExamGroupId(examInfoService.getExamInfoByExaminationId(id).getExamGroupId());
+        ipAddrRepo.save(ip);
+        return examinationService.getQuestionInfoResult(studentNumber, id);
     }
 
     @RequestMapping(value = "/examination", method = RequestMethod.GET)
@@ -171,7 +186,7 @@ public class ExamController {
         ExamGroupNew examGroupNew = examGroupRepo.findById(Integer.valueOf(examGroupId)).get();
         LOGGER.info(examGroupId.toString());
         if (examGroupNew.getEndTime().before(new Timestamp(System.currentTimeMillis()))) {
-            return JsonResult.errorResult(ResultCode.OVER_ENDTIME,"over",null);
+            return JsonResult.errorResult(ResultCode.OVER_ENDTIME, "over", null);
         } else {
             return JsonResult.succResult(null);
         }

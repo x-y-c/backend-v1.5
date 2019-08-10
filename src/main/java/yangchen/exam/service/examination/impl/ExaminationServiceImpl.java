@@ -71,7 +71,7 @@ public class ExaminationServiceImpl implements ExaminationService {
     }
 
 
-    public  List<ExaminationDetail> changeExamInfo(List<ExamInfo> list) {
+    public List<ExaminationDetail> changeExamInfo(List<ExamInfo> list) {
         List<ExaminationDetail> examinationDetails = new ArrayList<>(list.size());
         for (ExamInfo examInfo : list) {
             ExamGroupNew examGroupNew = examGroupRepo.findById(examInfo.getExamGroupId()).get();
@@ -247,13 +247,18 @@ public class ExaminationServiceImpl implements ExaminationService {
     }
 
     @Override
-    public QuestionResult getQuestionInfoResult(Integer id) {
+    public JsonResult getQuestionInfoResult(Integer studentId, Integer id) {
         Optional<ExamPaper> byId = examPaperRepo.findById(id);
         ExamPaper examination = byId.get();
+        ExamInfo examInfo = examInfoRepo.findByExaminationId(id);
+        if (!examInfo.getStudentNumber().equals(studentId)) {
+
+            return JsonResult.errorResult(ResultCode.NO_PERMISSION, "没有权限查看该试卷", null);
+        }
         if (examination.getFinished() == Boolean.TRUE) {
-            return QuestionResult.builder().used(1).questionInfo(null).build();
+            return JsonResult.succResult(QuestionResult.builder().used(1).questionInfo(null).build());
         } else {
-            return QuestionResult.builder().used(0).questionInfo(getQuestionInfo(id)).build();
+            return JsonResult.succResult(QuestionResult.builder().used(0).questionInfo(getQuestionInfo(id)).build());
         }
     }
 

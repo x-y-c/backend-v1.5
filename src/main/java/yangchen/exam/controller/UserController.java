@@ -75,11 +75,6 @@ public class UserController {
         UserBaseInfo userBaseInfo = new UserBaseInfo();
         userBaseInfo.setToken(token);
         userBaseInfo.setUserName(student.getStudentName());
-        IpAddr ip = new IpAddr();
-        ip.setIpAddr(IpUtil.getIpAddr(request));
-        ip.setBrowser(UserAgentUtil.parse(request.getHeader("user-agent")).getBrowser().getName());
-        ip.setStudentId(Integer.valueOf(studentId));
-        ipAddrRepo.save(ip);
 
         return JsonResult.succResult("成功", userBaseInfo);
     }

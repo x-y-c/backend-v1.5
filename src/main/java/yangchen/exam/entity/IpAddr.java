@@ -31,6 +31,9 @@ public class IpAddr {
     @Column(name = "login_time")
     private Timestamp loginTime;
 
+    @Column(name = "exam_group_id")
+    private Integer examGroupId;
+
     @PrePersist
     public void init() {
         this.loginTime = new Timestamp(System.currentTimeMillis());
