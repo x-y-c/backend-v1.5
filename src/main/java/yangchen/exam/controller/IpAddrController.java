@@ -25,19 +25,24 @@ public class IpAddrController {
 
     @RequestMapping(value = "/address", method = RequestMethod.GET)
     public JsonResult getExamGroup(Integer examGroupId) {
-//        List<IpAddr> ipAddrList = new ArrayList<>();
-//        HashMap<Integer, Set<String>> result = new HashMap<>();
-//        result = ipAddrService.searchIp(examGroupId);
-//        //这里的result是获取到的全部的有问题的学生id 和其ip记录  key-value
-//        //下一步迭代这个result 把他所有的信息都取出来查询
-//        Iterator maplist = result.entrySet().iterator();
-//        while (maplist.hasNext()) {
-//            Map.Entry<Integer, Set<String>> entry = (Map.Entry<Integer, Set<String>>) maplist.next();
-//            Integer studentNumber = entry.getKey();
-//            ipAddrList = ipAddrRepo.findByExamGroupIdAndStudentId(examGroupId,studentNumber);
-//        }
-//        return JsonResult.succResult(ipAddrList);
-//    }
+        List<IpAddr> ipAddrList = new ArrayList<>();
+        HashMap<Integer, Set<String>> result = new HashMap<>();
+        result = ipAddrService.searchIp(examGroupId);
+        //这里的result是获取到的全部的有问题的学生id 和其ip记录  key-value
+        //下一步迭代这个result 把他所有的信息都取出来查询
+        Iterator maplist = result.entrySet().iterator();
+        while (maplist.hasNext()) {
+            Map.Entry<Integer, Set<String>> entry = (Map.Entry<Integer, Set<String>>) maplist.next();
+            Integer studentNumber = entry.getKey();
+            ipAddrList.addAll(ipAddrRepo.findByExamGroupIdAndStudentId(examGroupId,studentNumber));
+        }
+        return JsonResult.succResult(ipAddrList);
+    }
+
+
+
+    @RequestMapping(value = "/addressY", method = RequestMethod.GET)
+    public JsonResult getExamGroupY(Integer examGroupId) {
         return JsonResult.succResult(ipAddrService.searchIps(examGroupId));
 
     }

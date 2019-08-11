@@ -26,4 +26,11 @@ public class Base64UtilTest {
 
     }
 
+    @Test
+    public void test2() {
+        String s1 = "xuyang";
+        String s2 = "xuyang";
+        System.out.println(s1 == s2);
+    }
+
 }
