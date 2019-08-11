@@ -68,7 +68,7 @@ public interface ExaminationService {
      * @param id
      * @return
      */
-    QuestionResult getQuestionInfoResult(Integer id);
+    JsonResult getQuestionInfoResult(Integer studentId,Integer id);
 
 
     ExamPaper getExaminationById(Integer id);

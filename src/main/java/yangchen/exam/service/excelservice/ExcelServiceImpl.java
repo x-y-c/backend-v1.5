@@ -77,7 +77,7 @@ public class ExcelServiceImpl {
             StudentNew studentNew = new StudentNew();
             studentNew.setStudentId(Integer.valueOf(objects.get(0).toString()));
             studentNew.setStudentName(objects.get(1).toString());
-            studentNew.setStudentGrade(objects.get(2).toString());
+            studentNew.setStudentGrade(objects.get(3).toString());
             studentNew.setPassword("123456");
             studentList.add(studentNew);
         }

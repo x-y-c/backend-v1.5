@@ -24,6 +24,8 @@ public class ResultCode {
      * R0004 用户已经存在
      * R0005 网络错误
      * R0006 上传图片为空
+     * R0007 考试已过期
+     * R0008 没有权限
      */
     public static String SUCCESS = "A0000";
     public static String USER_NOT_EXIST = "R0001";
@@ -33,5 +35,6 @@ public class ResultCode {
     public static String NET_ERROR = "R0005";
     public static String FILE_UPLOAD_NULL = "R0006";
     public static String OVER_ENDTIME = "R0007";
+    public static String NO_PERMISSION="R0008";
 
 }

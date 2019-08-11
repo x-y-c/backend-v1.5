@@ -40,7 +40,6 @@ public class ExamInfoResult {
     public ExamInfoResult(ExamInfo examInfo) {
         this.id = examInfo.getId();
         this.studentName = examInfo.getStudentName();
-        this.category = examInfo.getCategory();
         this.createdAt = examInfo.getCreatedAt();
         this.examinationScore = examInfo.getExaminationScore();
         this.examGroupId = examInfo.getExamGroupId();

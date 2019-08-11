@@ -53,6 +53,7 @@ public class QuestionServiceImpl implements QuestionService {
     public QuestionNew createQuestion(QuestionNew question) {
         String questionBh = UUID.randomUUID().toString().replace("-", "");
         question.setQuestionBh(questionBh);
+        question.setActived(Boolean.TRUE);
         QuestionNew questionNew = questionRepo.save(question);
         return questionNew;
     }
@@ -71,8 +72,10 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public void deleteQuestion(String questionBh) {
 
-        questionRepo.deleteQuestionNewByQuestionBh(questionBh);
-        TestCaseRepo.deleteTestCaseByQuestionId(questionBh);
+        QuestionNew question = questionRepo.findByQuestionBh(questionBh);
+        question.setActived(Boolean.FALSE);
+        questionRepo.save(question);
+
 
     }
 
@@ -92,6 +95,7 @@ public class QuestionServiceImpl implements QuestionService {
             Base64Util.saveImgByte(imgLabelContent, imagePath);
             String urlImgInfo = UrlImageUrl.updateImageDomain(preQuestionDetails, randomName);
             questionNew.setQuestionDetails(urlImgInfo);
+            questionNew.setActived(Boolean.TRUE);
             return questionRepo.save(questionNew);
         } else {
             questionNew.setQuestionDetails(preQuestionDetails);
@@ -155,7 +159,7 @@ public class QuestionServiceImpl implements QuestionService {
     public Page<QuestionNew> getPageQuestion(Integer pageNo, Integer pageSize) {
         Sort sort = new Sort(Sort.Direction.DESC, "id");
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-        Page<QuestionNew> all = questionRepo.findAll(pageable);
+        Page<QuestionNew> all = questionRepo.findByActivedIsTrue(pageable);
         all.forEach(questionNew -> {
             questionNew.setStage(StageEnum.getStageName(questionNew.getStage()));
             questionNew.setDifficulty(DifficultEnum.getDifficultName(questionNew.getDifficulty()));
@@ -168,7 +172,46 @@ public class QuestionServiceImpl implements QuestionService {
     public Page<QuestionNew> getStageQuestionPage(String stage, Integer pageNo, Integer pageSize) {
         Sort sort = new Sort(Sort.Direction.DESC, "id");
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-        Page<QuestionNew> all = questionRepo.findByStage(StageEnum.getStageCode(stage), pageable);
+        Page<QuestionNew> all = questionRepo.findByStageAndActivedIsTrue(StageEnum.getStageCode(stage), pageable);
+        all.forEach(questionNew -> {
+            questionNew.setStage(StageEnum.getStageName(questionNew.getStage()));
+            questionNew.setDifficulty(DifficultEnum.getDifficultName(questionNew.getDifficulty()));
+            questionNew.setQuestionType(QuestionTypeEnum.getQuestionTypeName(questionNew.getQuestionType()));
+        });
+        return all;
+    }
+
+    @Override
+    public Page<QuestionNew> getIdQuestionPage(String value, Integer pageNo, Integer pageSize) {
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<QuestionNew> all = questionRepo.findByIdAndActivedIsTrue(Integer.valueOf(value), pageable);
+        all.forEach(questionNew -> {
+            questionNew.setStage(StageEnum.getStageName(questionNew.getStage()));
+            questionNew.setDifficulty(DifficultEnum.getDifficultName(questionNew.getDifficulty()));
+            questionNew.setQuestionType(QuestionTypeEnum.getQuestionTypeName(questionNew.getQuestionType()));
+        });
+        return all;
+    }
+
+    @Override
+    public Page<QuestionNew> getTitleQuestionPage(String value, Integer pageNo, Integer pageSize) {
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<QuestionNew> all = questionRepo.findByQuestionNameAndActivedIsTrue(value, pageable);
+        all.forEach(questionNew -> {
+            questionNew.setStage(StageEnum.getStageName(questionNew.getStage()));
+            questionNew.setDifficulty(DifficultEnum.getDifficultName(questionNew.getDifficulty()));
+            questionNew.setQuestionType(QuestionTypeEnum.getQuestionTypeName(questionNew.getQuestionType()));
+        });
+        return all;
+    }
+
+    @Override
+    public Page<QuestionNew> getCustomBhQuestionPage(String value, Integer pageNo, Integer pageSize) {
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<QuestionNew> all = questionRepo.findByCustomBhAndActivedIsTrue(value, pageable);
         all.forEach(questionNew -> {
             questionNew.setStage(StageEnum.getStageName(questionNew.getStage()));
             questionNew.setDifficulty(DifficultEnum.getDifficultName(questionNew.getDifficulty()));
@@ -179,7 +222,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public List<QuestionNew> searchStage(String stage) {
-        return questionRepo.findByStage(StageEnum.getStageCode(stage));
+        return questionRepo.findByStageAndActivedIsTrue(StageEnum.getStageCode(stage));
     }
 
     @Override

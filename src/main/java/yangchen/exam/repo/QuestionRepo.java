@@ -8,24 +8,31 @@ import org.springframework.transaction.annotation.Transactional;
 import yangchen.exam.entity.QuestionNew;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface QuestionRepo extends JpaRepository<QuestionNew, Integer> {
 
-    Optional<QuestionNew> findById(Integer id);
+    List<QuestionNew> findByActivedIsTrue();
 
-    List<QuestionNew> findByStageAndDifficulty(String stage, String difficulty);
+    Page<QuestionNew> findByActivedIsTrue(Pageable pageable);
 
-    List<QuestionNew> findByStageAndDifficultyAndQuestionType(String stage, String difficulty, String questionType);
+    List<QuestionNew> findByStageAndDifficultyAndQuestionTypeAndActivedIsTrue(String stage, String difficulty, String questionType);
 
     QuestionNew findByQuestionBh(String questionBh);
 
-    Page<QuestionNew> findByStage(String stage, Pageable pageable);
+    Page<QuestionNew> findByStageAndActivedIsTrue(String stage, Pageable pageable);
 
-    List<QuestionNew> findByStage(String stage);
+    List<QuestionNew> findByStageAndActivedIsTrue(String stage);
+
+    Page<QuestionNew> findByIdAndActivedIsTrue(Integer id, Pageable pageable);
+
+    Page<QuestionNew> findByCustomBhAndActivedIsTrue(String customBh, Pageable pageable);
+
+    Page<QuestionNew> findByQuestionNameAndActivedIsTrue(String questionName, Pageable pageable);
 
 
-    @Transactional
-    @Modifying
-    void deleteQuestionNewByQuestionBh(String questionBh);
+//    @Transactional
+//    @Modifying
+//    void deleteQuestionNewByQuestionBh(String questionBh);
+
+
 }

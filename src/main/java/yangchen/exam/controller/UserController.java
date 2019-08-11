@@ -1,6 +1,7 @@
 package yangchen.exam.controller;
 
 
+import cn.hutool.http.useragent.UserAgentUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +12,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import yangchen.exam.annotation.PassToken;
 import yangchen.exam.annotation.UserLoginToken;
+import yangchen.exam.entity.IpAddr;
 import yangchen.exam.entity.StudentNew;
 import yangchen.exam.entity.Teacher;
 import yangchen.exam.model.JsonResult;
 import yangchen.exam.model.ResultCode;
 import yangchen.exam.model.UserBaseInfo;
+import yangchen.exam.repo.IpAddrRepo;
 import yangchen.exam.service.UA.UAService;
 import yangchen.exam.service.student.studentService;
 import yangchen.exam.service.teacher.TeacherService;
@@ -48,6 +51,9 @@ public class UserController {
     @Autowired
     private UAService uaService;
 
+    @Autowired
+    private IpAddrRepo ipAddrRepo;
+
 
     private static Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
@@ -69,6 +75,7 @@ public class UserController {
         UserBaseInfo userBaseInfo = new UserBaseInfo();
         userBaseInfo.setToken(token);
         userBaseInfo.setUserName(student.getStudentName());
+
         return JsonResult.succResult("成功", userBaseInfo);
     }
 
@@ -97,8 +104,8 @@ public class UserController {
     }
 
 
-    @RequestMapping(value = "/testUA/xy",method = RequestMethod.GET)
-    public void  test() throws IOException {
+    @RequestMapping(value = "/testUA/xy", method = RequestMethod.GET)
+    public void test() throws IOException {
 
         String header = request.getHeader("User-Agent");
         uaService.testUa(header);

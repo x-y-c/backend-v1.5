@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -104,6 +105,15 @@ public class StudentInfoController {
     }
 
 
+    @RequestMapping(value = "/excel")
+    public void findByExcel(HttpServletResponse response, @RequestParam(required = false) String grade) {
+        try {
+            studentService.downloadStudents(response,grade);
+        } catch (IOException e) {
+            LOGGER.error("导出学生失败[{}]",e.getMessage());
+        }
+    }
+
     @RequestMapping(value = "/csv")
     public String findByCSV(HttpServletResponse response) {
         List<Map<String, Object>> dataList = null;
@@ -115,7 +125,6 @@ public class StudentInfoController {
         Map<String, Object> map = null;
         for (StudentNew student : students) {
             map = new HashMap<String, Object>();
-
             map.put("studentId", student.getStudentId());
             map.put("name", student.getStudentName());
             map.put("password", student.getPassword());

@@ -71,12 +71,11 @@ public class ExaminationServiceImpl implements ExaminationService {
     }
 
 
-    public  List<ExaminationDetail> changeExamInfo(List<ExamInfo> list) {
+    public List<ExaminationDetail> changeExamInfo(List<ExamInfo> list) {
         List<ExaminationDetail> examinationDetails = new ArrayList<>(list.size());
         for (ExamInfo examInfo : list) {
             ExamGroupNew examGroupNew = examGroupRepo.findById(examInfo.getExamGroupId()).get();
             ExaminationDetail examinationDetail = new ExaminationDetail();
-            examinationDetail.setCategory(examInfo.getCategory());
             examinationDetail.setId(examInfo.getExaminationId());
             examinationDetail.setDesc(examGroupNew.getExamDesc());
             examinationDetail.setEnd(examGroupNew.getEndTime());
@@ -153,8 +152,7 @@ public class ExaminationServiceImpl implements ExaminationService {
         });
         List<List<QuestionNew>> questionList = new ArrayList<>();
         for (TwoTuple<String, String> exam : examList) {
-            //List<QuestionNew> result = questionRepo.findByStageAndDifficulty(exam.first, exam.second);
-            List<QuestionNew> result = questionRepo.findByStageAndDifficultyAndQuestionType(exam.first, exam.second, "1000206");
+            List<QuestionNew> result = questionRepo.findByStageAndDifficultyAndQuestionTypeAndActivedIsTrue(exam.first, exam.second, "1000206");
             questionList.add(result);
         }
         ExamGroupNew examGroup1 = examGroupService.addExamGroup(examGroup);
@@ -234,7 +232,6 @@ public class ExaminationServiceImpl implements ExaminationService {
         String titles = byId.get().getTitleId();
         String[] split = titles.split(",");
         LOGGER.info(String.valueOf(split.length));
-//        LOGGER.info(split[0] + "\n" + split[1] + "\n" + split[2] + "\n");
         for (String title : split) {
             QuestionNew questionById = questionService.findQuestionById(Integer.valueOf(title));
             if (questionById != null) {
@@ -250,13 +247,18 @@ public class ExaminationServiceImpl implements ExaminationService {
     }
 
     @Override
-    public QuestionResult getQuestionInfoResult(Integer id) {
+    public JsonResult getQuestionInfoResult(Integer studentId, Integer id) {
         Optional<ExamPaper> byId = examPaperRepo.findById(id);
         ExamPaper examination = byId.get();
+        ExamInfo examInfo = examInfoRepo.findByExaminationId(id);
+        if (!examInfo.getStudentNumber().equals(studentId)) {
+
+            return JsonResult.errorResult(ResultCode.NO_PERMISSION, "没有权限查看该试卷", null);
+        }
         if (examination.getFinished() == Boolean.TRUE) {
-            return QuestionResult.builder().used(1).questionInfo(null).build();
+            return JsonResult.succResult(QuestionResult.builder().used(1).questionInfo(null).build());
         } else {
-            return QuestionResult.builder().used(0).questionInfo(getQuestionInfo(id)).build();
+            return JsonResult.succResult(QuestionResult.builder().used(0).questionInfo(getQuestionInfo(id)).build());
         }
     }
 

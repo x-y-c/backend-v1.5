@@ -76,7 +76,13 @@ public interface QuestionService {
 
     Page<QuestionNew> getPageQuestion(Integer pageNo, Integer pageSize);
 
-    Page<QuestionNew> getStageQuestionPage(String stage, Integer pageNo, Integer pageSize);
+    Page<QuestionNew> getStageQuestionPage(String value, Integer pageNo, Integer pageSize);
+
+    Page<QuestionNew> getIdQuestionPage(String value, Integer pageNo, Integer pageSize);
+
+    Page<QuestionNew> getTitleQuestionPage(String value, Integer pageNo, Integer pageSize);
+
+    Page<QuestionNew> getCustomBhQuestionPage(String value, Integer pageNo, Integer pageSize);
 
     List<QuestionNew> searchStage(String stage);
 }
