@@ -35,6 +35,7 @@ public class CompileCoreServiceImpl implements CompileCoreService {
         commands.add("-o");
         commands.add("main");
         commands.add("main.c");
+        commands.add("-lm");
         processBuilder.command(commands);
         Process exec = processBuilder.start();
         InputStream inputStream = exec.getErrorStream();
