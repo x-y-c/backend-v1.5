@@ -14,10 +14,10 @@ public interface CompileCoreService {
     //return 文件路径
     String writeSourceCode(String sourceCode) throws IOException;
 
-    String compileCode(String filepath) throws IOException;
+    String compileCode() throws IOException;
 
     //3.调用runtime运行,传入input，得到output
-    String getOutput(String filepath, String input);
+    String getOutput(String input) throws IOException;
 
     //4.将output写入数据库，返回到前端
     String persistenceToDataBase(String output, String questionBh);

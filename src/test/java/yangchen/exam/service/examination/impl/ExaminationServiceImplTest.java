@@ -46,13 +46,13 @@ public class ExaminationServiceImplTest {
     @Test
     public void test2() throws IOException {
         ProcessBuilder builder = new ProcessBuilder();
-        builder.directory(new File("/home/yangchen/code"));
-        builder.command("./xuyang");
+        builder.directory(new File("/home/yangchen/sourceCode"));
+        builder.command("./main");
 
         Process start = builder.start();
         InputStream inputStream = start.getInputStream();
         BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(start.getOutputStream()));
-        String input = "5";
+        String input = "This is not a program hahahahahaha";
         bufferedWriter.write(input);
         bufferedWriter.close();
         InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
