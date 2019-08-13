@@ -15,10 +15,7 @@ import yangchen.exam.Enum.QuestionTypeEnum;
 import yangchen.exam.Enum.StageEnum;
 import yangchen.exam.entity.QuestionNew;
 import yangchen.exam.entity.TestCase;
-import yangchen.exam.model.JsonResult;
-import yangchen.exam.model.ResultCode;
-import yangchen.exam.model.SourceCode;
-import yangchen.exam.model.SourceCodeInfo;
+import yangchen.exam.model.*;
 import yangchen.exam.repo.QuestionRepo;
 import yangchen.exam.service.FileUpload.FileUpAndDownService;
 import yangchen.exam.service.excelservice.ExcelServiceImpl;
@@ -127,7 +124,11 @@ public class QuestionController {
     @RequestMapping(value = "/testCase", method = RequestMethod.GET)
     public JsonResult getTestCase(@RequestParam String questionId) {
         List<TestCase> byQid = testCaseService.findByQuestionId(questionId);
-        return JsonResult.succResult(byQid);
+        List<TestCaseModel> result = new ArrayList<>(byQid.size());
+        byQid.forEach(testCase -> {
+            result.add(new TestCaseModel(testCase));
+        });
+        return JsonResult.succResult(result);
     }
 
     /**

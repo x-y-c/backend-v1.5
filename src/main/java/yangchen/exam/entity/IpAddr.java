@@ -19,6 +19,9 @@ public class IpAddr {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "student_name")
+    private String studentName;
+
     @Column(name = "student_id")
     private Integer studentId;
 
