@@ -3,6 +3,7 @@ package yangchen.exam.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
@@ -14,11 +15,12 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Table(name = "TestCase")
 @Data
+@GenericGenerator(name = "jpa-uuid", strategy = "uuid")
 public class TestCase {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "TestCaseBh")
+    @GeneratedValue(generator = "jpa-uuid")
+    @Column(name = "TestCaseBh",length = 32)
     private String testCaseBh;
 
     @Column(name = "ScoreWeight")

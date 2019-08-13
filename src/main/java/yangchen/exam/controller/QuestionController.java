@@ -204,12 +204,16 @@ public class QuestionController {
             String questionBh = UUID.randomUUID().toString().replace("-", "");
             questionNew.setQuestionBh(questionBh);
         }
-
+        TestCase testCase = new TestCase();
+        testCase.setQuestionId(questionNew.getQuestionBh());
+        testCase.setTestCaseBh(UUID.randomUUID().toString().replace("-", ""));
+        testCase.setScoreWeight(0.0);
+        TestCase testCase1 = testCaseService.addTestCase(testCase);
         QuestionNew questionResult = questionService.saveQuestionWithImgDecode(questionNew);
-        if (questionResult != null){
-        return JsonResult.succResult(null);
-        }else {
-            return JsonResult.errorResult(ResultCode.WRONG_PARAMS,"添加失败",null);
+        if (questionResult != null && testCase1 != null) {
+            return JsonResult.succResult(null);
+        } else {
+            return JsonResult.errorResult(ResultCode.WRONG_PARAMS, "添加失败", null);
         }
     }
 
@@ -236,6 +240,27 @@ public class QuestionController {
 
             return JsonResult.succResult(null);
         }
+    }
+
+    /*
+        private String testCaseBh;
+        private Double scoreWeight;
+        private String testCaseInput;
+         private String testCaseOutput;
+         private String testCaseTips;
+        private String questionId;
+        private String memo;
+     */
+    @RequestMapping(value = "/testCaseAll")
+    public JsonResult testCaseModify(@RequestParam String testCaseBh,
+                                     @RequestParam Double scoreWeight,
+                                     @RequestParam String testCaseInput,
+                                     @RequestParam String testCaseOutput,
+                                     @RequestParam String questionId,
+                                     @RequestParam Integer operate) {
+        LOGGER.info("testCaseBh=[{}],scoreWeight=[{}],testCaseInput=[{}],testCaseOutput=[{}],questionId=[{}],operate=[{}]",
+                testCaseBh, scoreWeight, testCaseInput, testCaseOutput, questionId, operate);
+        return JsonResult.succResult(null);
     }
 
 }
