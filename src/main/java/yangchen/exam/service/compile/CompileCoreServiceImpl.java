@@ -59,13 +59,15 @@ public class CompileCoreServiceImpl implements CompileCoreService {
     }
 
     @Override
-    public String getOutput(String input) throws IOException {
+    public String getOutput(String input) throws IOException, InterruptedException {
 
         ProcessBuilder builder = new ProcessBuilder();
         builder.directory(new File("/home/yangchen/sourceCode"));
+        builder.redirectErrorStream(true);
         builder.command("./main");
-
+        String result = "";
         Process start = builder.start();
+
         InputStream inputStream = start.getInputStream();
         BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(start.getOutputStream()));
         bufferedWriter.write(input);

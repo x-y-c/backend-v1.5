@@ -202,16 +202,17 @@ public class QuestionController {
             //更新
             questionNew.setId(question.getId());
         } else {
+            TestCase testCase = new TestCase();
+            testCase.setQuestionId(questionNew.getQuestionBh());
+            testCase.setTestCaseBh(UUID.randomUUID().toString().replace("-", ""));
+            testCase.setScoreWeight(0.0);
+            TestCase testCase1 = testCaseService.addTestCase(testCase);
             String questionBh = UUID.randomUUID().toString().replace("-", "");
             questionNew.setQuestionBh(questionBh);
         }
-        TestCase testCase = new TestCase();
-        testCase.setQuestionId(questionNew.getQuestionBh());
-        testCase.setTestCaseBh(UUID.randomUUID().toString().replace("-", ""));
-        testCase.setScoreWeight(0.0);
-        TestCase testCase1 = testCaseService.addTestCase(testCase);
+
         QuestionNew questionResult = questionService.saveQuestionWithImgDecode(questionNew);
-        if (questionResult != null && testCase1 != null) {
+        if (questionResult != null) {
             return JsonResult.succResult(null);
         } else {
             return JsonResult.errorResult(ResultCode.WRONG_PARAMS, "添加失败", null);
@@ -252,7 +253,7 @@ public class QuestionController {
         private String questionId;
         private String memo;
      */
-    @RequestMapping(value = "/testCaseAll")
+    @RequestMapping(value = "/testCaseAll",method = RequestMethod.POST)
     public JsonResult testCaseModify(@RequestParam String testCaseBh,
                                      @RequestParam Double scoreWeight,
                                      @RequestParam String testCaseInput,
@@ -261,7 +262,13 @@ public class QuestionController {
                                      @RequestParam Integer operate) {
         LOGGER.info("testCaseBh=[{}],scoreWeight=[{}],testCaseInput=[{}],testCaseOutput=[{}],questionId=[{}],operate=[{}]",
                 testCaseBh, scoreWeight, testCaseInput, testCaseOutput, questionId, operate);
-        return JsonResult.succResult(null);
+        JsonResult jsonResult = testCaseService.modifyTestCase(testCaseBh, scoreWeight, testCaseInput, testCaseOutput, questionId, operate);
+        return jsonResult;
+    }
+
+    @RequestMapping(value = "/testCase/reset", method = RequestMethod.GET)
+    public void testReset() {
+        testCaseService.resetList();
     }
 
 }

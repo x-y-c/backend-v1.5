@@ -17,7 +17,7 @@ public interface CompileCoreService {
     String compileCode() throws IOException;
 
     //3.调用runtime运行,传入input，得到output
-    String getOutput(String input) throws IOException;
+    String getOutput(String input) throws IOException, InterruptedException;
 
     //4.将output写入数据库，返回到前端
     String persistenceToDataBase(String output, String questionBh);

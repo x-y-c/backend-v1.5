@@ -20,7 +20,7 @@ public class TestCase {
 
     @Id
     @GeneratedValue(generator = "jpa-uuid")
-    @Column(name = "TestCaseBh",length = 32)
+    @Column(name = "TestCaseBh", length = 32)
     private String testCaseBh;
 
     @Column(name = "ScoreWeight")
@@ -40,4 +40,18 @@ public class TestCase {
 
     @Column(name = "Memo")
     private String memo;
+
+
+    /**
+     * String testCaseBh, Double scoreWeight, String testCaseInput,
+     * String testCaseOutput, String questionId, Integer operate
+     */
+    public TestCase(String testCaseBh, Double scoreWeight, String testCaseInput,
+                    String testCaseOutput, String questionId) {
+        this.testCaseBh = testCaseBh;
+        this.scoreWeight = scoreWeight;
+        this.testCaseInput = testCaseInput;
+        this.testCaseOutput = testCaseOutput;
+        this.questionId = questionId;
+    }
 }

@@ -32,7 +32,7 @@ public class testCaseRepoTest {
     public void test2() {
         TestCase testCase = new TestCase();
         testCase.setScoreWeight(20.0);
-
+        testCase.setTestCaseBh("1234");
         testCase.setQuestionId("1111111");
         testCaseRepo.save(testCase);
     }
