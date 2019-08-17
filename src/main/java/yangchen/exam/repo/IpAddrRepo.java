@@ -10,7 +10,8 @@ public interface IpAddrRepo extends JpaRepository<IpAddr, Integer> {
 
     List<IpAddr> findByExamGroupIdAndLoginTimeBefore(Integer examGroupId, Timestamp endTime);
 
-    List<IpAddr> findByExamGroupIdAndStudentId(Integer examGroupId,Integer studentNumber);
+    List<IpAddr> findByExamGroupIdAndStudentIdAndLoginTimeBefore(Integer examGroupId, Integer studentNumber,
+                                                                 Timestamp endTime);
 
 
 }
