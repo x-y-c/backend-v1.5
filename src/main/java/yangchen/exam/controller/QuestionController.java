@@ -15,10 +15,7 @@ import yangchen.exam.Enum.QuestionTypeEnum;
 import yangchen.exam.Enum.StageEnum;
 import yangchen.exam.entity.QuestionNew;
 import yangchen.exam.entity.TestCase;
-import yangchen.exam.model.JsonResult;
-import yangchen.exam.model.ResultCode;
-import yangchen.exam.model.SourceCode;
-import yangchen.exam.model.SourceCodeInfo;
+import yangchen.exam.model.*;
 import yangchen.exam.repo.QuestionRepo;
 import yangchen.exam.service.FileUpload.FileUpAndDownService;
 import yangchen.exam.service.excelservice.ExcelServiceImpl;
@@ -127,7 +124,11 @@ public class QuestionController {
     @RequestMapping(value = "/testCase", method = RequestMethod.GET)
     public JsonResult getTestCase(@RequestParam String questionId) {
         List<TestCase> byQid = testCaseService.findByQuestionId(questionId);
-        return JsonResult.succResult(byQid);
+        List<TestCaseModel> result = new ArrayList<>(byQid.size());
+        byQid.forEach(testCase -> {
+            result.add(new TestCaseModel(testCase));
+        });
+        return JsonResult.succResult(result);
     }
 
     /**
@@ -201,15 +202,20 @@ public class QuestionController {
             //更新
             questionNew.setId(question.getId());
         } else {
+            TestCase testCase = new TestCase();
+            testCase.setQuestionId(questionNew.getQuestionBh());
+            testCase.setTestCaseBh(UUID.randomUUID().toString().replace("-", ""));
+            testCase.setScoreWeight(0.0);
+            TestCase testCase1 = testCaseService.addTestCase(testCase);
             String questionBh = UUID.randomUUID().toString().replace("-", "");
             questionNew.setQuestionBh(questionBh);
         }
 
         QuestionNew questionResult = questionService.saveQuestionWithImgDecode(questionNew);
-        if (questionResult != null){
-        return JsonResult.succResult(null);
-        }else {
-            return JsonResult.errorResult(ResultCode.WRONG_PARAMS,"添加失败",null);
+        if (questionResult != null) {
+            return JsonResult.succResult(null);
+        } else {
+            return JsonResult.errorResult(ResultCode.WRONG_PARAMS, "添加失败", null);
         }
     }
 
@@ -236,6 +242,33 @@ public class QuestionController {
 
             return JsonResult.succResult(null);
         }
+    }
+
+    /*
+        private String testCaseBh;
+        private Double scoreWeight;
+        private String testCaseInput;
+         private String testCaseOutput;
+         private String testCaseTips;
+        private String questionId;
+        private String memo;
+     */
+    @RequestMapping(value = "/testCaseAll",method = RequestMethod.POST)
+    public JsonResult testCaseModify(@RequestParam String testCaseBh,
+                                     @RequestParam Double scoreWeight,
+                                     @RequestParam String testCaseInput,
+                                     @RequestParam String testCaseOutput,
+                                     @RequestParam String questionId,
+                                     @RequestParam Integer operate) {
+        LOGGER.info("testCaseBh=[{}],scoreWeight=[{}],testCaseInput=[{}],testCaseOutput=[{}],questionId=[{}],operate=[{}]",
+                testCaseBh, scoreWeight, testCaseInput, testCaseOutput, questionId, operate);
+        JsonResult jsonResult = testCaseService.modifyTestCase(testCaseBh, scoreWeight, testCaseInput, testCaseOutput, questionId, operate);
+        return jsonResult;
+    }
+
+    @RequestMapping(value = "/testCase/reset", method = RequestMethod.GET)
+    public void testReset() {
+        testCaseService.resetList();
     }
 
 }

@@ -26,6 +26,8 @@ public class ResultCode {
      * R0006 上传图片为空
      * R0007 考试已过期
      * R0008 没有权限
+     * R0009 编译出错
+     * R0010 测试用例权重不是100
      */
     public static String SUCCESS = "A0000";
     public static String USER_NOT_EXIST = "R0001";
@@ -35,6 +37,8 @@ public class ResultCode {
     public static String NET_ERROR = "R0005";
     public static String FILE_UPLOAD_NULL = "R0006";
     public static String OVER_ENDTIME = "R0007";
-    public static String NO_PERMISSION="R0008";
+    public static String NO_PERMISSION = "R0008";
+    public static String COMPILE_ERROR = "R0009";
+    public static String TESTCASE_SCORE_WEIGHT_ERROR = "R0010";
 
 }
