@@ -139,6 +139,7 @@ public class ExamController {
 
         ip.setExamGroupId(examInfo.getExamGroupId());
         ip.setExamGroupDesc(examGroupNew.get().getExamDesc());
+        ip.setStudentName(examInfo.getStudentName());
         ipAddrRepo.save(ip);
         return examinationService.getQuestionInfoResult(studentNumber, id);
     }
