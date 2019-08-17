@@ -21,7 +21,7 @@ public enum StageEnum {
 
     public static String getStageCode(String stageName) {
         for (StageEnum stageEnum : values()) {
-            if (stageEnum.getStageName().equals(stageName)) {
+            if (stageEnum.getStageName().equals(stageName.trim())) {
                 return stageEnum.getStageCode();
             }
         }
