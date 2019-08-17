@@ -31,6 +31,10 @@
 | examination_score | int(11) | 学生考试成绩 |
 | student_name | varchar(30) | 学生姓名 |
 
+> 以上三张表，在创建考试时生成相应数据。  
+> exam_group记录考试组相关信息，exam_paper记录试卷相关信息。exam_info记录试卷与考生与考试组的联系。  
+> 其中exam_group 和 exam_paper之间没有关联，只对应着考试信息和试卷，exam_info中的student_number字段（对应学生表的student_id），examination_id字段(对应exam_paper表中的id)，exam_group_id字段（对应exam_group表中的id)）将学生，试卷和考试组联系起来。
+
 ### score
 | 字段名 | 类型 | 说明 |
 | :----: | :----: | :----: |
@@ -41,6 +45,8 @@
 | number | int(11) | 试卷中的第几题 |
 | question_id | varchar(50) | 题目对应的questionId |
 
+> 当学生登陆进入考试页面时，页面一共五道题，examination_id对应exam_paper表中的id字段，number对应试卷页面的index序号，即是当前页面的第几题，然后可以通过exam_paper中的title_id定位到是question表中的第几题。question_id对应question表中的questionBh字段。score为当前题的百分制得分。student_id对应student表的student_id字段。
+
 ## 考试提交相关的表
 ### submit
 | 字段名 | 类型 | 说明 |
@@ -48,9 +54,11 @@
 | id | int | 主键自增 |
 | submit_time | timestamp | 提交时间 | 
 | student_id | int(11) | 学生学号 |
-| question_id | varchar(50) | 试题id，对应questionBH |
+| question_id | varchar(50) | 试题id |
 | examination_id | int(11) | 试卷id |
 | src | text | 提交的源代码 |
+
+> submit表记录学生提交试题的记录，stduent_id对应sudent表的student_id字段，question_id对应Question表的questionBh字段，examination_id对应exam_paper中的id字段。
 
 
 ## 用户信息管理
@@ -106,6 +114,8 @@
 | QuestionId | varchar(32) | 试题编号 |
 | Memo | varchar(500) | （未知） |
 
+> test_case表记录试题的测试用例，QuestionId对应question表的QuestionBh的字段。
+
 ## 用户多点登陆ip表
 ### ip_addr
 | 字段名 | 类型 | 说明 |
@@ -119,6 +129,8 @@
 | exam_group_id | int(11) | 学生考试组id |
 | exam_group_desc | varchar(255) | 学生考试组名称 |
 
+> 用户多点登陆记录异常IP的表，student_id对应student表中的student_id字段，exam_group_id对应exam_group表中的id字段。
+
 
 这是目前数据库中有效的十张表，存在字段冗余情况，表与表之间的联系用逻辑限定，没有设相关外键约束，增加了索引。
-//细节明日更新哈哈哈
+
