@@ -15,6 +15,9 @@ public class CompileCoreServiceImpl implements CompileCoreService {
     @Value("${sourceCode.path}")
     private String filePath;
 
+    @Value("${sourceCode.run.path}")
+    private String runPath;
+
     //        /home/code/main.c
 //        /home/code/main
     @Override
@@ -29,7 +32,7 @@ public class CompileCoreServiceImpl implements CompileCoreService {
     @Override
     public String compileCode() throws IOException {
         ProcessBuilder processBuilder = new ProcessBuilder();
-        processBuilder.directory(new File(filePath));
+        processBuilder.directory(new File(runPath));
         List<String> commands = new ArrayList();
         commands.add("gcc");
         commands.add("-o");
@@ -62,7 +65,7 @@ public class CompileCoreServiceImpl implements CompileCoreService {
     public String getOutput(String input) throws IOException, InterruptedException {
 
         ProcessBuilder builder = new ProcessBuilder();
-        builder.directory(new File("/home/yangchen/sourceCode"));
+        builder.directory(new File(runPath));
         builder.redirectErrorStream(true);
         builder.command("./main");
         String result = "";

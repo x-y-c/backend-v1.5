@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import yangchen.exam.util.UrlImageUrl;
 
 
 @SpringBootTest
@@ -21,5 +22,6 @@ public class examGroupRepoTest {
     @Test
     public void test() {
         LOGGER.info(examGroupRepo.getAllExamGroupDesc().toString());
+//        UrlImageUrl.test();
     }
 }

@@ -180,7 +180,7 @@ public class QuestionController {
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public JsonResult uploadQuestion(@RequestBody QuestionNew questionNew) throws IOException {
 
-        LOGGER.info(questionNew.toString());
+//        LOGGER.info(questionNew.toString());
        /*
        修改sourceCode 格式
         */
