@@ -29,7 +29,7 @@ public class CompileCoreServiceImpl implements CompileCoreService {
     @Override
     public String compileCode() throws IOException {
         ProcessBuilder processBuilder = new ProcessBuilder();
-        processBuilder.directory(new File("/home/yangchen/sourceCode"));
+        processBuilder.directory(new File(filePath));
         List<String> commands = new ArrayList();
         commands.add("gcc");
         commands.add("-o");
