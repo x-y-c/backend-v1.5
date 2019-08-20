@@ -4,6 +4,8 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yangchen.exam.Enum.StageEnum;
@@ -16,6 +18,7 @@ import yangchen.exam.repo.*;
 import yangchen.exam.service.examInfo.ExamInfoService;
 import yangchen.exam.service.question.QuestionService;
 import yangchen.exam.service.score.ScoreService;
+import yangchen.exam.util.HtmlUtil;
 import yangchen.exam.util.ZipUtil;
 
 import javax.servlet.ServletOutputStream;
@@ -56,6 +59,8 @@ public class ScoreServiceImpl implements ScoreService {
     @Autowired
     private QuestionService questionService;
 
+    public static Logger LOGGER = LoggerFactory.getLogger(ScoreServiceImpl.class);
+
     @Override
     public Score saveScore(Score score) {
         return scoreRepo.save(score);
@@ -82,6 +87,7 @@ public class ScoreServiceImpl implements ScoreService {
 
     /**
      * 导出学生成绩信息Excel
+     *
      * @param response    浏览器response
      * @param examGroupId
      * @throws IOException
@@ -124,9 +130,9 @@ public class ScoreServiceImpl implements ScoreService {
     }
 
 
-   /*
-   导出每个学生的提交zip
-    */
+    /*
+    导出每个学生的提交zip
+     */
     @Override
     public List<ExcelSubmitModel> exportSubmit(HttpServletResponse response, Integer examGroupId) throws IOException {
         /**
@@ -167,9 +173,9 @@ public class ScoreServiceImpl implements ScoreService {
                 }
 
                 result.add(ExcelSubmitModel.builder()
-                        .questionBh(submit.getQuestionId())
+                        .questionBh(String.valueOf(question.getId()))
                         .src(submit.getSrc())
-                        .questionDesc(question.getQuestionDescription())
+                        .questionDesc(HtmlUtil.delHtmlTag(question.getQuestionDescription()))
                         .questionName(question.getQuestionName())
                         .score(Double.valueOf(score.getScore()) / 5)
                         .stage(StageEnum.getStageName(question.getStage()))
@@ -206,18 +212,19 @@ public class ScoreServiceImpl implements ScoreService {
             writer.addHeaderAlias("score", "成绩");
 
             result.add(ExcelSubmitModel.builder().score(Double.valueOf(examInfo.getExaminationScore())).build());
+LOGGER.info("submit"+result.toString());
             List<ExcelSubmitModel> rows = CollUtil.newArrayList(result);
             writer.write(rows, true);
             writer.flush(byteArrayInputStream, true);
             writer.close();
-            excel.put(examDesc+"_"+examInfo.getStudentNumber()+"_"+examInfo.getStudentName() + ".xls", byteArrayInputStream);
+            excel.put(examDesc + "_" + examInfo.getStudentNumber() + "_" + examInfo.getStudentName() + ".xls", byteArrayInputStream);
 
             System.out.println(byteArrayInputStream.size());
             byteArrayInputStream.close();
         }
         ByteArrayOutputStream zip = ZipUtil.zip(excel, new File("d://test8.zip"));
 
-        response.setHeader("Content-Disposition", "attachment;filename="+ URLEncoder.encode( examDesc + "_学生提交记录.zip","utf-8"));
+        response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(examDesc + "_学生提交记录.zip", "utf-8"));
         response.setContentType("application/zip");
         response.getOutputStream().write(zip.toByteArray());
 
@@ -276,11 +283,11 @@ public class ScoreServiceImpl implements ScoreService {
                 }
 
                 result.add(ExcelSubmitModel.builder()
-                        .questionBh(submit.getQuestionId())
+                        .questionBh(String.valueOf(question.getId()))
                         .src(submit.getSrc())
-                        .questionDesc(question.getQuestionDescription())
+                        .questionDesc(HtmlUtil.delHtmlTag(question.getQuestionDescription()))
                         .questionName(question.getQuestionName())
-                        .score(Double.valueOf(score.getScore())/5)
+                        .score(Double.valueOf(score.getScore()) / 5)
                         .stage(StageEnum.getStageName(question.getStage()))
                         .examPaperId(examinationId)
                         .studentNumber(examInfo.getStudentNumber())
@@ -313,7 +320,8 @@ public class ScoreServiceImpl implements ScoreService {
         writer.addHeaderAlias("questionDesc", "题目描述");
         writer.addHeaderAlias("src", "学生代码");
         writer.addHeaderAlias("score", "成绩");
-
+        LOGGER.info("submitAll"+result.toString());
+        System.out.println(result.toString());
         List<ExcelSubmitModel> rows = CollUtil.newArrayList(result);
         writer.write(rows, true);
 
@@ -327,14 +335,6 @@ public class ScoreServiceImpl implements ScoreService {
         IoUtil.close(outputStream);
         return result;
     }
-
-
-
-
-
-
-
-
 
 
     @Override

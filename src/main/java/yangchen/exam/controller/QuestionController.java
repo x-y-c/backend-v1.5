@@ -204,18 +204,23 @@ public class QuestionController {
         String s = gson.toJson(sourceCode).toString();
         questionNew.setSourceCode(s);
         questionNew.setActived(Boolean.TRUE);
-
+        if ("100001".equals(questionNew.getIsProgramBlank())) {
+            questionNew.setMemo(questionNew.getMemo());
+        }
         QuestionNew question = questionService.findByQuestionBh(questionNew.getQuestionBh());
         if (question != null) {
+            LOGGER.info("question [{}] is exist", question.getQuestionBh());
             //更新
             questionNew.setId(question.getId());
         } else {
+            LOGGER.info("question not exist");
             TestCase testCase = new TestCase();
-            testCase.setQuestionId(questionNew.getQuestionBh());
             testCase.setTestCaseBh(UUID.randomUUID().toString().replace("-", ""));
             testCase.setScoreWeight(0.0);
-            TestCase testCase1 = testCaseService.addTestCase(testCase);
             String questionBh = UUID.randomUUID().toString().replace("-", "");
+            testCase.setQuestionId(questionBh);
+            TestCase testCase1 = testCaseService.addTestCase(testCase);
+            LOGGER.info("success add TestCase"+testCase1.toString());
             questionNew.setQuestionBh(questionBh);
         }
 
