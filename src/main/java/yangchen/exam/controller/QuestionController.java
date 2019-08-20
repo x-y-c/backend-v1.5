@@ -77,6 +77,14 @@ public class QuestionController {
         return JsonResult.succResult(null);
     }
 
+    @RequestMapping(value = "/check", method = RequestMethod.GET)
+    public JsonResult IsQuestionchecked(@RequestParam String questionBh) {
+        QuestionNew questionNew = questionRepo.findByQuestionBh(questionBh);
+        questionNew.setActived(!questionNew.getActived());
+        QuestionNew save = questionRepo.save(questionNew);
+        return JsonResult.succResult(save);
+    }
+
 
     @RequestMapping(value = "/questionId", method = RequestMethod.GET)
     public JsonResult findQuestionById(@RequestParam String id) {
@@ -253,7 +261,7 @@ public class QuestionController {
         private String questionId;
         private String memo;
      */
-    @RequestMapping(value = "/testCaseAll",method = RequestMethod.POST)
+    @RequestMapping(value = "/testCaseAll", method = RequestMethod.POST)
     public JsonResult testCaseModify(@RequestParam String testCaseBh,
                                      @RequestParam Double scoreWeight,
                                      @RequestParam String testCaseInput,

@@ -1,6 +1,6 @@
 package yangchen.exam;
 
-import de.codecentric.boot.admin.server.config.EnableAdminServer;
+//import de.codecentric.boot.admin.server.config.EnableAdminServer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,7 +16,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
  */
 @SpringBootApplication
 @Configuration
-@EnableAdminServer
+//@EnableAdminServer
 public class ExamApplication {
 
     public static void main(String[] args) {

@@ -1,5 +1,6 @@
 package yangchen.exam.service.examination.impl;
 
+import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,7 +95,6 @@ public class ExaminationServiceImpl implements ExaminationService {
         List<ExaminationDetail> examinationDetails = changeExamInfo(endedExamInfo);
         return examinationDetails;
     }
-
 
 
     @Override
@@ -235,6 +235,13 @@ public class ExaminationServiceImpl implements ExaminationService {
                 questionDetail.setTitle(questionById.getQuestionName());
                 questionDetail.setCustomBh(questionById.getCustomBh());
                 questionDetail.setId(String.valueOf(questionById.getId()));
+                if ("100001".equals(questionById.getIsProgramBlank())) {
+                    Gson gson = new Gson();
+                    SourceCode sourceCode = gson.fromJson(questionById.getSourceCode(), SourceCode.class);
+                    questionDetail.setSrc(sourceCode.getKey().get(0).getCode());
+                } else {
+                    questionDetail.setSrc("");
+                }
                 result.add(questionDetail);
             }
         }
