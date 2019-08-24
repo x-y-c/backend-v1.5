@@ -2,6 +2,7 @@ package yangchen.exam.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 import yangchen.exam.entity.TeachClassInfo;
 
 import java.util.List;
@@ -15,6 +16,8 @@ public interface TeachClassInfoRepo extends JpaRepository<TeachClassInfo, Intege
 
     List<TeachClassInfo> findByTeacherId(Integer teacherId);
 
+
+    @Transactional
     void deleteByTeacherId(Integer teacherId);
 
 
