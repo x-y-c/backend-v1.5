@@ -5,6 +5,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +21,7 @@ import yangchen.exam.service.adminManagement.AdminManagement;
 @RestController
 @RequestMapping(value = "/admin", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdministratorController {
-
+public static Logger LOGGER = LoggerFactory.getLogger(AdministratorController.class);
 
     @Autowired
     private TeachClassInfoRepo teachClassInfoRepo;
@@ -50,8 +52,9 @@ public class AdministratorController {
 
     @RequestMapping(value = "/update/teachClassInfo", method = RequestMethod.POST)
     public JsonResult updateTeachClassInfo(@RequestBody TeachClassInfoList teachClassInfoList) {
-        return JsonResult.succResult(adminManagement.updateTeachClassInfo(teachClassInfoList));
-
+LOGGER.info(teachClassInfoList.toString());
+      return JsonResult.succResult(adminManagement.updateTeachClassInfo(teachClassInfoList));
+//        return JsonResult.succResult(null);
     }
 
     @ApiOperation(value = "添加教师及管理班级信息")

@@ -29,7 +29,7 @@ public class Swagger2Configuration {
         return new ApiInfoBuilder().title("xu_yang_chen's管理后台接口文档")
                 .description("xu_yang_chen's相关接口的文档")
                 .termsOfServiceUrl("https://github.com/ychen1012/C-exam")
-                .version("1.0")
+                .version("xyc-v10.1")
                 .build();
     }
 
