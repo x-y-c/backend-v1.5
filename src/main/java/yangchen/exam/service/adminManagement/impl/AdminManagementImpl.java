@@ -63,6 +63,7 @@ public class AdminManagementImpl implements AdminManagement {
         Teacher teacher = teacherRepo.findById(teacherId).get();
         teacher.setActive(Boolean.FALSE);
         Teacher teacherUpdated = teacherRepo.save(teacher);
+        teachClassInfoRepo.deleteByTeacherId(teacherId);
         return teacherUpdated;
 
     }
