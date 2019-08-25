@@ -77,6 +77,15 @@ public class ExamGroupServiceImpl implements ExamGroupService {
         return all;
     }
 
+
+    public Page<ExamGroupNew> getPageExamGroupByTeacher(int currentPage, int pageSize, String teacher) {
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
+        Pageable pageable = PageRequest.of(currentPage, pageSize, sort);
+        Page<ExamGroupNew> examTeacher = examGroupRepo.findByExamTeacher(pageable,teacher);
+        return examTeacher;
+    }
+
+
     @Override
     public void deleteExamInfo(Integer id) {
 

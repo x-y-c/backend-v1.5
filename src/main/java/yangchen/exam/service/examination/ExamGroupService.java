@@ -2,7 +2,6 @@ package yangchen.exam.service.examination;
 
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 import yangchen.exam.entity.ExamGroupNew;
 
 import java.sql.Timestamp;
@@ -22,8 +21,10 @@ public interface ExamGroupService {
 
     Page<ExamGroupNew> getPageExamGroup(int currentPage, int pageSize);
 
+    Page<ExamGroupNew> getPageExamGroupByTeacher(int currentPage, int pageSize, String teacher);
+
     void deleteExamInfo(Integer id);
 
-    void updateExamInfo(Integer id,String examDesc, Integer examTime, Timestamp beginTime);
+    void updateExamInfo(Integer id, String examDesc, Integer examTime, Timestamp beginTime);
 
 }

@@ -2,6 +2,8 @@ package yangchen.exam.controller;
 
 
 import cn.hutool.http.useragent.UserAgentUtil;
+import io.swagger.annotations.Api;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,7 @@ import java.util.Optional;
  * @date 2019/5/7 11:35
  * O(∩_∩)O)
  */
+@Api(value = "ExamController")
 @RestController
 @RequestMapping(value = "/examInfo", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ExamController {
@@ -152,9 +155,14 @@ public class ExamController {
     }
 
     @RequestMapping(value = "/examGroup/page", method = RequestMethod.GET)
-    public JsonResult getPagedExamGroup(int page, int pageLimit) {
-        Page<ExamGroupNew> pageExamGroup = examGroupService.getPageExamGroup(page - 1, pageLimit);
-        return JsonResult.succResult(pageExamGroup);
+    public JsonResult getPagedExamGroup(int page, int pageLimit, @RequestParam(required = false) String teacher) {
+        if (StringUtils.isEmpty(teacher)) {
+            Page<ExamGroupNew> pageExamGroup = examGroupService.getPageExamGroup(page - 1, pageLimit);
+            return JsonResult.succResult(pageExamGroup);
+        } else {
+            Page<ExamGroupNew> pageExamGroupByTeacher = examGroupService.getPageExamGroupByTeacher(page - 1, pageLimit, teacher);
+            return JsonResult.succResult(pageExamGroupByTeacher);
+        }
 
     }
 
