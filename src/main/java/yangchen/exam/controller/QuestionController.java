@@ -202,6 +202,11 @@ public class QuestionController {
             //更新
             questionNew.setId(question.getId());
         } else {
+            TestCase testCase = new TestCase();
+            testCase.setQuestionId(questionNew.getQuestionBh());
+            testCase.setTestCaseBh(UUID.randomUUID().toString().replace("-", ""));
+            testCase.setScoreWeight(0.0);
+            TestCase testCase1 = testCaseService.addTestCase(testCase);
             String questionBh = UUID.randomUUID().toString().replace("-", "");
             questionNew.setQuestionBh(questionBh);
         }
@@ -237,6 +242,33 @@ public class QuestionController {
 
             return JsonResult.succResult(null);
         }
+    }
+
+    /*
+        private String testCaseBh;
+        private Double scoreWeight;
+        private String testCaseInput;
+         private String testCaseOutput;
+         private String testCaseTips;
+        private String questionId;
+        private String memo;
+     */
+    @RequestMapping(value = "/testCaseAll",method = RequestMethod.POST)
+    public JsonResult testCaseModify(@RequestParam String testCaseBh,
+                                     @RequestParam Double scoreWeight,
+                                     @RequestParam String testCaseInput,
+                                     @RequestParam String testCaseOutput,
+                                     @RequestParam String questionId,
+                                     @RequestParam Integer operate) {
+        LOGGER.info("testCaseBh=[{}],scoreWeight=[{}],testCaseInput=[{}],testCaseOutput=[{}],questionId=[{}],operate=[{}]",
+                testCaseBh, scoreWeight, testCaseInput, testCaseOutput, questionId, operate);
+        JsonResult jsonResult = testCaseService.modifyTestCase(testCaseBh, scoreWeight, testCaseInput, testCaseOutput, questionId, operate);
+        return jsonResult;
+    }
+
+    @RequestMapping(value = "/testCase/reset", method = RequestMethod.GET)
+    public void testReset() {
+        testCaseService.resetList();
     }
 
 }

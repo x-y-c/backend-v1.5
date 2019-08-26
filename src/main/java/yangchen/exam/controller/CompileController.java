@@ -1,6 +1,8 @@
 package yangchen.exam.controller;
 
 
+import com.google.gson.Gson;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import yangchen.exam.entity.QuestionNew;
 import yangchen.exam.model.CompileFront;
 import yangchen.exam.model.JsonResult;
+import yangchen.exam.model.ResultCode;
+import yangchen.exam.model.SourceCode;
+import yangchen.exam.repo.QuestionRepo;
+import yangchen.exam.service.compile.CompileCoreService;
 import yangchen.exam.service.compileService.CompileService;
 
 import java.io.IOException;
@@ -22,6 +29,11 @@ import java.io.IOException;
 @RequestMapping(value = "/compile", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CompileController {
 
+    @Autowired
+    private CompileCoreService compileCoreService;
+    @Autowired
+    private QuestionRepo questionRepo;
+    Gson gson = new Gson();
 
     Logger Logger = LoggerFactory.getLogger(CompileController.class);
 
@@ -49,6 +61,26 @@ public class CompileController {
     public JsonResult compileTest(@RequestParam String code, @RequestParam Integer examinationId, @RequestParam Integer index, @RequestParam Integer studentId) {
         CompileFront compileFront = compileService.compileCode(examinationId, index, code, studentId);
         return JsonResult.succResult(compileFront);
+    }
+
+
+    @RequestMapping(value = "/sourceCode", method = RequestMethod.GET)
+    public JsonResult compileSourceCode(@RequestParam String input, @RequestParam String questionBh) throws IOException, InterruptedException {
+        Logger.info("the input =[{}],question=[{}]", input, questionBh);
+        QuestionNew question = questionRepo.findByQuestionBh(questionBh);
+        SourceCode sourceCode = gson.fromJson(question.getSourceCode(), SourceCode.class);
+        String code = sourceCode.getKey().get(0).getCode();
+        String filePath = compileCoreService.writeSourceCode(code);
+        String compileResult = compileCoreService.compileCode();
+        if (!StringUtils.isEmpty(compileResult)) {
+            Logger.error("compileError =[{}]", compileResult);
+            return JsonResult.errorResult(ResultCode.COMPILE_ERROR, "编译出错", compileResult);
+        } else {
+            String output = compileCoreService.getOutput(input);
+            Logger.info("compileSuccess![{}]",output);
+            return JsonResult.succResult(output);
+        }
+
     }
 
 

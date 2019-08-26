@@ -1,6 +1,7 @@
 package yangchen.exam.service.testInfo;
 
 import yangchen.exam.entity.TestCase;
+import yangchen.exam.model.JsonResult;
 
 import java.util.List;
 
@@ -20,8 +21,15 @@ public interface TestCaseService {
 
     //通过题目查找测试用例
 //    List<TestCase> findByQid(Integer qid);
-
+    void resetList();
 
     //通过questionBh查询测试用例；
     List<TestCase> findByQuestionId(String questionId);
+
+    JsonResult modifyTestCase(String testCaseBh,
+                              Double scoreWeight,
+                              String testCaseInput,
+                              String testCaseOutput,
+                              String questionId,
+                              Integer operate);
 }
