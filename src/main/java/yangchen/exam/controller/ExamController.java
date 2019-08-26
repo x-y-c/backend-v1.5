@@ -155,12 +155,12 @@ public class ExamController {
     }
 
     @RequestMapping(value = "/examGroup/page", method = RequestMethod.GET)
-    public JsonResult getPagedExamGroup(int page, int pageLimit, @RequestParam(required = false) String teacher) {
-        if (StringUtils.isEmpty(teacher)) {
+    public JsonResult getPagedExamGroup(int page, int pageLimit, @RequestParam(required = false) String teacherId) {
+        if (StringUtils.isEmpty(teacherId)) {
             Page<ExamGroupNew> pageExamGroup = examGroupService.getPageExamGroup(page - 1, pageLimit);
             return JsonResult.succResult(pageExamGroup);
         } else {
-            Page<ExamGroupNew> pageExamGroupByTeacher = examGroupService.getPageExamGroupByTeacher(page - 1, pageLimit, teacher);
+            Page<ExamGroupNew> pageExamGroupByTeacher = examGroupService.getPageExamGroupByTeacher(page - 1, pageLimit, teacherId);
             return JsonResult.succResult(pageExamGroupByTeacher);
         }
 

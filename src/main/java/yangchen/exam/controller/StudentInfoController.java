@@ -143,8 +143,15 @@ public class StudentInfoController {
 
 
     @RequestMapping(value = "/grade", method = RequestMethod.GET)
-    public JsonResult getGrade() {
-        List<String> strings = studentService.initGrade();
-        return JsonResult.succResult(strings);
+    public JsonResult getGrade(@RequestParam(required = false)String teacherId) {
+        if(StringUtils.isEmpty(teacherId)){
+            List<String> strings = studentService.initGrade();
+            return JsonResult.succResult(strings);
+        }
+        else{
+            List<String> grades = studentService.getGrades(teacherId);
+            return JsonResult.succResult(grades);
+        }
+
     }
 }

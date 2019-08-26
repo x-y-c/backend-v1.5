@@ -68,4 +68,6 @@ public interface studentService {
 
     void downloadStudents(HttpServletResponse response,String grade) throws IOException;
 
+    List<String> getGrades(String teacherId);
+
 }

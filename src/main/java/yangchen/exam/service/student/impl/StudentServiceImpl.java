@@ -13,11 +13,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.StudentNew;
-import yangchen.exam.model.ExcelScoreModel;
-import yangchen.exam.model.JsonResult;
-import yangchen.exam.model.ResultCode;
-import yangchen.exam.model.StudentInfo;
+import yangchen.exam.entity.Teacher;
+import yangchen.exam.model.*;
 import yangchen.exam.repo.StudentRepo;
+import yangchen.exam.repo.TeachClassInfoRepo;
+import yangchen.exam.repo.TeacherRepo;
 import yangchen.exam.service.student.studentService;
 
 import javax.servlet.ServletOutputStream;
@@ -34,6 +34,13 @@ import java.util.List;
 public class StudentServiceImpl implements studentService {
     @Autowired
     private StudentRepo studentRepo;
+
+    @Autowired
+    private TeacherRepo teacherRepo;
+
+    @Autowired
+    private TeachClassInfoRepo teachClassInfoRepo;
+
 
     @Cacheable(value = "student")
     @Override
@@ -169,5 +176,12 @@ public class StudentServiceImpl implements studentService {
         writer.close();
         IoUtil.close(outputStream);
 
+    }
+
+    @Override
+    public List<String> getGrades(String teacherId) {
+        Teacher teacher = teacherRepo.findByTeacherName(teacherId);
+        List<String> className = teachClassInfoRepo.getClassNameByTeacherId(teacher.getId());
+        return className;
     }
 }
