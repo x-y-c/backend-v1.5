@@ -63,6 +63,28 @@ public class CompileController {
         return JsonResult.succResult(compileFront);
     }
 
+    public String add(String line,String memo){
+        String result = "";
+        String start = "/******start******/";
+        String end = "/******end******/";
+        int length1 = start.length();
+        int index = line.indexOf(start);
+        int index2 = line.indexOf(end);
+        for(int i=0;i<index+length1;i++){
+            result +=line.charAt(i);
+        }
+        String blank= memo;
+        for(int i=0;i<blank.length();i++){
+            result +=blank.charAt(i);
+        }
+        //index2=1
+//        line.length()=3
+        for(int i=index2;i<line.length();i++){
+            result +=line.charAt(i);
+        }
+        System.out.println(result);
+        return result;
+    }
 
     @RequestMapping(value = "/sourceCode", method = RequestMethod.GET)
     public JsonResult compileSourceCode(@RequestParam String input, @RequestParam String questionBh) throws IOException, InterruptedException {
@@ -70,9 +92,12 @@ public class CompileController {
         QuestionNew question = questionRepo.findByQuestionBh(questionBh);
         SourceCode sourceCode = gson.fromJson(question.getSourceCode(), SourceCode.class);
         String code = sourceCode.getKey().get(0).getCode();
+        if ("100001".equals(question.getIsProgramBlank())){
+            code = add(code, question.getMemo());
+        }
         String filePath = compileCoreService.writeSourceCode(code);
         String compileResult = compileCoreService.compileCode();
-        if (!StringUtils.isEmpty(compileResult)) {
+        if (!StringUtils.isEmpty(compileResult)&&compileResult.indexOf("error")!=-1) {
             Logger.error("compileError =[{}]", compileResult);
             return JsonResult.errorResult(ResultCode.COMPILE_ERROR, "编译出错", compileResult);
         } else {

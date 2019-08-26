@@ -3,6 +3,7 @@ package yangchen.exam.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -43,4 +44,7 @@ public class QuestionNew {
 
     @Column(name = "actived")
     private Boolean actived;
+
+    @Column(name = "memo")
+    private String memo;
 }
