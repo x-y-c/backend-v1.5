@@ -50,4 +50,5 @@ public class ExamParam {
     private Integer ttl;
     private List<String> grades;
     private String examName;
+    private String teacherId;
 }

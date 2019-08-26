@@ -24,7 +24,6 @@ import yangchen.exam.service.student.studentService;
 import yangchen.exam.service.teacher.TeacherService;
 import yangchen.exam.service.token.TokenService;
 import yangchen.exam.util.IpUtil;
-import yangchen.exam.util.JavaJWTUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -86,8 +85,11 @@ public class UserController {
         Teacher teacherByName = teacherService.findTeacherByName(teacherName);
         Administrator administrator = administratorRepo.findByAdminNameAndActived(teacherName, Boolean.TRUE);
 
+        UserBaseInfo userBaseInfo = new UserBaseInfo();
+
         if (teacherByName != null) {
             if (password.equals(teacherByName.getPassword())) {
+                userBaseInfo.setUserName(String.valueOf(teacherByName.getId()));
                 return JsonResult.succResult(ResultCode.TEACHER_LOGIN, "登录成功", null);
             } else {
                 return JsonResult.errorResult(ResultCode.WRONG_PASSWORD, "密码错误", null);

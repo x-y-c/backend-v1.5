@@ -8,10 +8,7 @@ import yangchen.exam.Enum.DifficultEnum;
 import yangchen.exam.Enum.StageEnum;
 import yangchen.exam.entity.*;
 import yangchen.exam.model.*;
-import yangchen.exam.repo.ExamGroupRepo;
-import yangchen.exam.repo.ExamInfoRepo;
-import yangchen.exam.repo.ExamPaperRepo;
-import yangchen.exam.repo.QuestionRepo;
+import yangchen.exam.repo.*;
 import yangchen.exam.service.examInfo.ExamInfoService;
 import yangchen.exam.service.examination.ExamGroupService;
 import yangchen.exam.service.examination.ExaminationService;
@@ -62,6 +59,9 @@ public class ExaminationServiceImpl implements ExaminationService {
     @Autowired
     private ExamGroupRepo examGroupRepo;
 
+    @Autowired
+    private TeacherRepo teacherRepo;
+
 
     @Override
     public List<ExaminationDetail> examInfoDetail(Integer studentId) {
@@ -94,7 +94,6 @@ public class ExaminationServiceImpl implements ExaminationService {
         List<ExaminationDetail> examinationDetails = changeExamInfo(endedExamInfo);
         return examinationDetails;
     }
-
 
 
     @Override
@@ -130,6 +129,9 @@ public class ExaminationServiceImpl implements ExaminationService {
             gradeStr.append(g);
             gradeStr.append(",");
         }
+        //todo 等确定下来记得修改哦
+        Teacher byTeacherName = teacherRepo.findByTeacherName(examParam.getTeacherId());
+        examGroup.setExamTeacher(String.valueOf(byTeacherName.getId()));
         examGroup.setClassName(gradeStr.toString());
         examGroup.setExamTime(examParam.getTtl());
         examGroup.setExamDesc(examParam.getExamName());

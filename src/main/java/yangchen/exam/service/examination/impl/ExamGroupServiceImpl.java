@@ -8,9 +8,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yangchen.exam.entity.ExamGroupNew;
+import yangchen.exam.entity.Teacher;
 import yangchen.exam.repo.ExamGroupRepo;
 import yangchen.exam.repo.ExamInfoRepo;
 import yangchen.exam.repo.ExamPaperRepo;
+import yangchen.exam.repo.TeacherRepo;
 import yangchen.exam.service.examination.ExamGroupService;
 
 import java.sql.Timestamp;
@@ -34,6 +36,9 @@ public class ExamGroupServiceImpl implements ExamGroupService {
 
     @Autowired
     private ExamPaperRepo examPaperRepo;
+
+    @Autowired
+    private TeacherRepo teacherRepo;
 
     @Override
     public ExamGroupNew addExamGroup(ExamGroupNew examGroup) {
@@ -81,7 +86,8 @@ public class ExamGroupServiceImpl implements ExamGroupService {
     public Page<ExamGroupNew> getPageExamGroupByTeacher(int currentPage, int pageSize, String teacher) {
         Sort sort = new Sort(Sort.Direction.DESC, "id");
         Pageable pageable = PageRequest.of(currentPage, pageSize, sort);
-        Page<ExamGroupNew> examTeacher = examGroupRepo.findByExamTeacher(pageable,teacher);
+        Teacher teacher1 = teacherRepo.findByTeacherName(teacher);
+        Page<ExamGroupNew> examTeacher = examGroupRepo.findByExamTeacher(pageable, String.valueOf(teacher1.getId()));
         return examTeacher;
     }
 
