@@ -1,7 +1,6 @@
 package yangchen.exam.controller;
 
 
-import cn.hutool.http.useragent.UserAgentUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +11,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import yangchen.exam.annotation.PassToken;
 import yangchen.exam.annotation.UserLoginToken;
-import yangchen.exam.entity.IpAddr;
+import yangchen.exam.entity.Administrator;
 import yangchen.exam.entity.StudentNew;
 import yangchen.exam.entity.Teacher;
 import yangchen.exam.model.JsonResult;
 import yangchen.exam.model.ResultCode;
 import yangchen.exam.model.UserBaseInfo;
+import yangchen.exam.repo.AdministratorRepo;
 import yangchen.exam.repo.IpAddrRepo;
 import yangchen.exam.service.UA.UAService;
 import yangchen.exam.service.student.studentService;
@@ -54,6 +54,8 @@ public class UserController {
     @Autowired
     private IpAddrRepo ipAddrRepo;
 
+    @Autowired
+    private AdministratorRepo administratorRepo;
 
     private static Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
@@ -82,19 +84,24 @@ public class UserController {
     @RequestMapping(value = "teacher/login", method = RequestMethod.GET)
     public JsonResult teacherLogin(@RequestParam String teacherName, @RequestParam String password) {
         Teacher teacherByName = teacherService.findTeacherByName(teacherName);
-        if (teacherByName == null) {
-            return JsonResult.errorResult("fail", "用户不存在", null);
-        }
-        if (!teacherByName.getPassword().equals(password)) {
-            return JsonResult.errorResult("fail", "密码错误", null);
-        }
-        String token = JavaJWTUtil.createTokenWithClaim(teacherName, password);
-        UserBaseInfo userBaseInfo = new UserBaseInfo();
-        userBaseInfo.setToken(token);
-        userBaseInfo.setUserName(teacherName);
-        return JsonResult.succResult("成功", userBaseInfo);
+        Administrator administrator = administratorRepo.findByAdminNameAndActived(teacherName, Boolean.TRUE);
 
-
+        if (teacherByName != null) {
+            if (password.equals(teacherByName.getPassword())) {
+                return JsonResult.succResult(ResultCode.TEACHER_LOGIN, "登录成功", null);
+            } else {
+                return JsonResult.errorResult(ResultCode.WRONG_PASSWORD, "密码错误", null);
+            }
+        }
+        if (administrator != null) {
+            if (password.equals(administrator.getAdminPassword())) {
+                return JsonResult.succResult(ResultCode.ADMIN_LOGIN, "登录成功", null);
+            } else {
+                return JsonResult.errorResult(ResultCode.WRONG_PASSWORD, "密码错误", null);
+            }
+        } else {
+            return JsonResult.errorResult(ResultCode.USER_NOT_EXIST, "用户不存在", null);
+        }
     }
 
     @UserLoginToken
