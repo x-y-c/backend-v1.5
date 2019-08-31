@@ -87,7 +87,7 @@ public class QuestionController {
         if (!StringUtils.isEmpty(questionById.getSourceCode())) {
             questionById.setSourceCode(DecodeSourceCode.getCode(questionById.getSourceCode()));
         }
-        LOGGER.info("StageEnum.getStageName(questionById.getStage())", StageEnum.getStageName(questionById.getStage()));
+//        LOGGER.info("StageEnum.getStageName(questionById.getStage())", StageEnum.getStageName(questionById.getStage()));
         //LOGGER.info("[{}] find question by Id,the ip = [{}]", UserUtil.getUserId(httpServletRequest), IpUtil.getIpAddr(httpServletRequest));
         return JsonResult.succResult(questionById);
     }
