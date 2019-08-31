@@ -13,3 +13,9 @@ url：/compile/
 
 返回值：
 
+| 参数        | 类型    | 说明                         |
+| ----------- | ------- | ---------------------------- |
+| compileSucc | Boolean | 是否编译成功                 |
+| compileMsg  | String  | 编译信息(如果成功，就是null) |
+| score       | Double  | 本题得分，百分制             |
+

@@ -1,5 +1,7 @@
 package yangchen.exam.repo;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -37,11 +39,14 @@ public interface ExamGroupRepo extends JpaRepository<ExamGroupNew, Integer> {
     @Query(value = "select * from  exam_group_new order by id desc ", nativeQuery = true)
     List<ExamGroupNew> getAllExamGroupDesc();
 
+
+    Page<ExamGroupNew> findByExamTeacher(Pageable pageable,String teacher);
+
     @Transactional
     @Modifying
     void deleteExamGroupNewById(Integer id);
 
     @Modifying
-    @Query(value = "update exam_group_new set exam_description=?1,exam_time=?2,begin_time=?3 ,end_time=?4 where id=?5",nativeQuery = true)
-    void updateExamGroup(String examDesc,Integer examTime,Timestamp beginTime,Timestamp endTime,Integer id);
+    @Query(value = "update exam_group_new set exam_description=?1,exam_time=?2,begin_time=?3 ,end_time=?4 where id=?5", nativeQuery = true)
+    void updateExamGroup(String examDesc, Integer examTime, Timestamp beginTime, Timestamp endTime, Integer id);
 }

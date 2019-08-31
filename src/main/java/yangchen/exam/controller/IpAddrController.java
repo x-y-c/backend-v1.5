@@ -1,6 +1,7 @@
 package yangchen.exam.controller;
 
 
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,7 @@ import yangchen.exam.service.ipAddr.IpAddrService;
 import java.sql.Timestamp;
 import java.util.*;
 
+@Api(value = "IpAddrController")
 @RestController
 @RequestMapping(value = "/ip", produces = MediaType.APPLICATION_JSON_VALUE)
 public class IpAddrController {

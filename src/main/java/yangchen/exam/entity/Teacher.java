@@ -29,4 +29,7 @@ public class Teacher {
 
     @Column(name = "email")
     private String email;
+
+    @Column(name = "active")
+    private Boolean active;
 }

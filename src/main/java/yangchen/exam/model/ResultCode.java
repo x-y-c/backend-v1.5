@@ -30,6 +30,8 @@ public class ResultCode {
      * R0010 测试用例权重不是100
      */
     public static String SUCCESS = "A0000";
+    public static String TEACHER_LOGIN = "A0001";
+    public static String ADMIN_LOGIN = "A0002";
     public static String USER_NOT_EXIST = "R0001";
     public static String WRONG_PASSWORD = "R0002";
     public static String WRONG_PARAMS = "R0003";

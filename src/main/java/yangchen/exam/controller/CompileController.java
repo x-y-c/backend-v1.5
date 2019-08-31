@@ -2,6 +2,10 @@ package yangchen.exam.controller;
 
 
 import com.google.gson.Gson;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +29,8 @@ import java.io.IOException;
 /**
  * @author yangchen
  */
+
+@Api(value = "CompileController")
 @RestController
 @RequestMapping(value = "/compile", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CompileController {
@@ -57,6 +63,10 @@ public class CompileController {
      * @param code
      * @return
      */
+
+    @ApiOperation(value = "获取编译结果")
+    @ApiImplicitParams({@ApiImplicitParam(name = "code",value = "源代码",required = true,dataType = "String"),
+                        @ApiImplicitParam(name = "examinationId",value = "试卷编号",required = true,dataType = "Integer")})
     @RequestMapping(value = {"/", ""}, method = RequestMethod.POST)
     public JsonResult compileTest(@RequestParam String code, @RequestParam Integer examinationId, @RequestParam Integer index, @RequestParam Integer studentId) {
         CompileFront compileFront = compileService.compileCode(examinationId, index, code, studentId);

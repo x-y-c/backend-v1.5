@@ -30,6 +30,10 @@ public class JsonResult {
         return new JsonResult(ResultCode.SUCCESS, msg, data);
     }
 
+    public static JsonResult succResult(String code, String msg, Object data) {
+        return new JsonResult(code, msg, data);
+    }
+
     public static JsonResult succResult(Object data) {
         return JsonResult.succResult("成功", data);
     }
