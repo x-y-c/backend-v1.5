@@ -136,6 +136,7 @@ public class ExamController {
         ip.setIpAddress(IpUtil.getIpAddr(request));
         ip.setBrowser(UserAgentUtil.parse(request.getHeader("user-agent")).getBrowser().getName());
         ip.setStudentId(studentNumber);
+
         ip.setExamGroupId(examInfo.getExamGroupId());
         ip.setExamGroupDesc(examGroupNew.get().getExamDesc());
         ip.setStudentName(examInfo.getStudentName());

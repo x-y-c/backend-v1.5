@@ -77,6 +77,14 @@ public class QuestionController {
         return JsonResult.succResult(null);
     }
 
+    @RequestMapping(value = "/check", method = RequestMethod.GET)
+    public JsonResult IsQuestionchecked(@RequestParam String questionBh) {
+        QuestionNew questionNew = questionRepo.findByQuestionBh(questionBh);
+        questionNew.setActived(!questionNew.getActived());
+        QuestionNew save = questionRepo.save(questionNew);
+        return JsonResult.succResult(save);
+    }
+
 
     @RequestMapping(value = "/questionId", method = RequestMethod.GET)
     public JsonResult findQuestionById(@RequestParam String id) {
@@ -180,7 +188,7 @@ public class QuestionController {
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public JsonResult uploadQuestion(@RequestBody QuestionNew questionNew) throws IOException {
 
-        LOGGER.info(questionNew.toString());
+//        LOGGER.info(questionNew.toString());
        /*
        修改sourceCode 格式
         */
@@ -196,13 +204,23 @@ public class QuestionController {
         String s = gson.toJson(sourceCode).toString();
         questionNew.setSourceCode(s);
         questionNew.setActived(Boolean.TRUE);
-
+        if ("100001".equals(questionNew.getIsProgramBlank())) {
+            questionNew.setMemo(questionNew.getMemo());
+        }
         QuestionNew question = questionService.findByQuestionBh(questionNew.getQuestionBh());
         if (question != null) {
+            LOGGER.info("question [{}] is exist", question.getQuestionBh());
             //更新
             questionNew.setId(question.getId());
         } else {
+            LOGGER.info("question not exist");
+            TestCase testCase = new TestCase();
+            testCase.setTestCaseBh(UUID.randomUUID().toString().replace("-", ""));
+            testCase.setScoreWeight(0.0);
             String questionBh = UUID.randomUUID().toString().replace("-", "");
+            testCase.setQuestionId(questionBh);
+            TestCase testCase1 = testCaseService.addTestCase(testCase);
+            LOGGER.info("success add TestCase"+testCase1.toString());
             questionNew.setQuestionBh(questionBh);
         }
 
@@ -237,6 +255,33 @@ public class QuestionController {
 
             return JsonResult.succResult(null);
         }
+    }
+
+    /*
+        private String testCaseBh;
+        private Double scoreWeight;
+        private String testCaseInput;
+         private String testCaseOutput;
+         private String testCaseTips;
+        private String questionId;
+        private String memo;
+     */
+    @RequestMapping(value = "/testCaseAll", method = RequestMethod.POST)
+    public JsonResult testCaseModify(@RequestParam String testCaseBh,
+                                     @RequestParam Double scoreWeight,
+                                     @RequestParam String testCaseInput,
+                                     @RequestParam String testCaseOutput,
+                                     @RequestParam String questionId,
+                                     @RequestParam Integer operate) {
+        LOGGER.info("testCaseBh=[{}],scoreWeight=[{}],testCaseInput=[{}],testCaseOutput=[{}],questionId=[{}],operate=[{}]",
+                testCaseBh, scoreWeight, testCaseInput, testCaseOutput, questionId, operate);
+        JsonResult jsonResult = testCaseService.modifyTestCase(testCaseBh, scoreWeight, testCaseInput, testCaseOutput, questionId, operate);
+        return jsonResult;
+    }
+
+    @RequestMapping(value = "/testCase/reset", method = RequestMethod.GET)
+    public void testReset() {
+        testCaseService.resetList();
     }
 
 }

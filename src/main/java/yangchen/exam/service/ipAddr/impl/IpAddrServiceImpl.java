@@ -2,7 +2,9 @@ package yangchen.exam.service.ipAddr.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import yangchen.exam.entity.ExamGroupNew;
 import yangchen.exam.entity.IpAddr;
+import yangchen.exam.repo.ExamGroupRepo;
 import yangchen.exam.repo.IpAddrRepo;
 import yangchen.exam.service.ipAddr.IpAddrService;
 
@@ -13,14 +15,18 @@ public class IpAddrServiceImpl implements IpAddrService {
 
     @Autowired
     private IpAddrRepo ipAddrRepo;
+    @Autowired
+    private ExamGroupRepo examGroupRepo;
 
 
     @Override
     public HashMap<Integer, Set<String>> searchIp(Integer examGroupId) {
 
+
+        ExamGroupNew examGroupNew = examGroupRepo.findById(examGroupId).get();
         HashMap<Integer, Set<String>> hash = new HashMap<>();
 
-        List<IpAddr> ipAddrList = ipAddrRepo.findByExamGroupId(examGroupId);
+        List<IpAddr> ipAddrList = ipAddrRepo.findByExamGroupIdAndLoginTimeBefore(examGroupId, examGroupNew.getEndTime());
         //todo  加油，我洗澡去了 哈哈哈哈好的
 
         for (IpAddr ipAddr : ipAddrList) {
@@ -63,11 +69,13 @@ public class IpAddrServiceImpl implements IpAddrService {
          *
          * 如果在筛选之后呢，同一个student的ip还是多于一个，则证明是异常的状态，需要返回给前端；
          */
+
+        ExamGroupNew examGroupNew = examGroupRepo.findById(examGroupId).get();
         List<IpAddr> result = new ArrayList<>();
-        List<IpAddr> ipAddrList = ipAddrRepo.findByExamGroupId(examGroupId);
+        List<IpAddr> ipAddrList = ipAddrRepo.findByExamGroupIdAndLoginTimeBefore(examGroupId, examGroupNew.getEndTime());
         HashMap<Integer, Set<IpAddr>> checkList = new HashMap<>();
         for (IpAddr ipAddr : ipAddrList) {
-            if (checkList.get(ipAddr.getStudentId())==null) {
+            if (checkList.get(ipAddr.getStudentId()) == null) {
                 Set<IpAddr> ipAddrSet = new HashSet<>();
                 ipAddrSet.add(ipAddr);
                 checkList.put(ipAddr.getStudentId(), ipAddrSet);
@@ -78,7 +86,7 @@ public class IpAddrServiceImpl implements IpAddrService {
         Iterator maplist = checkList.entrySet().iterator();
         while (maplist.hasNext()) {
             Map.Entry<Integer, Set<IpAddr>> entry = (Map.Entry<Integer, Set<IpAddr>>) maplist.next();
-            if (entry.getValue().size()>1){
+            if (entry.getValue().size() > 1) {
                 result.addAll(entry.getValue());
             }
         }
@@ -102,22 +110,16 @@ public class IpAddrServiceImpl implements IpAddrService {
 
 
      <哼>
-     @Override
-     public boolean equals(Object o) {
+     @Override public boolean equals(Object o) {
      if (this == o) return true;
      if (o == null || getClass() != o.getClass()) return false;
      IpAddr ipAddr = (IpAddr) o;
      return ipAddress != null ? ipAddress.equals(ipAddr.ipAddress) : ipAddr.ipAddress == null;
      }
-     @Override
-     public int hashCode() {
+     @Override public int hashCode() {
      return ipAddress != null ? ipAddress.hashCode() : 0;
      }
      </哼>
-
-
-
-
      *
      *
      */

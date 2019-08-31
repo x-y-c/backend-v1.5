@@ -7,11 +7,15 @@ import yangchen.exam.entity.TestCase;
 
 import java.util.List;
 
-public interface TestCaseRepo extends JpaRepository<TestCase, String > {
+public interface TestCaseRepo extends JpaRepository<TestCase, String> {
 
     List<TestCase> findByQuestionId(String questionId);
 
     @Transactional
     @Modifying
     void deleteTestCaseByQuestionId(String questionId);
+
+    @Transactional
+    @Modifying
+    void deleteTestCaseByTestCaseBh(String testCaseBh);
 }
