@@ -118,17 +118,37 @@ public class StudentServiceImpl implements studentService {
 
 
     @Override
-    public Page<StudentNew> getPage(Integer pageNum, Integer pageLimit) {
+    public Page<StudentNew> getPage(String teacherId,Integer pageNum, Integer pageLimit) {
         Sort sort = new Sort(Sort.Direction.DESC, "id");
         Pageable pageable = PageRequest.of(pageNum - 1, pageLimit, sort);
-        return studentRepo.findAll(pageable);
+        if(StringUtils.isEmpty(teacherId)){
+            return studentRepo.findAll(pageable);
+        }else{
+            Integer id = teacherRepo.findByTeacherName(teacherId).getId();
+            List<String> grades = teachClassInfoRepo.getClassNameByTeacherId(id);
+            return studentRepo.findByStudentGradeIn(grades,pageable);
+        }
+
     }
 
     @Override
-    public Page<StudentNew> getGradePage(String grade, Integer pageNum, Integer pageLimit) {
+    public Page<StudentNew> getGradePage(String teacherId,String grade, Integer pageNum, Integer pageLimit) {
         Sort sort = new Sort(Sort.Direction.DESC, "id");
         Pageable pageable = PageRequest.of(pageNum - 1, pageLimit,sort);
-        return studentRepo.findByStudentGrade(grade, pageable);
+        if(StringUtils.isEmpty(teacherId)){
+            return studentRepo.findByStudentGrade(grade, pageable);
+        }
+        else{
+            Integer id = teacherRepo.findByTeacherName(teacherId).getId();
+            List<String> grades = teachClassInfoRepo.getClassNameByTeacherId(id);
+            if (grades.contains(grade)){
+                return studentRepo.findByStudentGrade(grade, pageable);
+            }
+            else {
+                return studentRepo.findByStudentGrade(null, pageable);
+            }
+        }
+
     }
 
     @Override

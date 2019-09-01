@@ -57,9 +57,9 @@ public interface studentService {
      * @param pageLimit
      * @return
      */
-    Page<StudentNew> getPage(Integer pageNum, Integer pageLimit);
+    Page<StudentNew> getPage(String teacherId,Integer pageNum, Integer pageLimit);
 
-    Page<StudentNew> getGradePage(String grade,Integer pageNum,Integer pageLimit);
+    Page<StudentNew> getGradePage(String teacherId,String grade,Integer pageNum,Integer pageLimit);
 
     List<String> initGrade();
 
