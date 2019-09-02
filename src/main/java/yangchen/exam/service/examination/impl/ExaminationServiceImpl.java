@@ -179,6 +179,23 @@ public class ExaminationServiceImpl implements ExaminationService {
         return examInforesult;
     }
 
+    public List<ExamPageInfo> getExamPageInfoFast(Integer examGroupId) {
+        List<ExamInfo> examInfoList = examInfoService.getExamInfoByExamGroup(examGroupId);
+        List<ExamPageInfo> examInfoResult = new ArrayList<>();
+        examInfoList.parallelStream().forEach(examInfo -> {
+            ExamPageInfo examPageInfo = new ExamPageInfo();
+            StudentNew student = studentService.getStudentByStudentId(examInfo.getStudentNumber());
+            examPageInfo.setStudentGrade(student.getStudentGrade());
+            examPageInfo.setStudentName(student.getStudentName());
+            examPageInfo.setStudentId(student.getStudentId());
+            List<QuestionInfo> questionNamesByExamPages = questionService.getQuestionNamesByExamPage(examInfo.getExaminationId());
+            examPageInfo.setQuestionList(questionNamesByExamPages);
+            examInfoResult.add(examPageInfo);
+        });
+
+        return examInfoResult;
+    }
+
     @Override
     public ExamPaper getExampaperByExamPaper(Integer examPaperId) {
         ExamPaper examPaper = examPaperRepo.findById(examPaperId).get();

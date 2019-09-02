@@ -39,6 +39,9 @@ public interface ExaminationService {
 
     ExamPaper getExampaperByExamPaper(Integer examPaperId);
 
+
+    List<ExamPageInfo> getExamPageInfoFast(Integer examGroupId);
+
     /**
      * 获取已经作答过的考卷
      *
@@ -68,7 +71,7 @@ public interface ExaminationService {
      * @param id
      * @return
      */
-    JsonResult getQuestionInfoResult(Integer studentId,Integer id);
+    JsonResult getQuestionInfoResult(Integer studentId, Integer id);
 
 
     ExamPaper getExaminationById(Integer id);

@@ -108,6 +108,14 @@ public class ExamController {
         return JsonResult.succResult(examPageInfo);
     }
 
+    @RequestMapping(value = "/examPaperInfoFast", method = RequestMethod.GET)
+    public JsonResult getExamPaperInfoFast(@RequestParam Integer examGroupId) {
+        List<ExamPageInfo> examPageInfoFast = examinationService.getExamPageInfoFast(examGroupId);
+        return JsonResult.succResult(examPageInfoFast);
+
+
+    }
+
 
     @RequestMapping(value = "/unUsed", method = RequestMethod.GET)
     public JsonResult queryExamUnused() {
