@@ -66,6 +66,10 @@ public class AdministratorController {
     @RequestMapping(value = "/update/teacher", method = RequestMethod.POST)
     public JsonResult updateTeacher(@RequestBody Teacher teacher) {
         Teacher byTeacherName = teacherRepo.findByTeacherName(teacher.getTeacherName());
+        if (teacher.getId() != null) {
+            Teacher save = teacherRepo.save(teacher);
+            return JsonResult.succResult(save);
+        }
         if (byTeacherName != null) {
             return JsonResult.errorResult(ResultCode.USER_EXIST, "用户名已存在", null);
         }
@@ -89,10 +93,13 @@ public class AdministratorController {
     @ApiOperation(value = "删除教师信息")
     @ApiImplicitParam(name = "teacherId", value = "教师编号", required = true, dataType = "Integer")
 
-    @RequestMapping(value = "/delete/teacher", method = RequestMethod.POST)
-    public JsonResult deteleTeacher(Integer teacherId) {
-        Teacher teacher = adminManagement.deleteTeacher(teacherId);
-        return JsonResult.succResult(teacher);
+    @RequestMapping(value = "/delete/teacher", method = RequestMethod.GET)
+    public JsonResult deleteTeacher(Integer teacherId) {
+        Teacher teacherClassInfo = adminManagement.deleteTeacher(teacherId);
+        Teacher teacher = teacherRepo.findById(teacherId).get();
+        teacher.setActive(Boolean.FALSE);
+        Teacher save = teacherRepo.save(teacher);
+        return JsonResult.succResult(save);
     }
 
 
