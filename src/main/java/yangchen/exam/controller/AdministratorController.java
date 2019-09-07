@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import yangchen.exam.entity.TeachClassInfo;
 import yangchen.exam.entity.Teacher;
 import yangchen.exam.model.JsonResult;
 import yangchen.exam.model.ResultCode;
@@ -66,7 +67,10 @@ public class AdministratorController {
     @RequestMapping(value = "/update/teacher", method = RequestMethod.POST)
     public JsonResult updateTeacher(@RequestBody Teacher teacher) {
         Teacher byTeacherName = teacherRepo.findByTeacherName(teacher.getTeacherName());
+//        LOGGER.info(teacher.toString());
         if (teacher.getId() != null) {
+            teacher.setActive(Boolean.TRUE);
+            teacher.setPassword("123456");
             Teacher save = teacherRepo.save(teacher);
             return JsonResult.succResult(save);
         }
@@ -76,7 +80,10 @@ public class AdministratorController {
         teacher.setActive(Boolean.TRUE);
         teacher.setPassword("123456");
         Teacher save = teacherRepo.save(teacher);
-        return JsonResult.succResult(save);
+        TeachClassInfo teachClassInfo = new TeachClassInfo();
+        teachClassInfo.setTeacherId(save.getId());
+        TeachClassInfo save1 = teachClassInfoRepo.save(teachClassInfo);
+        return JsonResult.succResult(null);
     }
 
     @ApiOperation(value = "添加教师")
