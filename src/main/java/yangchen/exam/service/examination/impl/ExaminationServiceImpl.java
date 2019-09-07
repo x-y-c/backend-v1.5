@@ -33,6 +33,7 @@ import java.util.Set;
 public class ExaminationServiceImpl implements ExaminationService {
 
     private static Logger LOGGER = LoggerFactory.getLogger(ExaminationServiceImpl.class);
+
     @Autowired
     private QuestionService questionService;
 
