@@ -27,6 +27,8 @@ public interface QuestionRepo extends JpaRepository<QuestionNew, Integer> {
 
     Page<QuestionNew> findByQuestionNameLike(String questionName, Pageable pageable);
 
+    List<QuestionNew> findByQuestionTypeAndActivedIsTrue(String questionType);
+
 
 //    List<QuestionNew> findByQuestionNameLike(String questionName);
 

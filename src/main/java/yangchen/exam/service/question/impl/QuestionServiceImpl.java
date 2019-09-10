@@ -12,7 +12,7 @@ import yangchen.exam.Enum.QuestionTypeEnum;
 import yangchen.exam.Enum.StageEnum;
 import yangchen.exam.entity.ExamPaper;
 import yangchen.exam.entity.QuestionNew;
-import yangchen.exam.model.QuestionInfo;
+import yangchen.exam.model.*;
 import yangchen.exam.repo.ExamPaperRepo;
 import yangchen.exam.repo.QuestionRepo;
 import yangchen.exam.repo.TestCaseRepo;
@@ -45,6 +45,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Autowired
     private ExamPaperRepo examPaperRepo;
+
 
     @Value("${image.base64.path}")
     private String imgPath;
@@ -198,7 +199,7 @@ public class QuestionServiceImpl implements QuestionService {
     public Page<QuestionNew> getTitleQuestionPage(String value, Integer pageNo, Integer pageSize) {
         Sort sort = new Sort(Sort.Direction.DESC, "id");
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-        Page<QuestionNew> all = questionRepo.findByQuestionNameLike("%"+value+"%", pageable);
+        Page<QuestionNew> all = questionRepo.findByQuestionNameLike("%" + value + "%", pageable);
         all.forEach(questionNew -> {
             questionNew.setStage(StageEnum.getStageName(questionNew.getStage()));
             questionNew.setDifficulty(DifficultEnum.getDifficultName(questionNew.getDifficulty()));
@@ -211,7 +212,7 @@ public class QuestionServiceImpl implements QuestionService {
     public Page<QuestionNew> getCustomBhQuestionPage(String value, Integer pageNo, Integer pageSize) {
         Sort sort = new Sort(Sort.Direction.DESC, "id");
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-        Page<QuestionNew> all = questionRepo.findByCustomBhLike("%"+value+"%", pageable);
+        Page<QuestionNew> all = questionRepo.findByCustomBhLike("%" + value + "%", pageable);
         all.forEach(questionNew -> {
             questionNew.setStage(StageEnum.getStageName(questionNew.getStage()));
             questionNew.setDifficulty(DifficultEnum.getDifficultName(questionNew.getDifficulty()));
@@ -223,6 +224,56 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public List<QuestionNew> searchStage(String stage) {
         return questionRepo.findByStageAndActivedIsTrue(StageEnum.getStageCode(stage));
+    }
+
+    /*
+    QuestionPractice
+        label--练习
+        List<QuestionType>
+                label
+                List<QuestionStage>
+                    label
+                    List<QuestionLastChildren>
+                        label
+                        questionBh
+
+//                QuestionLastChildren questionLastChildren = new QuestionLastChildren();
+//                questionLastChildren.setLabel();
+     */
+    @Override
+    public QuestionPractice getQuestionPracticeInfo() {
+        QuestionPractice questionPractice = new QuestionPractice();
+        questionPractice.setLabel("练习题");
+        List<QuestionTypeChildren> questionTypeChildrenList = new ArrayList<QuestionTypeChildren>();
+        //1、按题型查询题目
+        for (QuestionTypeEnum questionType : QuestionTypeEnum.values()) {
+            QuestionTypeChildren questionTypeChildren = new QuestionTypeChildren();
+            questionTypeChildren.setLabel(questionType.getQuestionTypeName());
+            List<QuestionNew> questionNewList = questionRepo.findByQuestionTypeAndActivedIsTrue(questionType.getQuestionTypeCode());
+            List<QuestionStageChildren> questionStageChildrenList = new ArrayList<QuestionStageChildren>();
+            //2、按阶段查询
+            for (StageEnum stageEnum : StageEnum.values()) {
+                QuestionStageChildren questionStageChildren = new QuestionStageChildren();
+                questionStageChildren.setLabel(stageEnum.getStageName());
+                List<QuestionLastChildren> questionLastChildrenList = new ArrayList<QuestionLastChildren>();
+                for (QuestionNew questionNew : questionNewList) {
+                    if (questionNew.getStage().equals(stageEnum.getStageCode())) {
+                        QuestionLastChildren questionLastChildren = new QuestionLastChildren();
+                        questionLastChildren.setLabel(questionNew.getQuestionName());
+                        questionLastChildren.setQuestionBh(questionNew.getQuestionBh());
+                        questionLastChildrenList.add(questionLastChildren);
+                    }
+                }
+                questionStageChildren.setChildren(questionLastChildrenList);
+                questionStageChildrenList.add(questionStageChildren);
+            }
+
+            questionTypeChildren.setChildren(questionStageChildrenList);
+            questionTypeChildrenList.add(questionTypeChildren);
+        }
+        questionTypeChildrenList.remove(questionTypeChildrenList.size()-1);
+        questionPractice.setChildren(questionTypeChildrenList);
+        return questionPractice;
     }
 
     @Override

@@ -3,6 +3,7 @@ package yangchen.exam.service.question;
 import org.springframework.data.domain.Page;
 import yangchen.exam.entity.QuestionNew;
 import yangchen.exam.model.QuestionInfo;
+import yangchen.exam.model.QuestionPractice;
 
 import java.io.IOException;
 import java.util.List;
@@ -85,4 +86,7 @@ public interface QuestionService {
     Page<QuestionNew> getCustomBhQuestionPage(String value, Integer pageNo, Integer pageSize);
 
     List<QuestionNew> searchStage(String stage);
+
+
+    QuestionPractice getQuestionPracticeInfo();
 }
