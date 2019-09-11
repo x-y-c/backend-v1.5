@@ -6,6 +6,8 @@ import yangchen.exam.entity.Teacher;
 import yangchen.exam.repo.TeacherRepo;
 import yangchen.exam.service.teacher.TeacherService;
 
+import javax.annotation.PostConstruct;
+
 
 /**
  * @author yc

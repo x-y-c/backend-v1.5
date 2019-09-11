@@ -10,10 +10,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import yangchen.exam.entity.TeachClassInfo;
 import yangchen.exam.entity.Teacher;
 import yangchen.exam.model.JsonResult;
+import yangchen.exam.model.ResultCode;
 import yangchen.exam.model.TeachClassInfoList;
 import yangchen.exam.repo.TeachClassInfoRepo;
+import yangchen.exam.repo.TeacherRepo;
 import yangchen.exam.service.adminManagement.AdminManagement;
 
 
@@ -21,11 +24,14 @@ import yangchen.exam.service.adminManagement.AdminManagement;
 @RestController
 @RequestMapping(value = "/admin", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdministratorController {
-public static Logger LOGGER = LoggerFactory.getLogger(AdministratorController.class);
+    public static Logger LOGGER = LoggerFactory.getLogger(AdministratorController.class);
 
     @Autowired
     private TeachClassInfoRepo teachClassInfoRepo;
 
+
+    @Autowired
+    private TeacherRepo teacherRepo;
 
     @Autowired
     private AdminManagement adminManagement;
@@ -52,12 +58,35 @@ public static Logger LOGGER = LoggerFactory.getLogger(AdministratorController.cl
 
     @RequestMapping(value = "/update/teachClassInfo", method = RequestMethod.POST)
     public JsonResult updateTeachClassInfo(@RequestBody TeachClassInfoList teachClassInfoList) {
-LOGGER.info(teachClassInfoList.toString());
-      return JsonResult.succResult(adminManagement.updateTeachClassInfo(teachClassInfoList));
+        LOGGER.info(teachClassInfoList.toString());
+        return JsonResult.succResult(adminManagement.updateTeachClassInfo(teachClassInfoList));
 //        return JsonResult.succResult(null);
     }
 
-    @ApiOperation(value = "添加教师及管理班级信息")
+    @ApiOperation(value = "添加教师")
+    @RequestMapping(value = "/update/teacher", method = RequestMethod.POST)
+    public JsonResult updateTeacher(@RequestBody Teacher teacher) {
+        Teacher byTeacherName = teacherRepo.findByTeacherName(teacher.getTeacherName());
+//        LOGGER.info(teacher.toString());
+        if (teacher.getId() != null) {
+            teacher.setActive(Boolean.TRUE);
+            teacher.setPassword("123456");
+            Teacher save = teacherRepo.save(teacher);
+            return JsonResult.succResult(save);
+        }
+        if (byTeacherName != null) {
+            return JsonResult.errorResult(ResultCode.USER_EXIST, "用户名已存在", null);
+        }
+        teacher.setActive(Boolean.TRUE);
+        teacher.setPassword("123456");
+        Teacher save = teacherRepo.save(teacher);
+        TeachClassInfo teachClassInfo = new TeachClassInfo();
+        teachClassInfo.setTeacherId(save.getId());
+        TeachClassInfo save1 = teachClassInfoRepo.save(teachClassInfo);
+        return JsonResult.succResult(null);
+    }
+
+    @ApiOperation(value = "添加教师")
     @ApiImplicitParam(name = "teachClassInfoList", value = "教师和对应班级类", required = true, dataType = "TeachClassInfoList")
 
     @RequestMapping(value = "/add/teachClassInfo", method = RequestMethod.POST)
@@ -71,10 +100,13 @@ LOGGER.info(teachClassInfoList.toString());
     @ApiOperation(value = "删除教师信息")
     @ApiImplicitParam(name = "teacherId", value = "教师编号", required = true, dataType = "Integer")
 
-    @RequestMapping(value = "/delete/teacher", method = RequestMethod.POST)
-    public JsonResult deteleTeacher(Integer teacherId) {
-        Teacher teacher = adminManagement.deleteTeacher(teacherId);
-        return JsonResult.succResult(teacher);
+    @RequestMapping(value = "/delete/teacher", method = RequestMethod.GET)
+    public JsonResult deleteTeacher(Integer teacherId) {
+        Teacher teacherClassInfo = adminManagement.deleteTeacher(teacherId);
+        Teacher teacher = teacherRepo.findById(teacherId).get();
+        teacher.setActive(Boolean.FALSE);
+        Teacher save = teacherRepo.save(teacher);
+        return JsonResult.succResult(save);
     }
 
 

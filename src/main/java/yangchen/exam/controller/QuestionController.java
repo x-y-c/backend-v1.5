@@ -220,7 +220,7 @@ public class QuestionController {
             String questionBh = UUID.randomUUID().toString().replace("-", "");
             testCase.setQuestionId(questionBh);
             TestCase testCase1 = testCaseService.addTestCase(testCase);
-            LOGGER.info("success add TestCase"+testCase1.toString());
+            LOGGER.info("success add TestCase" + testCase1.toString());
             questionNew.setQuestionBh(questionBh);
         }
 
@@ -284,4 +284,12 @@ public class QuestionController {
         testCaseService.resetList();
     }
 
+
+    @RequestMapping(value = "/practice", method = RequestMethod.GET)
+    public JsonResult getPracticeList() {
+        List<QuestionPractice> result = new ArrayList<>();
+        QuestionPractice questionPracticeInfo = questionService.getQuestionPracticeInfo();
+        result.add(questionPracticeInfo);
+        return JsonResult.succResult(result);
+    }
 }
