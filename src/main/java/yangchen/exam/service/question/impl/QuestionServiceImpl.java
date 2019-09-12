@@ -1,5 +1,9 @@
 package yangchen.exam.service.question.impl;
 
+import com.google.gson.Gson;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -45,6 +49,8 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Autowired
     private ExamPaperRepo examPaperRepo;
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(QuestionServiceImpl.class);
 
 
     @Value("${image.base64.path}")
@@ -240,40 +246,181 @@ public class QuestionServiceImpl implements QuestionService {
 //                QuestionLastChildren questionLastChildren = new QuestionLastChildren();
 //                questionLastChildren.setLabel();
      */
+    //todo 对于这里的代码，改成方法套方法的形式，清晰明了
+//    @Override
+//    public QuestionPractice getQuestionPracticeInfo() {
+//        QuestionPractice questionPractice = new QuestionPractice();
+//        questionPractice.setLabel("练习题");
+//        List<QuestionTypeChildren> questionTypeChildrenList = new ArrayList<QuestionTypeChildren>();
+//        //1、按题型查询题目
+//        for (QuestionTypeEnum questionType : QuestionTypeEnum.values()) {
+//            QuestionTypeChildren questionTypeChildren = new QuestionTypeChildren();
+//            questionTypeChildren.setLabel(questionType.getQuestionTypeName());
+//            List<QuestionNew> questionNewList = questionRepo.findByQuestionTypeAndActivedIsTrue(questionType.getQuestionTypeCode());
+//            List<QuestionStageChildren> questionStageChildrenList = new ArrayList<QuestionStageChildren>();
+//            //2、按阶段查询
+//            for (StageEnum stageEnum : StageEnum.values()) {
+//                QuestionStageChildren questionStageChildren = new QuestionStageChildren();
+//                questionStageChildren.setLabel(stageEnum.getStageName());
+//                List<QuestionLastChildren> questionLastChildrenList = new ArrayList<QuestionLastChildren>();
+//                for (QuestionNew questionNew : questionNewList) {
+//                    if (questionNew.getStage().equals(stageEnum.getStageCode())) {
+//                        QuestionLastChildren questionLastChildren = new QuestionLastChildren();
+//                        questionLastChildren.setLabel(questionNew.getQuestionName());
+//                        questionLastChildren.setQuestionBh(questionNew.getQuestionBh());
+//                        questionLastChildrenList.add(questionLastChildren);
+//                    }
+//                }
+//                questionStageChildren.setChildren(questionLastChildrenList);
+//                questionStageChildrenList.add(questionStageChildren);
+//            }
+//
+//            questionTypeChildren.setChildren(questionStageChildrenList);
+//            questionTypeChildrenList.add(questionTypeChildren);
+//        }
+//        questionTypeChildrenList.remove(questionTypeChildrenList.size()-1);
+//        questionPractice.setChildren(questionTypeChildrenList);
+//        return questionPractice;
+//    }
+
+    //获取树状的练习题的数据格式
     @Override
     public QuestionPractice getQuestionPracticeInfo() {
         QuestionPractice questionPractice = new QuestionPractice();
         questionPractice.setLabel("练习题");
+
+        List<QuestionTypeChildren> questionTypeChildrenList = getPracticeByQuestionType();
+        questionPractice.setChildren(questionTypeChildrenList);
+
+        return questionPractice;
+    }
+
+    //1、按题型查询题目
+    public List<QuestionTypeChildren> getPracticeByQuestionType(){
+
         List<QuestionTypeChildren> questionTypeChildrenList = new ArrayList<QuestionTypeChildren>();
-        //1、按题型查询题目
         for (QuestionTypeEnum questionType : QuestionTypeEnum.values()) {
             QuestionTypeChildren questionTypeChildren = new QuestionTypeChildren();
             questionTypeChildren.setLabel(questionType.getQuestionTypeName());
             List<QuestionNew> questionNewList = questionRepo.findByQuestionTypeAndActivedIsTrue(questionType.getQuestionTypeCode());
-            List<QuestionStageChildren> questionStageChildrenList = new ArrayList<QuestionStageChildren>();
-            //2、按阶段查询
-            for (StageEnum stageEnum : StageEnum.values()) {
-                QuestionStageChildren questionStageChildren = new QuestionStageChildren();
-                questionStageChildren.setLabel(stageEnum.getStageName());
-                List<QuestionLastChildren> questionLastChildrenList = new ArrayList<QuestionLastChildren>();
-                for (QuestionNew questionNew : questionNewList) {
-                    if (questionNew.getStage().equals(stageEnum.getStageCode())) {
-                        QuestionLastChildren questionLastChildren = new QuestionLastChildren();
-                        questionLastChildren.setLabel(questionNew.getQuestionName());
-                        questionLastChildren.setQuestionBh(questionNew.getQuestionBh());
-                        questionLastChildrenList.add(questionLastChildren);
-                    }
-                }
-                questionStageChildren.setChildren(questionLastChildrenList);
-                questionStageChildrenList.add(questionStageChildren);
-            }
+
+            List<QuestionStageChildren> questionStageChildrenList = getPracticeByStage(questionNewList);
 
             questionTypeChildren.setChildren(questionStageChildrenList);
             questionTypeChildrenList.add(questionTypeChildren);
         }
         questionTypeChildrenList.remove(questionTypeChildrenList.size()-1);
-        questionPractice.setChildren(questionTypeChildrenList);
-        return questionPractice;
+
+        return questionTypeChildrenList;
+    }
+
+    //2、按阶段查询题目
+    public List<QuestionStageChildren> getPracticeByStage(List<QuestionNew> questionNewList){
+        List<QuestionStageChildren> questionStageChildrenList = new ArrayList<QuestionStageChildren>();
+
+        for (StageEnum stageEnum : StageEnum.values()) {
+            QuestionStageChildren questionStageChildren = new QuestionStageChildren();
+            questionStageChildren.setLabel(stageEnum.getStageName());
+            List<QuestionLastChildren> questionLastChildrenList = new ArrayList<QuestionLastChildren>();
+            for (QuestionNew questionNew : questionNewList) {
+                if (questionNew.getStage().equals(stageEnum.getStageCode())) {
+                    QuestionLastChildren questionLastChildren = new QuestionLastChildren();
+                    questionLastChildren.setLabel(questionNew.getQuestionName());
+                    questionLastChildren.setQuestionBh(questionNew.getQuestionBh());
+                    questionLastChildrenList.add(questionLastChildren);
+                }
+            }
+            questionStageChildren.setChildren(questionLastChildrenList);
+            questionStageChildrenList.add(questionStageChildren);
+        }
+        return questionStageChildrenList;
+    }
+
+    @Override
+    public QuestionDetail getPracticeItem(String questionBh) {
+        QuestionNew questionNew = questionRepo.findByQuestionBh(questionBh);
+        QuestionDetail questionDetail = new QuestionDetail();
+        questionDetail.setTitle(questionNew.getQuestionName());
+        questionDetail.setId(questionNew.getId().toString());
+        questionDetail.setCustomBh(questionNew.getCustomBh());
+        questionDetail.setIsProgramBlank(questionNew.getIsProgramBlank());
+        questionDetail.setQuestion(questionNew.getQuestionDetails());
+//        questionDetail.setSrc();
+        if ("100001".equals(questionNew.getIsProgramBlank())) {
+            Gson gson = new Gson();
+            SourceCode sourceCode = gson.fromJson(questionNew.getSourceCode(), SourceCode.class);
+            questionDetail.setSrc(sourceCode.getKey().get(0).getCode());
+        } else {
+            questionDetail.setSrc("");
+        }
+        return questionDetail;
+    }
+
+
+    //todo
+    @Override
+    public String getPracticeFront(String questionBh) {
+        QuestionNew questionNew = questionRepo.findByQuestionBh(questionBh);
+        String questionType = QuestionTypeEnum.getQuestionTypeName(questionNew.getQuestionType());
+        String stage = StageEnum.getStageName(questionNew.getStage());
+
+        List<QuestionTypeChildren> questionTypeChildrenList = getPracticeByQuestionType();
+        String questionBhCurrent="";
+        String questionBhFront = "";
+        String questionBhIWant= "";
+        for(QuestionTypeChildren questionTypeChildren:questionTypeChildrenList){
+            if(questionTypeChildren.getLabel().equals(questionType)){
+                List<QuestionStageChildren> questionStageChildrenList = questionTypeChildren.getChildren();
+                for(QuestionStageChildren questionStageChildren:questionStageChildrenList){
+                    if(questionStageChildren.getLabel().equals(stage)){
+                        List<QuestionLastChildren> questionLastChildren = questionStageChildren.getChildren();
+                        for(int i=0;i<questionLastChildren.size();i++){
+                            questionBhCurrent = questionLastChildren.get(i).getQuestionBh();
+                            if(questionBhCurrent.equals(questionBh)){
+                                questionBhIWant = questionBhFront;
+                                break;
+                            }else{
+                                questionBhFront = questionBhCurrent;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return questionBhIWant;
+    }
+
+
+    //todo
+    @Override
+    public String getPracticeNext(String questionBh) {
+        QuestionNew questionNew = questionRepo.findByQuestionBh(questionBh);
+        String questionType = QuestionTypeEnum.getQuestionTypeName(questionNew.getQuestionType());
+        String stage = StageEnum.getStageName(questionNew.getStage());
+
+        List<QuestionTypeChildren> questionTypeChildrenList = getPracticeByQuestionType();
+        String questionBhCurrent="";
+        String questionBhIWant= "";
+        for(QuestionTypeChildren questionTypeChildren:questionTypeChildrenList){
+            if(questionTypeChildren.getLabel().equals(questionType)){
+                List<QuestionStageChildren> questionStageChildrenList = questionTypeChildren.getChildren();
+                for(QuestionStageChildren questionStageChildren:questionStageChildrenList){
+                    if(questionStageChildren.getLabel().equals(stage)){
+                        List<QuestionLastChildren> questionLastChildren = questionStageChildren.getChildren();
+                        for(int i=0;i<questionLastChildren.size();i++){
+                            questionBhCurrent = questionLastChildren.get(i).getQuestionBh();
+                            if(questionBhCurrent.equals(questionBh)){
+                                questionBhIWant = questionLastChildren.get(i+1).getQuestionBh();;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return questionBhIWant;
     }
 
     @Override

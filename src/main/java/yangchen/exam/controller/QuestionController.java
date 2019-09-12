@@ -63,6 +63,7 @@ public class QuestionController {
     @Autowired
     private FileUpAndDownService fileUpAndDownService;
 
+
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public JsonResult createQuestion(@RequestBody QuestionNew question) {
         QuestionNew questionResult = questionService.createQuestion(question);
@@ -292,4 +293,34 @@ public class QuestionController {
         result.add(questionPracticeInfo);
         return JsonResult.succResult(result);
     }
+
+    @RequestMapping(value = "/practiceItem",method = RequestMethod.GET)
+    public JsonResult getPracticeItem(@RequestParam String questionBh){
+        QuestionDetail questionDetail = questionService.getPracticeItem(questionBh);
+        return JsonResult.succResult(questionDetail);
+    }
+
+    @RequestMapping(value = "/practice/getFront", method = RequestMethod.GET)
+    public JsonResult getPracticeFront(@RequestParam String questionBh){
+        String questionBhIWant = questionService.getPracticeFront(questionBh);
+        if(StringUtils.isEmpty(questionBhIWant)){
+            return JsonResult.errorResult(ResultCode.NO_FRONT_QUESTION, "当前为第一题！", null);
+        }else{
+            return JsonResult.succResult(questionBhIWant);
+        }
+
+    }
+
+    @RequestMapping(value = "/practice/getNext", method = RequestMethod.GET)
+    public JsonResult getPracticeNext(@RequestParam String questionBh){
+        String questionBhIWant = questionService.getPracticeNext(questionBh);
+        if(StringUtils.isEmpty(questionBhIWant)){
+            return JsonResult.errorResult(ResultCode.NO_NEXT_QUESTION, "当前为最后一题！", null);
+        }else{
+            return JsonResult.succResult(questionBhIWant);
+        }
+    }
+
+
+
 }

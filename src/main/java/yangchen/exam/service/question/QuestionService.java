@@ -2,6 +2,7 @@ package yangchen.exam.service.question;
 
 import org.springframework.data.domain.Page;
 import yangchen.exam.entity.QuestionNew;
+import yangchen.exam.model.QuestionDetail;
 import yangchen.exam.model.QuestionInfo;
 import yangchen.exam.model.QuestionPractice;
 
@@ -89,4 +90,10 @@ public interface QuestionService {
 
 
     QuestionPractice getQuestionPracticeInfo();
+
+    QuestionDetail getPracticeItem(String questionBh);
+
+    String getPracticeFront(String questionBh);
+
+    String getPracticeNext(String questionBh);
 }

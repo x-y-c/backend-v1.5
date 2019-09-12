@@ -28,6 +28,8 @@ public class ResultCode {
      * R0008 没有权限
      * R0009 编译出错
      * R0010 测试用例权重不是100
+     * R0011 没有上一题
+     * R0012 没有下一题
      */
     public static String SUCCESS = "A0000";
     public static String TEACHER_LOGIN = "A0001";
@@ -42,5 +44,7 @@ public class ResultCode {
     public static String NO_PERMISSION = "R0008";
     public static String COMPILE_ERROR = "R0009";
     public static String TESTCASE_SCORE_WEIGHT_ERROR = "R0010";
+    public static String NO_FRONT_QUESTION = "R0011";
+    public static String NO_NEXT_QUESTION = "R0012";
 
 }
