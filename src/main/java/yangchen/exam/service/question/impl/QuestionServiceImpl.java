@@ -411,7 +411,7 @@ public class QuestionServiceImpl implements QuestionService {
                         for(int i=0;i<questionLastChildren.size();i++){
                             questionBhCurrent = questionLastChildren.get(i).getQuestionBh();
                             if(questionBhCurrent.equals(questionBh)){
-                                questionBhIWant = questionLastChildren.get(i+1).getQuestionBh();;
+                                questionBhIWant = questionLastChildren.get(i+1).getQuestionBh();
                                 break;
                             }
                         }

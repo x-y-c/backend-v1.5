@@ -2,23 +2,25 @@ package yangchen.exam.service.compileService;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import yangchen.exam.entity.QuestionNew;
-import yangchen.exam.entity.Score;
-import yangchen.exam.entity.Submit;
-import yangchen.exam.entity.TestCase;
+import yangchen.exam.entity.*;
 import yangchen.exam.model.CompileFront;
 import yangchen.exam.model.CompileModel;
 import yangchen.exam.model.CompileResult;
+import yangchen.exam.repo.QuestionRepo;
+import yangchen.exam.repo.SubmitPracticeRepo;
 import yangchen.exam.service.http.IOkhttpService;
 import yangchen.exam.service.question.QuestionService;
 import yangchen.exam.service.score.ScoreService;
 import yangchen.exam.service.submit.SubmitService;
 import yangchen.exam.service.testInfo.TestCaseService;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,18 +46,41 @@ public class CompileServiceImpl implements CompileService {
     @Autowired
     private ScoreService scoreService;
 
+    @Autowired
+    private QuestionRepo questionRepo;
+
+    @Autowired
+    private SubmitPracticeRepo submitPracticeRepo;
+
+    @Value("${compile.url.path}")
+    private String compileUrl;
 
     public static Logger LOGGER = LoggerFactory.getLogger(CompileServiceImpl.class);
 
     @Override
-    public CompileFront compileCode(Integer examinationId, Integer index, String src, Integer studentId) {
+    public CompileFront compileCode(Integer examinationId, Integer index, String src, Integer studentId, String questionBh) {
 
         double score = 0.0;
         int succCount = 0;
+        List<TestCase> TestCaseList = new ArrayList<>();
+        QuestionNew questionBy = null;
 
-        QuestionNew questionBy = questionService.getQuestionBy(examinationId, index);
-        submitService.addSubmit(Submit.builder().examinationId(examinationId).questionId(questionBy.getQuestionBh()).src(src).studentId(Long.valueOf(studentId)).build());
-        List<TestCase> TestCaseList = testCaseService.findByQuestionId(questionBy.getQuestionBh());
+        if (StringUtils.isEmpty(questionBh)) {
+            questionBy = questionService.getQuestionBy(examinationId, index);
+            submitService.addSubmit(Submit.builder().examinationId(examinationId).questionId(questionBy.getQuestionBh()).src(src).studentId(Long.valueOf(studentId)).build());
+        } else {
+            questionBy = questionRepo.findByQuestionBh(questionBh);
+            //todo
+            //需要一张记录练习题的表嘛？yes
+            submitPracticeRepo.save(SubmitPractice
+                    .builder()
+                    .questionId(String.valueOf(questionBy.getId()))
+                    .studentId(studentId)
+                    .src(src)
+                    .submitTime(new Timestamp(System.currentTimeMillis()))
+                    .build());
+        }
+        TestCaseList = testCaseService.findByQuestionId(questionBy.getQuestionBh());
         CompileModel compileModel = new CompileModel();
         List<String> input = new ArrayList<>();
         List<String> output = new ArrayList<>();
@@ -67,7 +92,7 @@ public class CompileServiceImpl implements CompileService {
                 output.add(t.getTestCaseOutput());
             }
         } else {
-            output.add("Hello World\n");
+            output.add("");
             input.add("");
         }
         compileModel.setInput(input);
@@ -78,11 +103,11 @@ public class CompileServiceImpl implements CompileService {
         compileModel.setTimeLimit(1000L);
 
         GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.disableHtmlEscaping();
         Gson gson = gsonBuilder.create();
+        gsonBuilder.disableHtmlEscaping();
         String compileModelJson = gson.toJson(compileModel);
         LOGGER.info(compileModelJson);
-        String jsonResult = okhttpService.postJsonBody("http://119.3.217.233:8080/judge.do", compileModelJson);
+        String jsonResult = okhttpService.postJsonBody(compileUrl, compileModelJson);
         LOGGER.info(jsonResult);
         CompileResult compileResult = gson.fromJson(jsonResult, CompileResult.class);
         if (compileResult.getResult() != null) {

@@ -68,8 +68,8 @@ public class CompileController {
     @ApiImplicitParams({@ApiImplicitParam(name = "code",value = "源代码",required = true,dataType = "String"),
                         @ApiImplicitParam(name = "examinationId",value = "试卷编号",required = true,dataType = "Integer")})
     @RequestMapping(value = {"/", ""}, method = RequestMethod.POST)
-    public JsonResult compileTest(@RequestParam String code, @RequestParam Integer examinationId, @RequestParam Integer index, @RequestParam Integer studentId) {
-        CompileFront compileFront = compileService.compileCode(examinationId, index, code, studentId);
+    public JsonResult compileTest(@RequestParam String code, @RequestParam(required = false) Integer examinationId, @RequestParam(required = false) Integer index, @RequestParam Integer studentId,@RequestParam(required = false) String questionBh) {
+        CompileFront compileFront = compileService.compileCode(examinationId, index, code, studentId,questionBh);
         return JsonResult.succResult(compileFront);
     }
 
