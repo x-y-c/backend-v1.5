@@ -59,26 +59,27 @@ public class CompileServiceImpl implements CompileService {
 
     @Override
     public CompileFront compileCode(Integer examinationId, Integer index, String src, Integer studentId, String questionBh) {
-
+        boolean isPractice = false;
         double score = 0.0;
         int succCount = 0;
         List<TestCase> TestCaseList = new ArrayList<>();
         QuestionNew questionBy = null;
+        SubmitPractice submitPractice = new SubmitPractice();
 
         if (StringUtils.isEmpty(questionBh)) {
             questionBy = questionService.getQuestionBy(examinationId, index);
             submitService.addSubmit(Submit.builder().examinationId(examinationId).questionId(questionBy.getQuestionBh()).src(src).studentId(Long.valueOf(studentId)).build());
         } else {
+
+            //练习的情况
+            isPractice = true;
             questionBy = questionRepo.findByQuestionBh(questionBh);
             //todo
             //需要一张记录练习题的表嘛？yes
-            submitPracticeRepo.save(SubmitPractice
-                    .builder()
-                    .questionId(String.valueOf(questionBy.getId()))
-                    .studentId(studentId)
-                    .src(src)
-                    .submitTime(new Timestamp(System.currentTimeMillis()))
-                    .build());
+            submitPractice.setQuestionId(String.valueOf(questionBy.getId()));
+            submitPractice.setSrc(src);
+            submitPractice.setSubmitTime(new Timestamp(System.currentTimeMillis()));
+            submitPractice.setStudentId(studentId);
         }
         TestCaseList = testCaseService.findByQuestionId(questionBy.getQuestionBh());
         CompileModel compileModel = new CompileModel();
@@ -121,14 +122,20 @@ public class CompileServiceImpl implements CompileService {
 
         }
 
-        Score score1 = new Score();
-        score1.setExaminationId(examinationId);
-        score1.setStudentId(studentId);
-        score1.setScore((int) Math.round(score));
-        score1.setIndex(index);
-        score1.setQuestionId(questionBy.getQuestionBh());
-//        score1.setSubmitTime(new Timestamp(System.currentTimeMillis()));
-        scoreService.saveOrUpdate(score1);
+        if (isPractice) {
+            submitPractice.setScore((int) Math.round(score));
+            submitPracticeRepo.save(submitPractice);
+        } else {
+            Score score1 = new Score();
+            score1.setExaminationId(examinationId);
+            score1.setStudentId(studentId);
+            score1.setScore((int) Math.round(score));
+            score1.setIndex(index);
+            score1.setQuestionId(questionBy.getQuestionBh());
+            scoreService.saveOrUpdate(score1);
+
+        }
+
 
         CompileFront compileFront = new CompileFront();
         compileFront.setCompileMsg(compileResult.getGlobalMsg());

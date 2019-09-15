@@ -93,7 +93,7 @@ public interface QuestionService {
 
     QuestionPractice getQuestionPracticeInfo();
 
-    QuestionDetail getPracticeItem(String questionBh);
+    QuestionDetail getPracticeItem(String questionBh,Integer studentId);
 
     String getPracticeFront(String questionBh);
 

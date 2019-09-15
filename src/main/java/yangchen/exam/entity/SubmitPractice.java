@@ -2,8 +2,8 @@ package yangchen.exam.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.checkerframework.checker.units.qual.C;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Data
 @Table(name = "submit_practice")
 public class SubmitPractice {
 
@@ -31,4 +32,7 @@ public class SubmitPractice {
 
     @Column(name = "src")
     private String src;
+
+    @Column(name = "score")
+    private Integer score;
 }

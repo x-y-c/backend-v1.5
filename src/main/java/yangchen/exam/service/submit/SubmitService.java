@@ -1,6 +1,10 @@
 package yangchen.exam.service.submit;
 
 import yangchen.exam.entity.Submit;
+import yangchen.exam.entity.SubmitPractice;
+import yangchen.exam.model.SubmitPracticeModel;
+
+import java.util.List;
 
 /**
  * @author YC
@@ -15,5 +19,6 @@ public interface SubmitService {
      */
     Submit addSubmit(Submit submit);
 
+    List<SubmitPracticeModel> getSubmitPracticeList();
 
 }

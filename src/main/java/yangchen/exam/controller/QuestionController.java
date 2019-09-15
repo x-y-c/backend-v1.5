@@ -308,8 +308,8 @@ public class QuestionController {
     }
 
     @RequestMapping(value = "/practiceItem",method = RequestMethod.GET)
-    public JsonResult getPracticeItem(@RequestParam String questionBh){
-        QuestionDetail questionDetail = questionService.getPracticeItem(questionBh);
+    public JsonResult getPracticeItem(@RequestParam String questionBh,@RequestParam Integer studentId){
+        QuestionDetail questionDetail = questionService.getPracticeItem(questionBh,studentId);
         return JsonResult.succResult(questionDetail);
     }
 

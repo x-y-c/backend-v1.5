@@ -19,6 +19,7 @@ import yangchen.exam.repo.IpAddrRepo;
 import yangchen.exam.service.examInfo.ExamInfoService;
 import yangchen.exam.service.examination.ExamGroupService;
 import yangchen.exam.service.examination.ExaminationService;
+import yangchen.exam.service.submit.SubmitService;
 import yangchen.exam.util.IpUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,6 +54,9 @@ public class ExamController {
 
     @Autowired
     private IpAddrRepo ipAddrRepo;
+
+    @Autowired
+    private SubmitService submitService;
 
     public static final Logger LOGGER = LoggerFactory.getLogger(ExamController.class);
 
@@ -214,5 +218,20 @@ public class ExamController {
             return JsonResult.succResult(null);
         }
     }
+
+    @GetMapping(value = "/getPracticeRecord")
+    public JsonResult getPracticeRecord(){
+        //我想想怎么写哈哈哈哈
+        //得写个model吧？
+        //别 哈哈哈 score的逻辑现在是通用的  改的话要动好多
+        //没事~~  写个model就好啦
+        //是的吧
+        //xixi
+
+        List<SubmitPracticeModel> submitPracticeList = submitService.getSubmitPracticeList();
+        return JsonResult.succResult(submitPracticeList);
+    }
+
+
 
 }

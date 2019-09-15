@@ -16,11 +16,9 @@ import yangchen.exam.Enum.StageEnum;
 import yangchen.exam.entity.ExamPaper;
 import yangchen.exam.entity.QuestionLog;
 import yangchen.exam.entity.QuestionNew;
+import yangchen.exam.entity.SubmitPractice;
 import yangchen.exam.model.*;
-import yangchen.exam.repo.ExamPaperRepo;
-import yangchen.exam.repo.QuestionLogRepo;
-import yangchen.exam.repo.QuestionRepo;
-import yangchen.exam.repo.TestCaseRepo;
+import yangchen.exam.repo.*;
 import yangchen.exam.service.examination.ExaminationService;
 import yangchen.exam.service.question.QuestionBaseService;
 import yangchen.exam.service.question.QuestionService;
@@ -53,6 +51,9 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Autowired
     private QuestionLogRepo questionLogRepo;
+
+    @Autowired
+    private SubmitPracticeRepo submitPracticeRepo;
 
     public static final Logger LOGGER = LoggerFactory.getLogger(QuestionServiceImpl.class);
 
@@ -341,7 +342,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public QuestionDetail getPracticeItem(String questionBh) {
+    public QuestionDetail getPracticeItem(String questionBh, Integer studentId) {
         QuestionNew questionNew = questionRepo.findByQuestionBh(questionBh);
         QuestionDetail questionDetail = new QuestionDetail();
         questionDetail.setTitle(questionNew.getQuestionName());

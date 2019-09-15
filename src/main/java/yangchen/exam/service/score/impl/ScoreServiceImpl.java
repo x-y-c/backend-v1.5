@@ -73,8 +73,8 @@ public class ScoreServiceImpl implements ScoreService {
 
 
     public Score saveOrUpdate(Score score) {
-        Score score1 = scoreRepo.findByStudentIdAndExaminationIdAndIndex(score.getStudentId(),
-                score.getExaminationId(), score.getIndex());
+        Score score1 = scoreRepo.findByStudentIdAndExaminationIdAndIndexAndQuestionId(score.getStudentId(),
+                score.getExaminationId(), score.getIndex(), score.getQuestionId());
 
         if (score1 != null) {
             score1.setScore(score.getScore());
@@ -212,7 +212,7 @@ public class ScoreServiceImpl implements ScoreService {
             writer.addHeaderAlias("score", "成绩");
 
             result.add(ExcelSubmitModel.builder().score(Double.valueOf(examInfo.getExaminationScore())).build());
-LOGGER.info("submit"+result.toString());
+            LOGGER.info("submit" + result.toString());
             List<ExcelSubmitModel> rows = CollUtil.newArrayList(result);
             writer.write(rows, true);
             writer.flush(byteArrayInputStream, true);
@@ -320,7 +320,7 @@ LOGGER.info("submit"+result.toString());
         writer.addHeaderAlias("questionDesc", "题目描述");
         writer.addHeaderAlias("src", "学生代码");
         writer.addHeaderAlias("score", "成绩");
-        LOGGER.info("submitAll"+result.toString());
+        LOGGER.info("submitAll" + result.toString());
         System.out.println(result.toString());
         List<ExcelSubmitModel> rows = CollUtil.newArrayList(result);
         writer.write(rows, true);

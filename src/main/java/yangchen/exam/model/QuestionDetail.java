@@ -19,4 +19,5 @@ public class QuestionDetail {
     private String customBh;
     private String isProgramBlank;
     private String src;
+    private Integer score;
 }
