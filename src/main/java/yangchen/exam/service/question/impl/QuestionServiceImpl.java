@@ -358,6 +358,15 @@ public class QuestionServiceImpl implements QuestionService {
         } else {
             questionDetail.setSrc("");
         }
+        SubmitPractice submitLast = submitPracticeRepo.getSubmitLast(String.valueOf(questionNew.getId()), studentId);
+        if (submitLast==null){
+        questionDetail.setSrc("");
+        questionDetail.setScore(0);
+        }else {
+            questionDetail.setSrc(submitLast.getSrc());
+            questionDetail.setScore(submitLast.getScore());
+        }
+
         return questionDetail;
     }
 
