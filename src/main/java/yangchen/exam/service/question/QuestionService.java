@@ -4,6 +4,8 @@ import org.springframework.data.domain.Page;
 import yangchen.exam.entity.QuestionNew;
 import yangchen.exam.model.QuestionDetail;
 import yangchen.exam.model.QuestionInfo;
+import yangchen.exam.entity.QuestionLog;
+import yangchen.exam.model.QuestionLogModel;
 import yangchen.exam.model.QuestionPractice;
 
 import java.io.IOException;
@@ -96,4 +98,8 @@ public interface QuestionService {
     String getPracticeFront(String questionBh);
 
     String getPracticeNext(String questionBh);
+
+    QuestionLog addQuestionLog(QuestionNew questionNew,String flag);
+
+    List<QuestionLogModel> getQuestionLog();
 }

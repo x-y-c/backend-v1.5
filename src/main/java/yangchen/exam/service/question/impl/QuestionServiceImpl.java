@@ -1,7 +1,6 @@
 package yangchen.exam.service.question.impl;
 
 import com.google.gson.Gson;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +14,11 @@ import yangchen.exam.Enum.DifficultEnum;
 import yangchen.exam.Enum.QuestionTypeEnum;
 import yangchen.exam.Enum.StageEnum;
 import yangchen.exam.entity.ExamPaper;
+import yangchen.exam.entity.QuestionLog;
 import yangchen.exam.entity.QuestionNew;
 import yangchen.exam.model.*;
 import yangchen.exam.repo.ExamPaperRepo;
+import yangchen.exam.repo.QuestionLogRepo;
 import yangchen.exam.repo.QuestionRepo;
 import yangchen.exam.repo.TestCaseRepo;
 import yangchen.exam.service.examination.ExaminationService;
@@ -49,6 +50,9 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Autowired
     private ExamPaperRepo examPaperRepo;
+
+    @Autowired
+    private QuestionLogRepo questionLogRepo;
 
     public static final Logger LOGGER = LoggerFactory.getLogger(QuestionServiceImpl.class);
 
@@ -296,7 +300,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     //1、按题型查询题目
-    public List<QuestionTypeChildren> getPracticeByQuestionType(){
+    public List<QuestionTypeChildren> getPracticeByQuestionType() {
 
         List<QuestionTypeChildren> questionTypeChildrenList = new ArrayList<QuestionTypeChildren>();
         for (QuestionTypeEnum questionType : QuestionTypeEnum.values()) {
@@ -309,13 +313,13 @@ public class QuestionServiceImpl implements QuestionService {
             questionTypeChildren.setChildren(questionStageChildrenList);
             questionTypeChildrenList.add(questionTypeChildren);
         }
-        questionTypeChildrenList.remove(questionTypeChildrenList.size()-1);
+        questionTypeChildrenList.remove(questionTypeChildrenList.size() - 1);
 
         return questionTypeChildrenList;
     }
 
     //2、按阶段查询题目
-    public List<QuestionStageChildren> getPracticeByStage(List<QuestionNew> questionNewList){
+    public List<QuestionStageChildren> getPracticeByStage(List<QuestionNew> questionNewList) {
         List<QuestionStageChildren> questionStageChildrenList = new ArrayList<QuestionStageChildren>();
 
         for (StageEnum stageEnum : StageEnum.values()) {
@@ -365,21 +369,21 @@ public class QuestionServiceImpl implements QuestionService {
         String stage = StageEnum.getStageName(questionNew.getStage());
 
         List<QuestionTypeChildren> questionTypeChildrenList = getPracticeByQuestionType();
-        String questionBhCurrent="";
+        String questionBhCurrent = "";
         String questionBhFront = "";
-        String questionBhIWant= "";
-        for(QuestionTypeChildren questionTypeChildren:questionTypeChildrenList){
-            if(questionTypeChildren.getLabel().equals(questionType)){
+        String questionBhIWant = "";
+        for (QuestionTypeChildren questionTypeChildren : questionTypeChildrenList) {
+            if (questionTypeChildren.getLabel().equals(questionType)) {
                 List<QuestionStageChildren> questionStageChildrenList = questionTypeChildren.getChildren();
-                for(QuestionStageChildren questionStageChildren:questionStageChildrenList){
-                    if(questionStageChildren.getLabel().equals(stage)){
+                for (QuestionStageChildren questionStageChildren : questionStageChildrenList) {
+                    if (questionStageChildren.getLabel().equals(stage)) {
                         List<QuestionLastChildren> questionLastChildren = questionStageChildren.getChildren();
-                        for(int i=0;i<questionLastChildren.size();i++){
+                        for (int i = 0; i < questionLastChildren.size(); i++) {
                             questionBhCurrent = questionLastChildren.get(i).getQuestionBh();
-                            if(questionBhCurrent.equals(questionBh)){
+                            if (questionBhCurrent.equals(questionBh)) {
                                 questionBhIWant = questionBhFront;
                                 break;
-                            }else{
+                            } else {
                                 questionBhFront = questionBhCurrent;
                             }
                         }
@@ -400,18 +404,18 @@ public class QuestionServiceImpl implements QuestionService {
         String stage = StageEnum.getStageName(questionNew.getStage());
 
         List<QuestionTypeChildren> questionTypeChildrenList = getPracticeByQuestionType();
-        String questionBhCurrent="";
-        String questionBhIWant= "";
-        for(QuestionTypeChildren questionTypeChildren:questionTypeChildrenList){
-            if(questionTypeChildren.getLabel().equals(questionType)){
+        String questionBhCurrent = "";
+        String questionBhIWant = "";
+        for (QuestionTypeChildren questionTypeChildren : questionTypeChildrenList) {
+            if (questionTypeChildren.getLabel().equals(questionType)) {
                 List<QuestionStageChildren> questionStageChildrenList = questionTypeChildren.getChildren();
-                for(QuestionStageChildren questionStageChildren:questionStageChildrenList){
-                    if(questionStageChildren.getLabel().equals(stage)){
+                for (QuestionStageChildren questionStageChildren : questionStageChildrenList) {
+                    if (questionStageChildren.getLabel().equals(stage)) {
                         List<QuestionLastChildren> questionLastChildren = questionStageChildren.getChildren();
-                        for(int i=0;i<questionLastChildren.size();i++){
+                        for (int i = 0; i < questionLastChildren.size(); i++) {
                             questionBhCurrent = questionLastChildren.get(i).getQuestionBh();
-                            if(questionBhCurrent.equals(questionBh)){
-                                questionBhIWant = questionLastChildren.get(i+1).getQuestionBh();
+                            if (questionBhCurrent.equals(questionBh)) {
+                                questionBhIWant = questionLastChildren.get(i + 1).getQuestionBh();
                                 break;
                             }
                         }
@@ -427,6 +431,34 @@ public class QuestionServiceImpl implements QuestionService {
     public QuestionNew findByQuestionBh(String questionBh) {
         QuestionNew questionResult = questionRepo.findByQuestionBh(questionBh);
         return questionResult;
+    }
+
+
+    @Override
+    public QuestionLog addQuestionLog(QuestionNew questionNew, String flag) {
+        QuestionLog questionLog = new QuestionLog();
+        questionLog.setEditCustomBh(questionNew.getCustomBh());
+        questionLog.setOptionDo(flag);
+        questionLog.setQuestionBh(questionNew.getQuestionBh());
+        questionLogRepo.save(questionLog);
+        return questionLog;
+    }
+
+    @Override
+    public List<QuestionLogModel> getQuestionLog() {
+        List<QuestionLog> questionLogList = questionLogRepo.findAll();
+        List<QuestionLogModel> questionLogModelList = new ArrayList<>();
+        questionLogList.parallelStream().forEach(questionLog -> {
+            QuestionLogModel questionLogModel = new QuestionLogModel();
+            questionLogModel.setOptionDo(questionLog.getOptionDo());
+            questionLogModel.setName(questionLog.getEditCustomBh());
+            questionLogModel.setEditTime(questionLog.getEditTime());
+            QuestionNew questionNew = questionRepo.findByQuestionBh(questionLog.getQuestionBh());
+            questionLogModel.setQuestionId(questionNew.getId().toString());
+            questionLogModel.setQuestionName(questionNew.getQuestionName());
+            questionLogModelList.add(questionLogModel);
+        });
+        return questionLogModelList;
     }
 
 

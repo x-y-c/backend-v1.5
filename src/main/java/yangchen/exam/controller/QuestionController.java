@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import yangchen.exam.Enum.DifficultEnum;
 import yangchen.exam.Enum.QuestionTypeEnum;
 import yangchen.exam.Enum.StageEnum;
+import yangchen.exam.entity.QuestionLog;
 import yangchen.exam.entity.QuestionNew;
 import yangchen.exam.entity.TestCase;
 import yangchen.exam.model.*;
@@ -83,6 +84,10 @@ public class QuestionController {
         QuestionNew questionNew = questionRepo.findByQuestionBh(questionBh);
         questionNew.setActived(!questionNew.getActived());
         QuestionNew save = questionRepo.save(questionNew);
+        String flag="审核";
+        QuestionLog questionLog = questionService.addQuestionLog(questionNew,flag);
+        LOGGER.info(questionLog.toString());
+
         return JsonResult.succResult(save);
     }
 
@@ -189,10 +194,8 @@ public class QuestionController {
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public JsonResult uploadQuestion(@RequestBody QuestionNew questionNew) throws IOException {
 
-//        LOGGER.info(questionNew.toString());
-       /*
-       修改sourceCode 格式
-        */
+        //LOGGER.info(questionNew.toString());
+        /*修改sourceCode 格式*/
         Gson gson = new GsonBuilder().disableHtmlEscaping().create();
         SourceCode sourceCode = new SourceCode();
         String code = questionNew.getSourceCode();
@@ -208,13 +211,17 @@ public class QuestionController {
         if ("100001".equals(questionNew.getIsProgramBlank())) {
             questionNew.setMemo(questionNew.getMemo());
         }
+        String flag = "";
         QuestionNew question = questionService.findByQuestionBh(questionNew.getQuestionBh());
         if (question != null) {
             LOGGER.info("question [{}] is exist", question.getQuestionBh());
             //更新
+            flag="修改";
             questionNew.setId(question.getId());
+
         } else {
             LOGGER.info("question not exist");
+            flag="新增";
             TestCase testCase = new TestCase();
             testCase.setTestCaseBh(UUID.randomUUID().toString().replace("-", ""));
             testCase.setScoreWeight(0.0);
@@ -227,10 +234,16 @@ public class QuestionController {
 
         QuestionNew questionResult = questionService.saveQuestionWithImgDecode(questionNew);
         if (questionResult != null) {
+            QuestionLog questionLog = questionService.addQuestionLog(questionNew,flag);
+            LOGGER.info(questionLog.toString());
+
             return JsonResult.succResult(null);
         } else {
             return JsonResult.errorResult(ResultCode.WRONG_PARAMS, "添加失败", null);
         }
+
+
+
     }
 
 
@@ -321,6 +334,13 @@ public class QuestionController {
         }
     }
 
+
+    @RequestMapping(value = "/log",method = RequestMethod.GET)
+    public  JsonResult getQuestionLog(){
+        List<QuestionLogModel> questionLogModelList = questionService.getQuestionLog();
+
+        return JsonResult.succResult(questionLogModelList);
+    }
 
 
 }
