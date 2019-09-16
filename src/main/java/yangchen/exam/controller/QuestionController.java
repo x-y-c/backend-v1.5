@@ -84,8 +84,8 @@ public class QuestionController {
         QuestionNew questionNew = questionRepo.findByQuestionBh(questionBh);
         questionNew.setActived(!questionNew.getActived());
         QuestionNew save = questionRepo.save(questionNew);
-        String flag="审核";
-        QuestionLog questionLog = questionService.addQuestionLog(questionNew,flag);
+        String flag = "审核";
+        QuestionLog questionLog = questionService.addQuestionLog(questionNew, flag);
         LOGGER.info(questionLog.toString());
 
         return JsonResult.succResult(save);
@@ -216,12 +216,12 @@ public class QuestionController {
         if (question != null) {
             LOGGER.info("question [{}] is exist", question.getQuestionBh());
             //更新
-            flag="修改";
+            flag = "修改";
             questionNew.setId(question.getId());
 
         } else {
             LOGGER.info("question not exist");
-            flag="新增";
+            flag = "新增";
             TestCase testCase = new TestCase();
             testCase.setTestCaseBh(UUID.randomUUID().toString().replace("-", ""));
             testCase.setScoreWeight(0.0);
@@ -234,14 +234,13 @@ public class QuestionController {
 
         QuestionNew questionResult = questionService.saveQuestionWithImgDecode(questionNew);
         if (questionResult != null) {
-            QuestionLog questionLog = questionService.addQuestionLog(questionNew,flag);
+            QuestionLog questionLog = questionService.addQuestionLog(questionNew, flag);
             LOGGER.info(questionLog.toString());
 
             return JsonResult.succResult(null);
         } else {
             return JsonResult.errorResult(ResultCode.WRONG_PARAMS, "添加失败", null);
         }
-
 
 
     }
@@ -307,36 +306,38 @@ public class QuestionController {
         return JsonResult.succResult(result);
     }
 
-    @RequestMapping(value = "/practiceItem",method = RequestMethod.GET)
-    public JsonResult getPracticeItem(@RequestParam String questionBh,@RequestParam Integer studentId){
-        QuestionDetail questionDetail = questionService.getPracticeItem(questionBh,studentId);
-        return JsonResult.succResult(questionDetail);
+    @RequestMapping(value = "/practiceItem", method = RequestMethod.GET)
+    public JsonResult getPracticeItem(@RequestParam String questionBh, @RequestParam Integer studentId) {
+        QuestionDetail questionDetail = questionService.getPracticeItem(questionBh, studentId);
+        List<QuestionDetail> result = new ArrayList<>();
+        result.add(questionDetail);
+        return JsonResult.succResult(result);
     }
 
     @RequestMapping(value = "/practice/getFront", method = RequestMethod.GET)
-    public JsonResult getPracticeFront(@RequestParam String questionBh){
+    public JsonResult getPracticeFront(@RequestParam String questionBh) {
         String questionBhIWant = questionService.getPracticeFront(questionBh);
-        if(StringUtils.isEmpty(questionBhIWant)){
+        if (StringUtils.isEmpty(questionBhIWant)) {
             return JsonResult.errorResult(ResultCode.NO_FRONT_QUESTION, "当前为第一题！", null);
-        }else{
+        } else {
             return JsonResult.succResult(questionBhIWant);
         }
 
     }
 
     @RequestMapping(value = "/practice/getNext", method = RequestMethod.GET)
-    public JsonResult getPracticeNext(@RequestParam String questionBh){
+    public JsonResult getPracticeNext(@RequestParam String questionBh) {
         String questionBhIWant = questionService.getPracticeNext(questionBh);
-        if(StringUtils.isEmpty(questionBhIWant)){
+        if (StringUtils.isEmpty(questionBhIWant)) {
             return JsonResult.errorResult(ResultCode.NO_NEXT_QUESTION, "当前为最后一题！", null);
-        }else{
+        } else {
             return JsonResult.succResult(questionBhIWant);
         }
     }
 
 
-    @RequestMapping(value = "/log",method = RequestMethod.GET)
-    public  JsonResult getQuestionLog(){
+    @RequestMapping(value = "/log", method = RequestMethod.GET)
+    public JsonResult getQuestionLog() {
         List<QuestionLogModel> questionLogModelList = questionService.getQuestionLog();
 
         return JsonResult.succResult(questionLogModelList);
