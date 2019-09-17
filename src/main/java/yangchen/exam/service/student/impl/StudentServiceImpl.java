@@ -194,18 +194,25 @@ public class StudentServiceImpl implements studentService {
         for (StudentNew studentNew : studentNewList) {
             if (studentRepo.findByStudentId(studentNew.getStudentId()) != null) {
                 return JsonResult.errorResult(ResultCode.USER_EXIST, "excel中的学号已存在，请检查后导入", studentNew.getStudentId());
-            } else {
+            }
+            else {
                 String grade = studentNew.getStudentGrade();
                 Teacher teacher = teacherRepo.findByTeacherName(teacherName);
 
                 //遍历teachClassInfo表中的同一老师所带的班级
                 List<TeachClassInfo> teachClassInfoList = teachClassInfoRepo.findByTeacherId(teacher.getId());
                 int flag = -1;
-                for (int i = 0; i < teachClassInfoList.size(); i++) {
-
-//                    if(null==teachClassInfoList.get(i).getClassName()){
-//                        flag=i;
-//                    }
+                int teachClassInfoListSize = teachClassInfoList.size();
+                if(teachClassInfoListSize==0){
+                    teachClassInfo.setTeacherId(teacher.getId());
+                    teachClassInfo.setClassName(grade);
+                    teachClassInfos.add(teachClassInfo);
+                }
+                else{
+                    for (int i = 0; i < teachClassInfoListSize; i++) {
+                    //1 teachClassInfoList (1,2)
+                    //2 upload (2,3);
+                    //upload-->teachClassInfoList(1,2,3)
                     if (grade.equals(teachClassInfoList.get(i).getClassName())) {
                         break;
                     } else {
@@ -214,11 +221,11 @@ public class StudentServiceImpl implements studentService {
                             teachClassInfo.setClassName(grade);
                             teachClassInfos.add(teachClassInfo);
 //                            teachClassInfoRepo.save(teachClassInfo);
-
                         }
                     }
                 }
 //                teachClassInfoList.remove(flag);
+                }
             }
         }
 

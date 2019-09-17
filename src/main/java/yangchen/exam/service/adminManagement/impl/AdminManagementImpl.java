@@ -81,7 +81,9 @@ public class AdminManagementImpl implements AdminManagement {
 
     @Override
     public List<TeachClassInfoList> getAllTeachClassInfo() {
-        List<Integer> teacherIdList = teachClassInfoRepo.getTeacherId();
+        List<Integer> teacherIdList = teacherRepo.getTeacherId();
+
+//        List<Integer> teacherIdList = teachClassInfoRepo.getTeacherId();
         List<TeachClassInfoList> result = new ArrayList<>(teacherIdList.size());
         teacherIdList.forEach(teacherId -> {
             List<String> classNameList = teachClassInfoRepo.getClassNameByTeacherId(teacherId);
