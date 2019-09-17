@@ -21,7 +21,7 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public Teacher findTeacherByName(String name) {
         Teacher teacher = teacherRepo.findByTeacherName(name);
-        if (teacher != null) {
+        if (teacher != null&&teacher.getActive().equals(Boolean.TRUE)) {
             return teacher;
         }
         return null;
