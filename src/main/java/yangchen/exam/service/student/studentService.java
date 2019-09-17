@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import yangchen.exam.entity.StudentNew;
 import yangchen.exam.model.JsonResult;
 import yangchen.exam.model.StudentInfo;
+import yangchen.exam.model.StudentModifyModel;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -37,7 +38,10 @@ public interface studentService {
 
 
     //添加学生
-    StudentNew addStudent(StudentNew student);
+    JsonResult addStudent(StudentModifyModel student);
+
+    //修改学生
+    JsonResult updateStudent(StudentModifyModel student);
 
     StudentNew addStudent(StudentInfo studentInfo);
 

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import yangchen.exam.entity.StudentNew;
 import yangchen.exam.model.JsonResult;
+import yangchen.exam.model.StudentModifyModel;
 import yangchen.exam.service.excelservice.ExcelServiceImpl;
 import yangchen.exam.service.student.studentService;
 import yangchen.exam.util.ExportUtil;
@@ -67,9 +68,13 @@ public class StudentInfoController {
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public JsonResult AddStudent(@RequestBody StudentNew student) {
+    public JsonResult addStudent(@RequestBody StudentModifyModel student) {
         LOGGER.info("[{}] add student", UserUtil.getUserId(request));
-        return JsonResult.succResult(studentService.addStudent(student));
+        if (student.getType().equals(0)){
+            return studentService.addStudent(student);
+        }else {
+            return studentService.updateStudent(student);
+        }
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.GET)

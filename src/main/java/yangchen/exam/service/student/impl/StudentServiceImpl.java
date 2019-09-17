@@ -15,7 +15,10 @@ import org.springframework.stereotype.Service;
 import yangchen.exam.entity.StudentNew;
 import yangchen.exam.entity.TeachClassInfo;
 import yangchen.exam.entity.Teacher;
-import yangchen.exam.model.*;
+import yangchen.exam.model.JsonResult;
+import yangchen.exam.model.ResultCode;
+import yangchen.exam.model.StudentInfo;
+import yangchen.exam.model.StudentModifyModel;
 import yangchen.exam.repo.StudentRepo;
 import yangchen.exam.repo.TeachClassInfoRepo;
 import yangchen.exam.repo.TeacherRepo;
@@ -41,7 +44,6 @@ public class StudentServiceImpl implements studentService {
 
     @Autowired
     private TeachClassInfoRepo teachClassInfoRepo;
-
 
 
     @Cacheable(value = "student")
@@ -81,18 +83,45 @@ public class StudentServiceImpl implements studentService {
         studentRepo.deleteStudentNewById(id);
     }
 
+
     @Override
-    public StudentNew addStudent(StudentNew student) {
+    public JsonResult updateStudent(StudentModifyModel student) {
+
+        StudentNew studentNew = studentRepo.findByStudentId(student.getStudentId());
+
         if (student.getPassword() == null || student.getPassword().length() <= 0) {
             student.setPassword("123456");
         }
 
-        StudentNew byStudentId = studentRepo.findByStudentId(student.getStudentId());
-        if (byStudentId != null) {
-            byStudentId.setStudentGrade((student.getStudentGrade()));
-            return studentRepo.save(byStudentId);
+        if(studentNew==null){
+            return JsonResult.errorResult(ResultCode.USER_NOT_EXIST,"用户不存在","");
         }
-        return studentRepo.save(student);
+        else {
+            studentNew.setStudentName(student.getStudentName());
+            studentNew.setPassword(student.getPassword());
+            studentNew.setStudentGrade(student.getStudentGrade());
+            studentNew.setStudentId(student.getStudentId());
+            return JsonResult.succResult(studentRepo.save(studentNew));
+        }
+
+    }
+
+    @Override
+    public JsonResult addStudent(StudentModifyModel student) {
+        StudentNew studentNew1 = studentRepo.findByStudentId(student.getStudentId());
+        if (student.getPassword() == null || student.getPassword().length() <= 0) {
+            student.setPassword("123456");
+        }
+        StudentNew studentNew = new StudentNew();
+        if (studentNew1 != null) {
+            return JsonResult.errorResult(ResultCode.USER_EXIST,"用户已存在","");
+        } else {
+            studentNew.setStudentName(student.getStudentName());
+            studentNew.setPassword(student.getPassword());
+            studentNew.setStudentGrade(student.getStudentGrade());
+            studentNew.setStudentId(student.getStudentId());
+            return JsonResult.succResult(studentRepo.save(studentNew));
+        }
     }
 
 
@@ -120,33 +149,31 @@ public class StudentServiceImpl implements studentService {
 
 
     @Override
-    public Page<StudentNew> getPage(String teacherId,Integer pageNum, Integer pageLimit) {
+    public Page<StudentNew> getPage(String teacherId, Integer pageNum, Integer pageLimit) {
         Sort sort = new Sort(Sort.Direction.DESC, "id");
         Pageable pageable = PageRequest.of(pageNum - 1, pageLimit, sort);
-        if(StringUtils.isEmpty(teacherId)){
+        if (StringUtils.isEmpty(teacherId)) {
             return studentRepo.findAll(pageable);
-        }else{
+        } else {
             Integer id = teacherRepo.findByTeacherName(teacherId).getId();
             List<String> grades = teachClassInfoRepo.getClassNameByTeacherId(id);
-            return studentRepo.findByStudentGradeIn(grades,pageable);
+            return studentRepo.findByStudentGradeIn(grades, pageable);
         }
 
     }
 
     @Override
-    public Page<StudentNew> getGradePage(String teacherId,String grade, Integer pageNum, Integer pageLimit) {
+    public Page<StudentNew> getGradePage(String teacherId, String grade, Integer pageNum, Integer pageLimit) {
         Sort sort = new Sort(Sort.Direction.DESC, "id");
-        Pageable pageable = PageRequest.of(pageNum - 1, pageLimit,sort);
-        if(StringUtils.isEmpty(teacherId)){
+        Pageable pageable = PageRequest.of(pageNum - 1, pageLimit, sort);
+        if (StringUtils.isEmpty(teacherId)) {
             return studentRepo.findByStudentGrade(grade, pageable);
-        }
-        else{
+        } else {
             Integer id = teacherRepo.findByTeacherName(teacherId).getId();
             List<String> grades = teachClassInfoRepo.getClassNameByTeacherId(id);
-            if (grades.contains(grade)){
+            if (grades.contains(grade)) {
                 return studentRepo.findByStudentGrade(grade, pageable);
-            }
-            else {
+            } else {
                 return studentRepo.findByStudentGrade(null, pageable);
             }
         }
@@ -159,7 +186,7 @@ public class StudentServiceImpl implements studentService {
     }
 
     @Override
-    public JsonResult uploadStudents(String teacherName,List<StudentNew> studentNewList) {
+    public JsonResult uploadStudents(String teacherName, List<StudentNew> studentNewList) {
 
         TeachClassInfo teachClassInfo = new TeachClassInfo();
         List<TeachClassInfo> teachClassInfos = new ArrayList<>();
@@ -167,24 +194,22 @@ public class StudentServiceImpl implements studentService {
         for (StudentNew studentNew : studentNewList) {
             if (studentRepo.findByStudentId(studentNew.getStudentId()) != null) {
                 return JsonResult.errorResult(ResultCode.USER_EXIST, "excel中的学号已存在，请检查后导入", studentNew.getStudentId());
-            }
-            else{
+            } else {
                 String grade = studentNew.getStudentGrade();
                 Teacher teacher = teacherRepo.findByTeacherName(teacherName);
 
                 //遍历teachClassInfo表中的同一老师所带的班级
                 List<TeachClassInfo> teachClassInfoList = teachClassInfoRepo.findByTeacherId(teacher.getId());
-                int flag=-1;
-                for(int i=0;i<teachClassInfoList.size();i++) {
+                int flag = -1;
+                for (int i = 0; i < teachClassInfoList.size(); i++) {
 
 //                    if(null==teachClassInfoList.get(i).getClassName()){
 //                        flag=i;
 //                    }
                     if (grade.equals(teachClassInfoList.get(i).getClassName())) {
                         break;
-                    }
-                    else{
-                        if(i==teachClassInfoList.size()-1){
+                    } else {
+                        if (i == teachClassInfoList.size() - 1) {
                             teachClassInfo.setTeacherId(teacher.getId());
                             teachClassInfo.setClassName(grade);
                             teachClassInfos.add(teachClassInfo);
@@ -207,20 +232,20 @@ public class StudentServiceImpl implements studentService {
     @Override
     public void downloadStudents(HttpServletResponse response, String grade) throws IOException {
         List<StudentNew> studentNew = new ArrayList<StudentNew>();
-        if(StringUtils.isEmpty(grade)){
+        if (StringUtils.isEmpty(grade)) {
             studentNew = studentRepo.findAll();
-        }else {
+        } else {
             studentNew = studentRepo.findByStudentGrade(grade);
         }
-            List<StudentNew> rows = CollUtil.newArrayList(studentNew);
+        List<StudentNew> rows = CollUtil.newArrayList(studentNew);
 
-            ExcelWriter writer = ExcelUtil.getWriter();
-            writer.addHeaderAlias("studentId", "学号");
-            writer.addHeaderAlias("studentName", "姓名");
-            writer.addHeaderAlias("password", "密码");
-            writer.addHeaderAlias("studentGrade", "班级");
+        ExcelWriter writer = ExcelUtil.getWriter();
+        writer.addHeaderAlias("studentId", "学号");
+        writer.addHeaderAlias("studentName", "姓名");
+        writer.addHeaderAlias("password", "密码");
+        writer.addHeaderAlias("studentGrade", "班级");
 
-            writer.write(rows, true);
+        writer.write(rows, true);
 
         response.setContentType("application/vnd.ms-excel;charset=utf-8");
         String value = "attachment;filename=" + URLEncoder.encode("学生名单" + ".xls", "UTF-8");
