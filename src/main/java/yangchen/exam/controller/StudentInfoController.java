@@ -99,9 +99,9 @@ public class StudentInfoController {
     }
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    public JsonResult uploadStudent(@RequestParam MultipartFile file) throws IOException {
+    public JsonResult uploadStudent(@RequestParam MultipartFile file,@RequestParam String teacherName) throws IOException {
         InputStream inputStream = file.getInputStream();
-        return excelServiceimpl.huExcel(inputStream);
+        return excelServiceimpl.huExcel(teacherName,inputStream);
     }
 
 

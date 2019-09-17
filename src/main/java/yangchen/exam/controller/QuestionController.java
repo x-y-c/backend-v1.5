@@ -343,5 +343,13 @@ public class QuestionController {
         return JsonResult.succResult(questionLogModelList);
     }
 
+    @RequestMapping(value="/getAnswer",method = RequestMethod.GET)
+    public JsonResult getAnswer(@RequestParam String questionBh){
+        String answer = questionService.getAnswer(questionBh);
+
+        return  JsonResult.succResult(answer);
+
+
+    }
 
 }

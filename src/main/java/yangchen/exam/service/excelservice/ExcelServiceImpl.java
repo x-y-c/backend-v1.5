@@ -68,7 +68,7 @@ public class ExcelServiceImpl {
     }
 
 
-    public JsonResult huExcel(InputStream inputStream) {
+    public JsonResult huExcel(String teacherName,InputStream inputStream) {
         ExcelReader reader = ExcelUtil.getReader(inputStream);
         List<StudentNew> studentList = new ArrayList<>();
         List<List<Object>> all = reader.read();
@@ -81,7 +81,7 @@ public class ExcelServiceImpl {
             studentNew.setPassword("123456");
             studentList.add(studentNew);
         }
-        return studentService.uploadStudents(studentList);
+        return studentService.uploadStudents(teacherName,studentList);
     }
 
     public void readerExcelForQuestion(String filePath) {

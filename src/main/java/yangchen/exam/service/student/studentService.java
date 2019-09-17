@@ -64,7 +64,8 @@ public interface studentService {
     List<String> initGrade();
 
 
-    JsonResult uploadStudents(List<StudentNew>studentNewsList);
+    JsonResult uploadStudents(String teacherId,List<StudentNew>studentNewsList);
+    //JsonResult uploadStudents(List<StudentNew>studentNewsList);
 
     void downloadStudents(HttpServletResponse response,String grade) throws IOException;
 

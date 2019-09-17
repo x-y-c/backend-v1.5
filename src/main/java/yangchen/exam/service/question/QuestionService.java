@@ -102,4 +102,6 @@ public interface QuestionService {
     QuestionLog addQuestionLog(QuestionNew questionNew,String flag);
 
     List<QuestionLogModel> getQuestionLog();
+
+    String getAnswer(String questionBh);
 }

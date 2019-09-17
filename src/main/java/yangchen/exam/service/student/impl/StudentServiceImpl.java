@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.StudentNew;
+import yangchen.exam.entity.TeachClassInfo;
 import yangchen.exam.entity.Teacher;
 import yangchen.exam.model.*;
 import yangchen.exam.repo.StudentRepo;
@@ -40,6 +41,7 @@ public class StudentServiceImpl implements studentService {
 
     @Autowired
     private TeachClassInfoRepo teachClassInfoRepo;
+
 
 
     @Cacheable(value = "student")
@@ -157,16 +159,49 @@ public class StudentServiceImpl implements studentService {
     }
 
     @Override
-    public JsonResult uploadStudents(List<StudentNew> studentNewList) {
+    public JsonResult uploadStudents(String teacherName,List<StudentNew> studentNewList) {
+
+        TeachClassInfo teachClassInfo = new TeachClassInfo();
+        List<TeachClassInfo> teachClassInfos = new ArrayList<>();
 
         for (StudentNew studentNew : studentNewList) {
             if (studentRepo.findByStudentId(studentNew.getStudentId()) != null) {
-                return JsonResult.errorResult(ResultCode.USER_EXIST, "excel中的学号已存在，请检查后导入", null);
+                return JsonResult.errorResult(ResultCode.USER_EXIST, "excel中的学号已存在，请检查后导入", studentNew.getStudentId());
+            }
+            else{
+                String grade = studentNew.getStudentGrade();
+                Teacher teacher = teacherRepo.findByTeacherName(teacherName);
+
+                //遍历teachClassInfo表中的同一老师所带的班级
+                List<TeachClassInfo> teachClassInfoList = teachClassInfoRepo.findByTeacherId(teacher.getId());
+                int flag=-1;
+                for(int i=0;i<teachClassInfoList.size();i++) {
+
+//                    if(null==teachClassInfoList.get(i).getClassName()){
+//                        flag=i;
+//                    }
+                    if (grade.equals(teachClassInfoList.get(i).getClassName())) {
+                        break;
+                    }
+                    else{
+                        if(i==teachClassInfoList.size()-1){
+                            teachClassInfo.setTeacherId(teacher.getId());
+                            teachClassInfo.setClassName(grade);
+                            teachClassInfos.add(teachClassInfo);
+//                            teachClassInfoRepo.save(teachClassInfo);
+
+                        }
+                    }
+                }
+//                teachClassInfoList.remove(flag);
             }
         }
 
         List<StudentNew> studentNews = studentRepo.saveAll(studentNewList);
+        teachClassInfoRepo.saveAll(teachClassInfos);
+
         return JsonResult.succResult("添加成功", studentNews.size());
+
     }
 
     @Override
