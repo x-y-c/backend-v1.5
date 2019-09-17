@@ -19,6 +19,6 @@ public interface SubmitService {
      */
     Submit addSubmit(Submit submit);
 
-    List<SubmitPracticeModel> getSubmitPracticeList();
+    List<SubmitPracticeModel> getSubmitPracticeList(String teacherName);
 
 }

@@ -29,6 +29,10 @@ public interface StudentRepo extends JpaRepository<StudentNew, Integer> {
 
     Page<StudentNew> findByStudentGradeIn(List<String> grades, Pageable pageable);
 
+
+    @Query(value = "select student_id from student_new where student_grade in ?1",nativeQuery = true)
+    List<Integer> getStudentIdByGrade(List<String> grades);
+
     @Transactional
     @Modifying
     void deleteStudentNewById(Integer id);

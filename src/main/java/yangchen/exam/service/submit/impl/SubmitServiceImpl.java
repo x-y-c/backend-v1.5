@@ -3,9 +3,9 @@ package yangchen.exam.service.submit.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.QuestionNew;
-import yangchen.exam.entity.Score;
 import yangchen.exam.entity.Submit;
 import yangchen.exam.entity.SubmitPractice;
+import yangchen.exam.entity.Teacher;
 import yangchen.exam.model.SubmitPracticeModel;
 import yangchen.exam.repo.*;
 import yangchen.exam.service.submit.SubmitService;
@@ -36,6 +36,12 @@ public class SubmitServiceImpl implements SubmitService {
     @Autowired
     private StudentRepo studentRepo;
 
+    @Autowired
+    private TeacherRepo teacherRepo;
+
+    @Autowired
+    private TeachClassInfoRepo teachClassInfoRepo;
+
     @Override
     public Submit addSubmit(Submit submit) {
 
@@ -44,11 +50,13 @@ public class SubmitServiceImpl implements SubmitService {
     }
 
     @Override
-    public List<SubmitPracticeModel> getSubmitPracticeList() {
+    public List<SubmitPracticeModel> getSubmitPracticeList(String teacherName) {
         List<SubmitPracticeModel> submitPracticeModelList = new ArrayList<>();
-        //你写吧哈哈哈
-        //lambda表达式
-        List<SubmitPractice> submitPractices = submitPracticeRepo.findAll();
+        Teacher teacher = teacherRepo.findByTeacherName(teacherName);
+
+        List<String> className = teachClassInfoRepo.getClassNameByTeacherId(teacher.getId());
+        List<Integer> studentIdList = studentRepo.getStudentIdByGrade(className);
+        List<SubmitPractice> submitPractices = submitPracticeRepo.findByStudentIdIn(studentIdList);
         submitPractices.forEach(submitPractice -> {
             SubmitPracticeModel submitPracticeModel = new SubmitPracticeModel();
             QuestionNew questionNew = questionRepo.findById(Integer.valueOf(submitPractice.getQuestionId())).get();

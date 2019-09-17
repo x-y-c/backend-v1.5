@@ -214,8 +214,8 @@ public class ExamController {
     }
 
     @GetMapping(value = "/getPracticeRecord")
-    public JsonResult getPracticeRecord(){
-        List<SubmitPracticeModel> submitPracticeList = submitService.getSubmitPracticeList();
+    public JsonResult getPracticeRecord(@RequestParam String teacherName){
+        List<SubmitPracticeModel> submitPracticeList = submitService.getSubmitPracticeList(teacherName);
         return JsonResult.succResult(submitPracticeList);
     }
 
