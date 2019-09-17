@@ -26,6 +26,7 @@ public interface ExamGroupRepo extends JpaRepository<ExamGroupNew, Integer> {
      * @return
      */
     List<ExamGroupNew> findByEndTimeBefore(Timestamp timestamp);
+    List<ExamGroupNew> findByEndTimeBeforeAndExamTeacher(Timestamp timestamp,String teacherName);
 
     /**
      * 查询未开始的考试
@@ -34,11 +35,16 @@ public interface ExamGroupRepo extends JpaRepository<ExamGroupNew, Integer> {
      * @return
      */
     List<ExamGroupNew> findByBeginTimeAfter(Timestamp timestamp);
+    List<ExamGroupNew> findByBeginTimeAfterAndExamTeacher(Timestamp timestamp,String teacherName);
 
 
     @Query(value = "select * from  exam_group_new order by id desc ", nativeQuery = true)
     List<ExamGroupNew> getAllExamGroupDesc();
 
+    @Query(value = "select * from  exam_group_new where exam_teacher = ?1 order by id desc ", nativeQuery = true)
+    List<ExamGroupNew> getAllExamGroupAndExamTeacherDesc(String teacherName);
+
+    List<ExamGroupNew> findByExamTeacher(String teacherName);
 
     Page<ExamGroupNew> findByExamTeacher(Pageable pageable,String teacher);
 

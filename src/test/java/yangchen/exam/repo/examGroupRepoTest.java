@@ -21,7 +21,7 @@ public class examGroupRepoTest {
 
     @Test
     public void test() {
-        LOGGER.info(examGroupRepo.getAllExamGroupDesc().toString());
+        LOGGER.info(examGroupRepo.findByExamTeacher("yangchen").toString());
 //        UrlImageUrl.test();
     }
 }

@@ -46,23 +46,25 @@ public class ExamGroupServiceImpl implements ExamGroupService {
     }
 
     @Override
-    public List<ExamGroupNew> getAllExamGroup(Integer id) {
+    public List<ExamGroupNew> getAllExamGroup(String teacherName, Integer id) {
+        Teacher teacher = teacherRepo.findByTeacherName(teacherName);
         if (id == null) {
-            return examGroupRepo.findAll();
+            return examGroupRepo.findByExamTeacher(teacher.getId().toString());
         }
         switch (id) {
             case 0:
-                return examGroupRepo.getAllExamGroupDesc();
+                return examGroupRepo.getAllExamGroupAndExamTeacherDesc(teacher.getId().toString());
             case 1:
-                return examGroupRepo.findByEndTimeBefore(new Timestamp(System.currentTimeMillis()));
+                return examGroupRepo.findByEndTimeBeforeAndExamTeacher(new Timestamp(System.currentTimeMillis()), teacher.getId().toString());
             case 2:
-                return examGroupRepo.findByBeginTimeAfter(new Timestamp(System.currentTimeMillis()));
+                return examGroupRepo.findByBeginTimeAfterAndExamTeacher(new Timestamp(System.currentTimeMillis()), teacher.getId().toString());
             default:
                 return examGroupRepo.findAll();
         }
 
 
     }
+
 
     @Override
     public List<ExamGroupNew> getExamGroup(Integer examGroupId) {

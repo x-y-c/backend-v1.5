@@ -74,12 +74,6 @@ public class ExamController {
     }
 
 
-//    @RequestMapping(value = "/finished", method = RequestMethod.GET)
-//    public JsonResult getFinishedExam(@RequestParam Integer studentId) {
-//        List<ExaminationDetail> finishedExamination = examinationService.getFinishedExamination(studentId);
-//        return JsonResult.succResult(finishedExamination);
-//    }
-
     @RequestMapping(value = "/unstarted", method = RequestMethod.GET)
     public JsonResult getUnstartExam(@RequestParam Integer studentId) {
         List<ExaminationDetail> unStartedExamination = examinationService.getUnstartedExamination(studentId);
@@ -160,8 +154,8 @@ public class ExamController {
     }
 
     @RequestMapping(value = "/examination", method = RequestMethod.GET)
-    public JsonResult getExamGroup(Integer id) {
-        List<ExamGroupNew> allExamGroup = examGroupService.getAllExamGroup(id);
+    public JsonResult getExamGroup(@RequestParam String teacherName, Integer id) {
+        List<ExamGroupNew> allExamGroup = examGroupService.getAllExamGroup(teacherName,id);
         return JsonResult.succResult(allExamGroup);
 
     }
@@ -221,13 +215,6 @@ public class ExamController {
 
     @GetMapping(value = "/getPracticeRecord")
     public JsonResult getPracticeRecord(){
-        //我想想怎么写哈哈哈哈
-        //得写个model吧？
-        //别 哈哈哈 score的逻辑现在是通用的  改的话要动好多
-        //没事~~  写个model就好啦
-        //是的吧
-        //xixi
-
         List<SubmitPracticeModel> submitPracticeList = submitService.getSubmitPracticeList();
         return JsonResult.succResult(submitPracticeList);
     }
