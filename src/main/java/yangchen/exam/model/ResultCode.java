@@ -30,7 +30,8 @@ public class ResultCode {
      * R0010 测试用例权重不是100
      * R0011 没有上一题
      * R0012 没有下一题
-     * ROO13 上传为空
+     * R0013 上传为空
+     * R0014 模块关闭
      */
     public static String SUCCESS = "A0000";
     public static String TEACHER_LOGIN = "A0001";
@@ -48,5 +49,6 @@ public class ResultCode {
     public static String NO_FRONT_QUESTION = "R0011";
     public static String NO_NEXT_QUESTION = "R0012";
     public static String UPLOAD_NULL="R0013";
+    public static String MODULE_CLOSE="R0014";
 
 }

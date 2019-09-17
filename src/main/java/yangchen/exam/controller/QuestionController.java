@@ -13,10 +13,12 @@ import org.springframework.web.multipart.MultipartFile;
 import yangchen.exam.Enum.DifficultEnum;
 import yangchen.exam.Enum.QuestionTypeEnum;
 import yangchen.exam.Enum.StageEnum;
+import yangchen.exam.entity.ModuleStatus;
 import yangchen.exam.entity.QuestionLog;
 import yangchen.exam.entity.QuestionNew;
 import yangchen.exam.entity.TestCase;
 import yangchen.exam.model.*;
+import yangchen.exam.repo.ModuleStatusRepo;
 import yangchen.exam.repo.QuestionRepo;
 import yangchen.exam.service.FileUpload.FileUpAndDownService;
 import yangchen.exam.service.excelservice.ExcelServiceImpl;
@@ -64,6 +66,8 @@ public class QuestionController {
     @Autowired
     private FileUpAndDownService fileUpAndDownService;
 
+    @Autowired
+    private ModuleStatusRepo moduleStatusRepo;
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public JsonResult createQuestion(@RequestBody QuestionNew question) {
@@ -300,10 +304,15 @@ public class QuestionController {
 
     @RequestMapping(value = "/practice", method = RequestMethod.GET)
     public JsonResult getPracticeList() {
-        List<QuestionPractice> result = new ArrayList<>();
-        QuestionPractice questionPracticeInfo = questionService.getQuestionPracticeInfo();
-        result.add(questionPracticeInfo);
-        return JsonResult.succResult(result);
+        if (moduleStatusRepo.findByModule("practice").getStatus().equals(Boolean.TRUE)) {
+            List<QuestionPractice> result = new ArrayList<>();
+            QuestionPractice questionPracticeInfo = questionService.getQuestionPracticeInfo();
+            result.add(questionPracticeInfo);
+            return JsonResult.succResult(result);
+        } else {
+            return JsonResult.errorResult(ResultCode.MODULE_CLOSE, "练习系统暂不开放", "");
+        }
+
     }
 
     @RequestMapping(value = "/practiceItem", method = RequestMethod.GET)
@@ -343,13 +352,25 @@ public class QuestionController {
         return JsonResult.succResult(questionLogModelList);
     }
 
-    @RequestMapping(value="/getAnswer",method = RequestMethod.GET)
-    public JsonResult getAnswer(@RequestParam String questionBh){
+    @RequestMapping(value = "/getAnswer", method = RequestMethod.GET)
+    public JsonResult getAnswer(@RequestParam String questionBh) {
         String answer = questionService.getAnswer(questionBh);
 
-        return  JsonResult.succResult(answer);
+        return JsonResult.succResult(answer);
+    }
 
+    @RequestMapping(value = "/modifyPracticeStatus", method = RequestMethod.GET)
+    public JsonResult modifyPracticeStatus() {
+        ModuleStatus moduleStatus = moduleStatusRepo.findByModule("practice");
+        moduleStatus.setStatus(!moduleStatus.getStatus());
+        ModuleStatus save = moduleStatusRepo.save(moduleStatus);
+        return JsonResult.succResult(save);
+    }
 
+    @RequestMapping(value = "/practiceStatus", method = RequestMethod.GET)
+    public JsonResult practiceStatus() {
+        ModuleStatus moduleStatus = moduleStatusRepo.findByModule("practice");
+        return JsonResult.succResult(moduleStatus.getStatus());
     }
 
 }
