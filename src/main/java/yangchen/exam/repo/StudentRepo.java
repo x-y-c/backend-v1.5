@@ -17,6 +17,9 @@ public interface StudentRepo extends JpaRepository<StudentNew, Integer> {
     List<StudentNew> findByStudentGrade(String grade);
 
 
+    List<StudentNew>findByStudentGradeAndTeacherId(String grade,Integer teacherId);
+
+
     @Query(value = "select distinct student_grade from student_new", nativeQuery = true)
     List<String> getGrade();
 

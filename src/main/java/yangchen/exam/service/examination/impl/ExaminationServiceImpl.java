@@ -64,6 +64,9 @@ public class ExaminationServiceImpl implements ExaminationService {
     @Autowired
     private TeacherRepo teacherRepo;
 
+    @Autowired
+    private StudentRepo studentRepo;
+
 
     @Override
     public List<ExaminationDetail> examInfoDetail(Integer studentId) {
@@ -139,7 +142,7 @@ public class ExaminationServiceImpl implements ExaminationService {
         examGroup.setExamDesc(examParam.getExamName());
 
         grades.forEach(s -> {
-            List<StudentNew> classMate = studentService.getStudentListByGrade(s);
+            List<StudentNew> classMate = studentRepo.findByStudentGradeAndTeacherId(s,byTeacherName.getId());
             studentList.addAll(classMate);
         });
 

@@ -42,6 +42,8 @@ public interface studentService {
     //添加学生
     JsonResult addStudent(StudentModifyModel student);
 
+    JsonResult insertStudent(StudentModifyModel studentModifyModel);
+
     //修改学生
     JsonResult updateStudent(StudentModifyModel student);
 

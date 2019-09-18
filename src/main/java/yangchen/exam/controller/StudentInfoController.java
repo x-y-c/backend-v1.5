@@ -68,9 +68,9 @@ public class StudentInfoController {
         LOGGER.info("查询分页信息");
         LOGGER.error("[{}],[{}],[{}],[{}]", teacherId, grade, page, pageLimit);
         if (StringUtils.isEmpty(grade)) {
-            return JsonResult.succResult(studentService.getPage(teacherId, page, pageLimit));
+            return JsonResult.succResult(studentService.getStudentPage(teacherId, page, pageLimit));
         } else {
-            return JsonResult.succResult(studentService.getGradePage(teacherId, grade, page, pageLimit));
+            return JsonResult.succResult(studentService.getGradePageList(teacherId, grade, page, pageLimit));
         }
 
     }
@@ -79,7 +79,7 @@ public class StudentInfoController {
     public JsonResult addStudent(@RequestBody StudentModifyModel student) {
         LOGGER.info("[{}] add student", UserUtil.getUserId(request));
         if (student.getType().equals(0)) {
-            return studentService.addStudent(student);
+            return studentService.insertStudent(student);
         } else {
             return studentService.updateStudent(student);
         }

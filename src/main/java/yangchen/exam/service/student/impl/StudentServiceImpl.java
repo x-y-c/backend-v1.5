@@ -105,6 +105,24 @@ public class StudentServiceImpl implements studentService {
 
     }
 
+
+    public JsonResult insertStudent(StudentModifyModel studentModifyModel) {
+        StudentNew result = studentRepo.findByStudentId(studentModifyModel.getStudentId());
+        Teacher teacher = teacherRepo.findByTeacherName(studentModifyModel.getTeacherName());
+        if (result != null) {
+            return JsonResult.errorResult(ResultCode.USER_EXIST, "用户已存在", null);
+        } else {
+            StudentNew studentNew = new StudentNew();
+            studentNew.setTeacherId(teacher.getId());
+            studentNew.setPassword("123456");
+            studentNew.setStudentGrade(studentModifyModel.getStudentGrade());
+            studentNew.setStudentId(studentModifyModel.getStudentId());
+            studentNew.setStudentName(studentModifyModel.getStudentName());
+            StudentNew save = studentRepo.save(studentNew);
+            return JsonResult.succResult(save);
+        }
+    }
+
     @Override
     public JsonResult addStudent(StudentModifyModel student) {
         StudentNew studentNew1 = studentRepo.findByStudentId(student.getStudentId());
