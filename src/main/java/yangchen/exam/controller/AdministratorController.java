@@ -80,9 +80,6 @@ public class AdministratorController {
         teacher.setActive(Boolean.TRUE);
         teacher.setPassword("123456");
         Teacher save = teacherRepo.save(teacher);
-        TeachClassInfo teachClassInfo = new TeachClassInfo();
-        teachClassInfo.setTeacherId(save.getId());
-        TeachClassInfo save1 = teachClassInfoRepo.save(teachClassInfo);
         return JsonResult.succResult(null);
     }
 

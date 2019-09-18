@@ -330,7 +330,7 @@ public class QuestionServiceImpl implements QuestionService {
             for (QuestionNew questionNew : questionNewList) {
                 if (questionNew.getStage().equals(stageEnum.getStageCode())) {
                     QuestionLastChildren questionLastChildren = new QuestionLastChildren();
-                    questionLastChildren.setLabel(questionNew.getQuestionName());
+                    questionLastChildren.setLabel("（"+questionNew.getId()+"）\t"+questionNew.getQuestionName());
                     questionLastChildren.setQuestionBh(questionNew.getQuestionBh());
                     questionLastChildrenList.add(questionLastChildren);
                 }
