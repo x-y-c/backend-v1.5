@@ -5,6 +5,7 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -116,6 +117,22 @@ public class StudentServiceImpl implements studentService {
         if (studentNew1 != null) {
             return JsonResult.errorResult(ResultCode.USER_EXIST,"用户已存在","");
         } else {
+            String grade = student.getStudentGrade();
+            Teacher teacher = teacherRepo.findByTeacherName(student.getTeacherName());
+            List<String> classNameList = teachClassInfoRepo.getClassNameByTeacherId(teacher.getId());
+            for(int i=0;i<classNameList.size();i++){
+                if(grade.equals(classNameList.get(i))){
+                    break;
+                }
+                else{
+                    if(i==classNameList.size()-1){
+                        TeachClassInfo teachClassInfo = new TeachClassInfo();
+                        teachClassInfo.setClassName(grade);
+                        teachClassInfo.setTeacherId(teacher.getId());
+                        teachClassInfoRepo.save(teachClassInfo);
+                    }
+                }
+            }
             studentNew.setStudentName(student.getStudentName());
             studentNew.setPassword(student.getPassword());
             studentNew.setStudentGrade(student.getStudentGrade());
