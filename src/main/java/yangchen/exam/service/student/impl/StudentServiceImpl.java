@@ -191,6 +191,7 @@ public class StudentServiceImpl implements studentService {
         TeachClassInfo teachClassInfo = new TeachClassInfo();
         List<TeachClassInfo> teachClassInfos = new ArrayList<>();
 
+
         for (StudentNew studentNew : studentNewList) {
             if (studentRepo.findByStudentId(studentNew.getStudentId()) != null) {
                 return JsonResult.errorResult(ResultCode.USER_EXIST, "excel中的学号已存在，请检查后导入", studentNew.getStudentId());
@@ -201,12 +202,38 @@ public class StudentServiceImpl implements studentService {
 
                 //遍历teachClassInfo表中的同一老师所带的班级
                 List<TeachClassInfo> teachClassInfoList = teachClassInfoRepo.findByTeacherId(teacher.getId());
+
                 int flag = -1;
                 int teachClassInfoListSize = teachClassInfoList.size();
                 if(teachClassInfoListSize==0){
-                    teachClassInfo.setTeacherId(teacher.getId());
-                    teachClassInfo.setClassName(grade);
-                    teachClassInfos.add(teachClassInfo);
+                    if(teachClassInfos.size()==0){
+//                        teachClassInfo.setTeacherId(teacher.getId());
+//                        teachClassInfo.setClassName(grade);
+//                        teachClassInfos.add(teachClassInfo);
+                        TeachClassInfo t = new TeachClassInfo();
+                        t.setTeacherId(teacher.getId());
+                        t.setClassName(grade);
+                        teachClassInfos.add(t);
+                    }
+                    else{
+                        for(int j=0;j<teachClassInfos.size();j++){
+                            if (grade.equals(teachClassInfos.get(j).getClassName())) {
+                                break;
+                            } else {
+                                if (j == teachClassInfos.size() - 1) {
+
+//                                    teachClassInfo.setTeacherId(teacher.getId());
+//                                    teachClassInfo.setClassName(grade);
+//                                    teachClassInfos.add(teachClassInfo);
+                                    TeachClassInfo t = new TeachClassInfo();
+                                    t.setTeacherId(teacher.getId());
+                                    t.setClassName(grade);
+                                    teachClassInfos.add(t);
+//                            teachClassInfoRepo.save(teachClassInfo);
+                                }
+                            }
+                        }
+                    }
                 }
                 else{
                     for (int i = 0; i < teachClassInfoListSize; i++) {
