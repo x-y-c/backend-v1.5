@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class StudentModifyModel {
+    private String teacherName;
     private Integer studentId;
     private String studentName;
     private String studentGrade;
