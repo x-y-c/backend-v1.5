@@ -6,6 +6,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 public class UrlImageUrl {
 
@@ -37,6 +40,22 @@ public class UrlImageUrl {
         return document.toString();
     }
 
+    public static String updateImageDomainNew(String htmlStr, List<String> updateKeyList) {
+
+        Document document = Jsoup.parse(htmlStr);
+        Elements srcs = document.select("img[src]");
+//        String domainStr = "http://119.3.217.233:2048/ckupload/";
+        int i =0;
+        String imgUrl="";
+        for (Element element : srcs) {
+            imgUrl = element.attr("src");
+            imgUrl = updateKeyList.get(i);
+            i++;
+            element.attr("src", imgUrl);
+        }
+        return document.toString();
+    }
+
 
     public static String getImgLabel(String htmlStr) {
         Document document = Jsoup.parse(htmlStr);
@@ -47,6 +66,18 @@ public class UrlImageUrl {
         }
         return imgStr;
 
+    }
+
+    public static List<String> getImgLabels(String htmlStr){
+        List<String> imgStrList = new ArrayList<>();
+        String imgStr = null;
+        Document document = Jsoup.parse(htmlStr);
+        Elements srcs = document.select("img[src]");
+        for(Element element:srcs){
+            imgStr = element.attr("src");
+            imgStrList.add(imgStr);
+        }
+        return imgStrList;
     }
 
 }
