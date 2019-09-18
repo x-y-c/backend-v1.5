@@ -36,4 +36,7 @@ public class StudentNew {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "teacher_id")
+    private Integer teacherId;
+
 }

@@ -5,7 +5,6 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -94,10 +93,9 @@ public class StudentServiceImpl implements studentService {
             student.setPassword("123456");
         }
 
-        if(studentNew==null){
-            return JsonResult.errorResult(ResultCode.USER_NOT_EXIST,"用户不存在","");
-        }
-        else {
+        if (studentNew == null) {
+            return JsonResult.errorResult(ResultCode.USER_NOT_EXIST, "用户不存在", "");
+        } else {
             studentNew.setStudentName(student.getStudentName());
             studentNew.setPassword(student.getPassword());
             studentNew.setStudentGrade(student.getStudentGrade());
@@ -115,17 +113,16 @@ public class StudentServiceImpl implements studentService {
         }
         StudentNew studentNew = new StudentNew();
         if (studentNew1 != null) {
-            return JsonResult.errorResult(ResultCode.USER_EXIST,"用户已存在","");
+            return JsonResult.errorResult(ResultCode.USER_EXIST, "用户已存在", "");
         } else {
             String grade = student.getStudentGrade();
             Teacher teacher = teacherRepo.findByTeacherName(student.getTeacherName());
             List<String> classNameList = teachClassInfoRepo.getClassNameByTeacherId(teacher.getId());
-            for(int i=0;i<classNameList.size();i++){
-                if(grade.equals(classNameList.get(i))){
+            for (int i = 0; i < classNameList.size(); i++) {
+                if (grade.equals(classNameList.get(i))) {
                     break;
-                }
-                else{
-                    if(i==classNameList.size()-1){
+                } else {
+                    if (i == classNameList.size() - 1) {
                         TeachClassInfo teachClassInfo = new TeachClassInfo();
                         teachClassInfo.setClassName(grade);
                         teachClassInfo.setTeacherId(teacher.getId());
@@ -179,7 +176,21 @@ public class StudentServiceImpl implements studentService {
 
     }
 
+    //获取全部学生的分页；
     @Override
+    public Page<StudentNew> getStudentPage(String teacherId, Integer pageNum, Integer pageLimit) {
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
+        Pageable pageable = PageRequest.of(pageNum - 1, pageLimit, sort);
+        if (StringUtils.isEmpty(teacherId)) {
+            return studentRepo.findAll(pageable);
+        } else {
+            Integer id = teacherRepo.findByTeacherName(teacherId).getId();
+            return studentRepo.findByTeacherId(id, pageable);
+        }
+    }
+
+    @Override
+    //查询grade的分页；
     public Page<StudentNew> getGradePage(String teacherId, String grade, Integer pageNum, Integer pageLimit) {
         Sort sort = new Sort(Sort.Direction.DESC, "id");
         Pageable pageable = PageRequest.of(pageNum - 1, pageLimit, sort);
@@ -197,9 +208,40 @@ public class StudentServiceImpl implements studentService {
 
     }
 
+    //0918 在学生表中添加学生到教师的对应关系，省去教师->班级->学生的查询，优化查询速度，使教师对学生的管理更为准确直接
+    @Override
+    public Page<StudentNew> getGradePageList(String teacherId, String grade, Integer pageNum, Integer pageLimit) {
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
+        Pageable pageable = PageRequest.of(pageNum - 1, pageLimit, sort);
+        Teacher teacher = teacherRepo.findByTeacherName(teacherId);
+        if (StringUtils.isEmpty(teacherId)) {
+            return studentRepo.findByStudentGrade(grade, pageable);
+        } else {
+            return studentRepo.findByTeacherIdAndStudentGrade(teacher.getId(), grade, pageable);
+        }
+    }
+
     @Override
     public List<String> initGrade() {
         return studentRepo.getGrade();
+    }
+
+
+    public JsonResult uploadStudentList(String teacherName, List<StudentNew> studentNewList) {
+        Teacher teacher = teacherRepo.findByTeacherName(teacherName);
+        for (StudentNew studentNew : studentNewList) {
+            if (studentRepo.findByStudentId(studentNew.getStudentId()) != null) {
+                return JsonResult.errorResult(ResultCode.USER_EXIST, "Excel中的学号已存在,请检查后再导入", studentNew.getStudentId());
+            } else {
+                studentNewList.parallelStream().forEach(studentNew1 -> {
+                    studentNew1.setTeacherId(teacher.getId());
+                });
+                List<StudentNew> studentNews = studentRepo.saveAll(studentNewList);
+                return JsonResult.succResult("添加成功", studentNews.size());
+            }
+        }
+
+        return null;
     }
 
     @Override
@@ -212,8 +254,7 @@ public class StudentServiceImpl implements studentService {
         for (StudentNew studentNew : studentNewList) {
             if (studentRepo.findByStudentId(studentNew.getStudentId()) != null) {
                 return JsonResult.errorResult(ResultCode.USER_EXIST, "excel中的学号已存在，请检查后导入", studentNew.getStudentId());
-            }
-            else {
+            } else {
                 String grade = studentNew.getStudentGrade();
                 Teacher teacher = teacherRepo.findByTeacherName(teacherName);
 
@@ -222,52 +263,41 @@ public class StudentServiceImpl implements studentService {
 
                 int flag = -1;
                 int teachClassInfoListSize = teachClassInfoList.size();
-                if(teachClassInfoListSize==0){
-                    if(teachClassInfos.size()==0){
-//                        teachClassInfo.setTeacherId(teacher.getId());
-//                        teachClassInfo.setClassName(grade);
-//                        teachClassInfos.add(teachClassInfo);
+                if (teachClassInfoListSize == 0) {
+                    if (teachClassInfos.size() == 0) {
                         TeachClassInfo t = new TeachClassInfo();
                         t.setTeacherId(teacher.getId());
                         t.setClassName(grade);
                         teachClassInfos.add(t);
-                    }
-                    else{
-                        for(int j=0;j<teachClassInfos.size();j++){
+                    } else {
+                        for (int j = 0; j < teachClassInfos.size(); j++) {
                             if (grade.equals(teachClassInfos.get(j).getClassName())) {
                                 break;
                             } else {
                                 if (j == teachClassInfos.size() - 1) {
-
-//                                    teachClassInfo.setTeacherId(teacher.getId());
-//                                    teachClassInfo.setClassName(grade);
-//                                    teachClassInfos.add(teachClassInfo);
                                     TeachClassInfo t = new TeachClassInfo();
                                     t.setTeacherId(teacher.getId());
                                     t.setClassName(grade);
                                     teachClassInfos.add(t);
-//                            teachClassInfoRepo.save(teachClassInfo);
                                 }
                             }
                         }
                     }
-                }
-                else{
+                } else {
                     for (int i = 0; i < teachClassInfoListSize; i++) {
-                    //1 teachClassInfoList (1,2)
-                    //2 upload (2,3);
-                    //upload-->teachClassInfoList(1,2,3)
-                    if (grade.equals(teachClassInfoList.get(i).getClassName())) {
-                        break;
-                    } else {
-                        if (i == teachClassInfoList.size() - 1) {
-                            teachClassInfo.setTeacherId(teacher.getId());
-                            teachClassInfo.setClassName(grade);
-                            teachClassInfos.add(teachClassInfo);
-//                            teachClassInfoRepo.save(teachClassInfo);
+                        //1 teachClassInfoList (1,2)
+                        //2 upload (2,3);
+                        //upload-->teachClassInfoList(1,2,3)
+                        if (grade.equals(teachClassInfoList.get(i).getClassName())) {
+                            break;
+                        } else {
+                            if (i == teachClassInfoList.size() - 1) {
+                                teachClassInfo.setTeacherId(teacher.getId());
+                                teachClassInfo.setClassName(grade);
+                                teachClassInfos.add(teachClassInfo);
+                            }
                         }
                     }
-                }
 //                teachClassInfoList.remove(flag);
                 }
             }
@@ -314,5 +344,12 @@ public class StudentServiceImpl implements studentService {
         Teacher teacher = teacherRepo.findByTeacherName(teacherId);
         List<String> className = teachClassInfoRepo.getClassNameByTeacherId(teacher.getId());
         return className;
+    }
+
+
+    public List<String> getGradesByTeacherId(String teacherId) {
+        Teacher teacher = teacherRepo.findByTeacherName(teacherId);
+        List<String> grade = studentRepo.getGradeByTeacherId(teacher.getId());
+        return grade;
     }
 }

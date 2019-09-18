@@ -2,7 +2,6 @@ package yangchen.exam.service.submit.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import yangchen.exam.entity.QuestionNew;
 import yangchen.exam.entity.Submit;
 import yangchen.exam.entity.SubmitPractice;
 import yangchen.exam.entity.Teacher;
@@ -54,15 +53,12 @@ public class SubmitServiceImpl implements SubmitService {
         List<SubmitPracticeModel> submitPracticeModelList = new ArrayList<>();
         Teacher teacher = teacherRepo.findByTeacherName(teacherName);
 
-        List<String> className = teachClassInfoRepo.getClassNameByTeacherId(teacher.getId());
-        List<Integer> studentIdList = studentRepo.getStudentIdByGrade(className);
-        List<SubmitPractice> submitPractices = submitPracticeRepo.findByStudentIdIn(studentIdList);
+        List<Integer> studentNumberList = studentRepo.getStudentNumberByTeacherId(teacher.getId());
+        List<SubmitPractice> submitPractices = submitPracticeRepo.findByStudentIdIn(studentNumberList);
         submitPractices.forEach(submitPractice -> {
             SubmitPracticeModel submitPracticeModel = new SubmitPracticeModel();
-            QuestionNew questionNew = questionRepo.findById(Integer.valueOf(submitPractice.getQuestionId())).get();
             submitPracticeModel.setQuestionId(Integer.valueOf(submitPractice.getQuestionId()));
             submitPracticeModel.setScore(submitPractice.getScore());
-
             submitPracticeModel.setSrc(submitPractice.getSrc());
             submitPracticeModel.setStudentId(submitPractice.getStudentId());
             submitPracticeModel.setStudentName(studentRepo.findByStudentId(submitPractice.getStudentId()).getStudentName());

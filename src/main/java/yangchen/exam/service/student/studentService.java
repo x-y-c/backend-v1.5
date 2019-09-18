@@ -37,6 +37,8 @@ public interface studentService {
     void deleteStudentInfo(Integer studentId);
 
 
+    JsonResult uploadStudentList(String teacherName, List<StudentNew> studentNewList);
+
     //添加学生
     JsonResult addStudent(StudentModifyModel student);
 
@@ -61,18 +63,22 @@ public interface studentService {
      * @param pageLimit
      * @return
      */
-    Page<StudentNew> getPage(String teacherId,Integer pageNum, Integer pageLimit);
+    Page<StudentNew> getPage(String teacherId, Integer pageNum, Integer pageLimit);
 
-    Page<StudentNew> getGradePage(String teacherId,String grade,Integer pageNum,Integer pageLimit);
+    Page<StudentNew> getGradePage(String teacherId, String grade, Integer pageNum, Integer pageLimit);
 
     List<String> initGrade();
 
 
-    JsonResult uploadStudents(String teacherId,List<StudentNew>studentNewsList);
+    JsonResult uploadStudents(String teacherId, List<StudentNew> studentNewsList);
     //JsonResult uploadStudents(List<StudentNew>studentNewsList);
 
-    void downloadStudents(HttpServletResponse response,String grade) throws IOException;
+    void downloadStudents(HttpServletResponse response, String grade) throws IOException;
 
     List<String> getGrades(String teacherId);
+
+    Page<StudentNew> getGradePageList(String teacherId, String grade, Integer pageNum, Integer pageLimit);
+
+    Page<StudentNew> getStudentPage(String teacherId, Integer pageNum, Integer pageLimit);
 
 }

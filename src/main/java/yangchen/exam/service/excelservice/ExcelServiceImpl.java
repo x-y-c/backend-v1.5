@@ -81,7 +81,8 @@ public class ExcelServiceImpl {
             studentNew.setPassword("123456");
             studentList.add(studentNew);
         }
-        return studentService.uploadStudents(teacherName,studentList);
+        //0918 更新学生教师对应关系
+        return studentService.uploadStudentList(teacherName,studentList);
     }
 
     public void readerExcelForQuestion(String filePath) {
