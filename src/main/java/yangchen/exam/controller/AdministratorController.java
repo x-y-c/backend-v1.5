@@ -80,7 +80,7 @@ public class AdministratorController {
         teacher.setActive(Boolean.TRUE);
         teacher.setPassword("123456");
         Teacher save = teacherRepo.save(teacher);
-        return JsonResult.succResult(null);
+        return JsonResult.succResult(save);
     }
 
     @ApiOperation(value = "添加教师")

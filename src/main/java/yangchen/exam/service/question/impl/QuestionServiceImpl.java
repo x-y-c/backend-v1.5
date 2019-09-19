@@ -68,7 +68,7 @@ public class QuestionServiceImpl implements QuestionService {
     public QuestionNew createQuestion(QuestionNew question) {
         String questionBh = UUID.randomUUID().toString().replace("-", "");
         question.setQuestionBh(questionBh);
-        question.setActived(Boolean.TRUE);
+        question.setActived(Boolean.FALSE);
         QuestionNew questionNew = questionRepo.save(question);
         return questionNew;
     }

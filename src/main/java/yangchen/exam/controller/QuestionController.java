@@ -211,7 +211,7 @@ public class QuestionController {
         sourceCode.setKey(key);
         String s = gson.toJson(sourceCode).toString();
         questionNew.setSourceCode(s);
-        questionNew.setActived(Boolean.TRUE);
+        questionNew.setActived(Boolean.FALSE);
         if ("100001".equals(questionNew.getIsProgramBlank())) {
             questionNew.setMemo(questionNew.getMemo());
         }
