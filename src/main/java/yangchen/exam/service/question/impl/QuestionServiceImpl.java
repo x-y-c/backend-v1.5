@@ -61,6 +61,9 @@ public class QuestionServiceImpl implements QuestionService {
     @Value("${image.base64.path}")
     private String imgPath;
 
+    @Value("${image.nginx.path}")
+    private String imgUrl;
+
     @Override
     public QuestionNew createQuestion(QuestionNew question) {
         String questionBh = UUID.randomUUID().toString().replace("-", "");
@@ -143,8 +146,9 @@ public class QuestionServiceImpl implements QuestionService {
                 else{
                     String randomName = UUID.randomUUID().toString().replace("-", "") + ".jpg";
                     String imagePath = imgPath + randomName;
+                    String imageUrl = imgUrl + randomName;
                     Base64Util.saveImgByte(imgLabelContent, imagePath);
-                    randomNameList.add(imagePath);
+                    randomNameList.add(imageUrl);
                 }
             }
             String urlImgInfo = UrlImageUrl.updateImageDomainNew(preQuestionDetails, randomNameList);
