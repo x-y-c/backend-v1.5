@@ -140,7 +140,7 @@ public class QuestionServiceImpl implements QuestionService {
         if (imgLabelContentList.size() >0) {
             List<String> randomNameList = new ArrayList<>();
             for(String imgLabelContent:imgLabelContentList) {
-                if(imgLabelContent.indexOf(imgPath)!=-1){
+                if(imgLabelContent.indexOf(imgUrl)!=-1){
                     randomNameList.add(imgLabelContent);
                 }
                 else{
@@ -153,7 +153,7 @@ public class QuestionServiceImpl implements QuestionService {
             }
             String urlImgInfo = UrlImageUrl.updateImageDomainNew(preQuestionDetails, randomNameList);
             questionNew.setQuestionDetails(urlImgInfo);
-            questionNew.setActived(Boolean.TRUE);
+            questionNew.setActived(Boolean.FALSE);
             return questionRepo.save(questionNew);
         } else {
             questionNew.setQuestionDetails(preQuestionDetails);
