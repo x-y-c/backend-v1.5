@@ -89,7 +89,7 @@ public class AdminManagementImpl implements AdminManagement {
         List<Integer> teacherIdList = teacherRepo.getTeacherId();
 
         List<TeachClassInfoList> result = new ArrayList<>(teacherIdList.size());
-        teacherIdList.forEach(teacherId -> {
+        teacherIdList.parallelStream().forEach(teacherId -> {
             List<String> classNameList = teachClassInfoRepo.getClassNameByTeacherId(teacherId);
             Teacher teacher = teacherRepo.findById(teacherId).get();
             TeachClassInfoList teachClassInfoList = new TeachClassInfoList();
