@@ -20,7 +20,6 @@ import yangchen.exam.model.UserBaseInfo;
 import yangchen.exam.repo.AdministratorRepo;
 import yangchen.exam.repo.IpAddrRepo;
 import yangchen.exam.service.UA.UAService;
-import yangchen.exam.service.student.studentService;
 import yangchen.exam.service.teacher.TeacherService;
 import yangchen.exam.service.token.TokenService;
 import yangchen.exam.util.IpUtil;
@@ -36,7 +35,7 @@ import java.io.IOException;
 public class UserController {
 
     @Autowired
-    private studentService StudentService;
+    private yangchen.exam.service.student.StudentService StudentService;
 
     @Autowired
     private TokenService tokenService;

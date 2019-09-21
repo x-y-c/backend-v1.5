@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * @author yc
  */
-public interface studentService {
+public interface StudentService {
     /**
      * 通过学号查询学生
      *
@@ -49,7 +49,7 @@ public interface studentService {
 
     StudentNew addStudent(StudentInfo studentInfo);
 
-    JsonResult changePassword(Integer studentId, String oldpassword, String password);
+    JsonResult changePassword(String type,String userName ,String studentId, String oldpassword, String password);
 
     /**
      * 获取全部学生信息

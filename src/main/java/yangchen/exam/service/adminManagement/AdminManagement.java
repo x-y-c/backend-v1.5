@@ -1,5 +1,6 @@
 package yangchen.exam.service.adminManagement;
 
+import yangchen.exam.entity.Administrator;
 import yangchen.exam.entity.Teacher;
 import yangchen.exam.model.ClassModel;
 import yangchen.exam.model.TeachClassInfoList;
@@ -24,4 +25,5 @@ public interface AdminManagement {
 
     List<ClassModel> getClassList();
 
+    Administrator findByAdminName(String name);
 }

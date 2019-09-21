@@ -16,7 +16,7 @@ import yangchen.exam.entity.QuestionNew;
 import yangchen.exam.entity.StudentNew;
 import yangchen.exam.model.JsonResult;
 import yangchen.exam.service.question.QuestionService;
-import yangchen.exam.service.student.studentService;
+import yangchen.exam.service.student.StudentService;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -34,7 +34,7 @@ import java.util.List;
 public class ExcelServiceImpl {
 
     @Autowired
-    private studentService studentService;
+    private StudentService studentService;
 
 
     @Autowired

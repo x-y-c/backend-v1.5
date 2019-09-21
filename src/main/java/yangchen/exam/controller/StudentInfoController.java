@@ -1,20 +1,26 @@
 package yangchen.exam.controller;
 
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import yangchen.exam.Enum.UserTypeEnum;
+import yangchen.exam.entity.Administrator;
 import yangchen.exam.entity.StudentNew;
 import yangchen.exam.entity.Teacher;
 import yangchen.exam.model.JsonResult;
+import yangchen.exam.model.ResultCode;
 import yangchen.exam.model.StudentModifyModel;
 import yangchen.exam.repo.StudentRepo;
 import yangchen.exam.repo.TeacherRepo;
+import yangchen.exam.service.adminManagement.AdminManagement;
 import yangchen.exam.service.excelservice.ExcelServiceImpl;
-import yangchen.exam.service.student.studentService;
+import yangchen.exam.service.student.StudentService;
+import yangchen.exam.service.teacher.TeacherService;
 import yangchen.exam.util.ExportUtil;
 import yangchen.exam.util.UserUtil;
 
@@ -38,7 +44,13 @@ import java.util.Map;
 @RequestMapping(value = "/student", produces = MediaType.APPLICATION_JSON_VALUE)
 public class StudentInfoController {
     @Autowired
-    private studentService studentService;
+    private StudentService studentService;
+
+    @Autowired
+    private TeacherService teacherService;
+
+    @Autowired
+    private AdminManagement adminManagement;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StudentInfoController.class);
 
@@ -53,6 +65,7 @@ public class StudentInfoController {
 
     @Autowired
     private TeacherRepo teacherRepo;
+
 
     /**
      * @return 全部学生的信息
@@ -99,16 +112,31 @@ public class StudentInfoController {
     }
 
     @RequestMapping(value = "/password", method = RequestMethod.POST)
-    public JsonResult updatePassword(@RequestParam Integer studentId, @RequestParam String oldpassword, @RequestParam String password) {
-        LOGGER.info("[{}] change password", UserUtil.getUserId(request));
-        return studentService.changePassword(studentId, oldpassword, password);
+    public JsonResult updatePassword(@RequestParam(required = false) String studentId,
+                                     @RequestParam String oldPassword,
+                                     @RequestParam String password,
+                                     @RequestParam String type,
+                                     @RequestParam String userName) {
+        //LOGGER.info("[{}] change password", UserUtil.getUserId(request));
+
+        return studentService.changePassword(type,userName,studentId, oldPassword, password);
 
     }
 
     @RequestMapping(value = "/info", method = RequestMethod.GET)
-    public JsonResult getStudentInfo(@RequestParam Integer studentId) {
+    public JsonResult getStudentInfo(@RequestParam(required = false) Integer studentId,@RequestParam String userName,String type) {
         LOGGER.info("[{}] get [{}] studentInfo", UserUtil.getUserId(request), studentId);
-        return JsonResult.succResult(studentService.getStudentByStudentId(studentId));
+        if(type.equals(UserTypeEnum.getUserTypeCode("学生"))){
+            return JsonResult.succResult(studentService.getStudentByStudentId(studentId));
+        }
+        else if(type.equals(UserTypeEnum.getUserTypeCode("教师"))){
+            Teacher teacher = teacherService.findTeacherByName(userName);
+            return JsonResult.succResult(teacher);
+        }
+        else{
+            Administrator administrator = adminManagement.findByAdminName(userName);
+            return JsonResult.succResult(administrator);
+        }
     }
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)

@@ -15,7 +15,7 @@ import yangchen.exam.service.examination.ExamGroupService;
 import yangchen.exam.service.examination.ExaminationService;
 import yangchen.exam.service.question.QuestionService;
 import yangchen.exam.service.score.ScoreService;
-import yangchen.exam.service.student.studentService;
+import yangchen.exam.service.student.StudentService;
 import yangchen.exam.util.RandomUtil;
 
 import java.sql.Timestamp;
@@ -38,7 +38,7 @@ public class ExaminationServiceImpl implements ExaminationService {
     private QuestionService questionService;
 
     @Autowired
-    private studentService studentService;
+    private StudentService studentService;
 
     @Autowired
     private ExamGroupService examGroupService;

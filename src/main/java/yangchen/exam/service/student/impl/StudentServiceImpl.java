@@ -12,6 +12,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import yangchen.exam.Enum.UserTypeEnum;
+import yangchen.exam.entity.Administrator;
 import yangchen.exam.entity.StudentNew;
 import yangchen.exam.entity.TeachClassInfo;
 import yangchen.exam.entity.Teacher;
@@ -19,10 +21,11 @@ import yangchen.exam.model.JsonResult;
 import yangchen.exam.model.ResultCode;
 import yangchen.exam.model.StudentInfo;
 import yangchen.exam.model.StudentModifyModel;
+import yangchen.exam.repo.AdministratorRepo;
 import yangchen.exam.repo.StudentRepo;
 import yangchen.exam.repo.TeachClassInfoRepo;
 import yangchen.exam.repo.TeacherRepo;
-import yangchen.exam.service.student.studentService;
+import yangchen.exam.service.student.StudentService;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -35,12 +38,15 @@ import java.util.List;
  * @author yc
  */
 @Service
-public class StudentServiceImpl implements studentService {
+public class StudentServiceImpl implements StudentService {
     @Autowired
     private StudentRepo studentRepo;
 
     @Autowired
     private TeacherRepo teacherRepo;
+
+    @Autowired
+    private AdministratorRepo administratorRepo;
 
     @Autowired
     private TeachClassInfoRepo teachClassInfoRepo;
@@ -62,21 +68,57 @@ public class StudentServiceImpl implements studentService {
         return studentRepo.save(student);
     }
 
-    public JsonResult changePassword(Integer studentId, String oldpassword, String password) {
-        StudentNew byStudentId = studentRepo.findByStudentId(studentId);
-        if (byStudentId != null) {
-            if (byStudentId.getPassword().equals(oldpassword)) {
-                byStudentId.setPassword(password);
-                StudentNew save = studentRepo.save(byStudentId);
-                return JsonResult.succResult(null);
-            } else {
-                return JsonResult.errorResult(ResultCode.WRONG_PASSWORD, "旧密码错误", null);
-            }
+    public JsonResult changePassword(String type,String userName,String studentId, String oldPassword, String password) {
+        if(type.equals(UserTypeEnum.getUserTypeCode("学生"))){
+            StudentNew student = studentRepo.findByStudentId(Integer.valueOf(studentId));
+            if (student != null) {
+                if (student.getPassword().equals(oldPassword)) {
+                    student.setPassword(password);
+                    StudentNew save = studentRepo.save(student);
+                    return JsonResult.succResult(save);
+                } else {
+                    return JsonResult.errorResult(ResultCode.WRONG_PASSWORD, "旧密码错误", null);
+                }
 
-        } else {
-            return JsonResult.errorResult(ResultCode.USER_NOT_EXIST, "用户不存在", null);
+            } else {
+                return JsonResult.errorResult(ResultCode.USER_NOT_EXIST, "用户不存在", null);
+            }
         }
+        else if(type.equals(UserTypeEnum.getUserTypeCode("教师"))){
+            Teacher teacher = teacherRepo.findByTeacherName(userName);
+            if(teacher!=null){
+                if (teacher.getPassword().equals(oldPassword)) {
+                    teacher.setPassword(password);
+                    Teacher save = teacherRepo.save(teacher);
+                    return JsonResult.succResult(save);
+                } else {
+                    return JsonResult.errorResult(ResultCode.WRONG_PASSWORD, "旧密码错误", null);
+                }
+            }else{
+                return JsonResult.errorResult(ResultCode.USER_NOT_EXIST, "用户不存在", null);
+            }
+        }
+        else if(type.equals(UserTypeEnum.getUserTypeCode("管理员"))){
+            Administrator administrator = administratorRepo.findByAdminNameAndActived(userName,Boolean.TRUE);
+            if(administrator!=null){
+                if (administrator.getAdminPassword().equals(oldPassword)) {
+                    administrator.setAdminPassword(password);
+                    Administrator save = administratorRepo.save(administrator);
+                    return JsonResult.succResult(save);
+                } else {
+                    return JsonResult.errorResult(ResultCode.WRONG_PASSWORD, "旧密码错误", null);
+                }
+            }else{
+                return JsonResult.errorResult(ResultCode.USER_NOT_EXIST, "用户不存在", null);
+            }
+        }
+        else {
+            return JsonResult.errorResult(ResultCode.USER_NOT_EXIST,"没有此类用户","");
+        }
+
+
     }
+
 
     @Override
     public void deleteStudentInfo(Integer id) {
