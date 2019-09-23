@@ -60,7 +60,7 @@
 
 > submit表记录学生提交试题的记录，stduent_id对应sudent表的student_id字段，question_id对应Question表的questionBh字段，examination_id对应exam_paper中的id字段。
 
-### submit
+### submit_practice
 | 字段名 | 类型 | 说明 |
 | :----: | :----: | :----: |
 | id | int | 主键自增 |
