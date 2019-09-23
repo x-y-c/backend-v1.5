@@ -60,6 +60,16 @@
 
 > submit表记录学生提交试题的记录，stduent_id对应sudent表的student_id字段，question_id对应Question表的questionBh字段，examination_id对应exam_paper中的id字段。
 
+### submit
+| 字段名 | 类型 | 说明 |
+| :----: | :----: | :----: |
+| id | int | 主键自增 |
+| submit_time | timestamp | 提交时间 | 
+| student_id | int(11) | 学生学号 |
+| question_id | varchar(50) | 试题id |
+| src | text | 提交的源代码 |
+| score | int | 成绩 |
+
 
 ## 用户信息管理
 ### student_new
@@ -69,16 +79,35 @@
 | student_id | int | 学生学号 |
 | student_name | varchar | 学生姓名 |
 | student_grade | varchar | 学生班级 |
-| student_password | int | 账号密码 |
-
-### teacher_new
+| password | int | 账号密码 |
+| teacher_id | int | 学生所对应的教师id |
+ 
+### teacher
 | 字段名 | 类型 | 说明 |
 | :----: | :----: | :----: |
 | id | int | 主键自增 |
-| teacher_id | int | 教师工号 |
 | teacher_name | varchar | 教师姓名 |
-| teacher_grade | varcher | 教师所属院系 |
+| teacher_class | varchar | 教师所带班级 |
 | teacher_password | int | 账号密码 |
+| email | varchar | 教师邮箱 |
+| active | tinyInt | 是否删除 |
+
+### administrator
+| 字段名 | 类型 | 说明 |
+| :----: | :----: | :----: |
+| id | int | 主键自增 |
+| admin_name | varchar | 管理员姓名 |
+| admin_password | varchar | 管理员密码 |
+| actived | tinyInt | 是否删除 |
+
+
+## 模块管理
+### module_status
+| 字段名 | 类型 | 说明 |
+| :----: | :----: | :----: |
+| id | int | 主键自增 |
+| module | varchar | 模块名 |
+| status | tinyInt | 状态名（是否开放） | 
 
 ## 试题及测试用例
 ### question_new
@@ -115,6 +144,15 @@
 | Memo | varchar(500) | （未知） |
 
 > test_case表记录试题的测试用例，QuestionId对应question表的QuestionBh的字段。
+
+### question_log
+| 字段名 | 类型 | 说明 |
+| :----: | :----: | :----: |
+| id | int | 主键自增 |
+| question_bh | varchar | 试题编号，自生成UUID |
+| edit_custom_bh | varchar | 修改者编号 |
+| option_do | varchar | 对题目所做操作 |
+| edit_time | timestamp | 修改时间 |
 
 ## 用户多点登陆ip表
 ### ip_addr
