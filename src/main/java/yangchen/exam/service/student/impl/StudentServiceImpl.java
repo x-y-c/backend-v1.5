@@ -289,19 +289,29 @@ public class StudentServiceImpl implements StudentService {
 
     public JsonResult uploadStudentList(String teacherName, List<StudentNew> studentNewList) {
         Teacher teacher = teacherRepo.findByTeacherName(teacherName);
+        List<StudentNew> studentNews = new ArrayList<>(studentNewList.size());
         for (StudentNew studentNew : studentNewList) {
-            if (studentRepo.findByStudentId(studentNew.getStudentId()) != null) {
-                return JsonResult.errorResult(ResultCode.USER_EXIST, "Excel中的学号已存在,请检查后再导入", studentNew.getStudentId());
+            StudentNew student = studentRepo.findByStudentId(studentNew.getStudentId());
+            if (student != null) {
+                //return JsonResult.errorResult(ResultCode.USER_EXIST, "Excel中的学号已存在,请检查后再导入", studentNew.getStudentId());
+                student.setStudentName(studentNew.getStudentName());
+                student.setStudentGrade(studentNew.getStudentGrade());
+                student.setTeacherId(teacher.getId());
+                studentNews.add(student);
+
             } else {
-                studentNewList.parallelStream().forEach(studentNew1 -> {
-                    studentNew1.setTeacherId(teacher.getId());
-                });
-                List<StudentNew> studentNews = studentRepo.saveAll(studentNewList);
-                return JsonResult.succResult("添加成功", studentNews.size());
+//                studentNewList.parallelStream().forEach(studentNew1 -> {
+//                    studentNew1.setTeacherId(teacher.getId());
+//                });
+//                List<StudentNew> studentNews = studentRepo.saveAll(studentNewList);
+//                return JsonResult.succResult("添加成功", studentNews.size());
+                studentNew.setTeacherId(teacher.getId());
+                studentNews.add(studentNew);
             }
         }
+        List<StudentNew> studentList = studentRepo.saveAll(studentNews);
+        return JsonResult.succResult("添加成功", studentList.size());
 
-        return null;
     }
 
     @Override
