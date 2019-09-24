@@ -78,7 +78,9 @@ public class ExaminationServiceImpl implements ExaminationService {
 
     public List<ExaminationDetail> changeExamInfo(List<ExamInfo> list) {
         List<ExaminationDetail> examinationDetails = new ArrayList<>(list.size());
-      list.parallelStream().forEach(examInfo -> {
+        for (ExamInfo examInfo : list) {
+            //这个多线程会让前端显示的数据不按时间排列
+//        list.parallelStream().forEach(examInfo -> {
           ExamGroupNew examGroupNew = examGroupRepo.findById(examInfo.getExamGroupId()).get();
           ExaminationDetail examinationDetail = new ExaminationDetail();
           examinationDetail.setId(examInfo.getExaminationId());
@@ -87,7 +89,8 @@ public class ExaminationServiceImpl implements ExaminationService {
           examinationDetail.setStart(examGroupNew.getBeginTime());
           examinationDetail.setTtl(Long.valueOf(examGroupNew.getExamTime()));
           examinationDetails.add(examinationDetail);
-      });
+//        });
+        }
         return examinationDetails;
 
         }
