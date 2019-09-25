@@ -9,7 +9,7 @@ import yangchen.exam.annotation.PassToken;
 import yangchen.exam.annotation.UserLoginToken;
 import yangchen.exam.entity.StudentNew;
 import yangchen.exam.model.TokenInfo;
-import yangchen.exam.service.student.studentService;
+import yangchen.exam.service.student.StudentService;
 import yangchen.exam.util.JavaJWTUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +19,7 @@ import java.lang.reflect.Method;
 public class AuthenticationInterceptor implements HandlerInterceptor {
 
     @Autowired
-    private studentService studentService;
+    private StudentService studentService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler){

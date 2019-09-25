@@ -20,7 +20,6 @@ import yangchen.exam.model.UserBaseInfo;
 import yangchen.exam.repo.AdministratorRepo;
 import yangchen.exam.repo.IpAddrRepo;
 import yangchen.exam.service.UA.UAService;
-import yangchen.exam.service.student.studentService;
 import yangchen.exam.service.teacher.TeacherService;
 import yangchen.exam.service.token.TokenService;
 import yangchen.exam.util.IpUtil;
@@ -36,7 +35,7 @@ import java.io.IOException;
 public class UserController {
 
     @Autowired
-    private studentService StudentService;
+    private yangchen.exam.service.student.StudentService StudentService;
 
     @Autowired
     private TokenService tokenService;
@@ -61,22 +60,31 @@ public class UserController {
     @PassToken
     @RequestMapping(value = "student/login", method = RequestMethod.GET)
     public JsonResult login(@RequestParam String studentId, @RequestParam String password) {
-        StudentNew student = StudentService.getStudentByStudentId(Integer.valueOf(studentId));
-        LOGGER.info("the ip is [{}]", IpUtil.getIpAddr(request));
 
-        String userId = request.getHeader("userId");
-        LOGGER.info("the userId is [{}]", userId);
+//        LOGGER.info("the ip is [{}]", IpUtil.getIpAddr(request));
+//        String userId = request.getHeader("userId");
+//        LOGGER.info("the userId is [{}]", userId);
+        StudentNew student;
+        try{
+            student = StudentService.getStudentByStudentId(Integer.valueOf(studentId));
+        }catch (NumberFormatException e){
+            LOGGER.info("学生登陆：用户 [{}] 登陆失败--错误码：[{}]，错误原因：[{}]",studentId,ResultCode.WRONG_PASSWORD,"用户不存在");
+            return JsonResult.errorResult(ResultCode.USER_NOT_EXIST, "用户不存在", null);
+        }
+
         if (student == null) {
+            LOGGER.info("学生登陆：用户 [{}] 登陆失败--错误码：[{}]，错误原因：[{}]",studentId,ResultCode.WRONG_PASSWORD,"密码错误");
             return JsonResult.errorResult(ResultCode.USER_NOT_EXIST, "用户不存在", null);
         }
         if (!student.getPassword().equals(password)) {
+            LOGGER.info("学生登陆：用户 [{}] 登陆失败--错误码：[{}]，错误原因：[{}]",studentId,ResultCode.WRONG_PASSWORD,"密码错误");
             return JsonResult.errorResult(ResultCode.WRONG_PASSWORD, "密码错误", null);
         }
         String token = tokenService.getToken(student);
         UserBaseInfo userBaseInfo = new UserBaseInfo();
         userBaseInfo.setToken(token);
         userBaseInfo.setUserName(student.getStudentName());
-
+        LOGGER.info("学生登陆：用户 [{}] 登陆成功",studentId);
         return JsonResult.succResult("成功", userBaseInfo);
     }
 
@@ -90,18 +98,23 @@ public class UserController {
         if (teacherByName != null) {
             if (password.equals(teacherByName.getPassword())) {
                 userBaseInfo.setUserName(String.valueOf(teacherByName.getId()));
+                LOGGER.info("管理员登陆：用户 [{}] 登陆成功",teacherName);
                 return JsonResult.succResult(ResultCode.TEACHER_LOGIN, "登录成功", null);
             } else {
+                LOGGER.info("管理员登陆：用户 [{}] 登陆失败--错误码：[{}]，错误原因：[{}]",teacherName,ResultCode.WRONG_PASSWORD,"密码错误");
                 return JsonResult.errorResult(ResultCode.WRONG_PASSWORD, "密码错误", null);
             }
         }
         if (administrator != null) {
             if (password.equals(administrator.getAdminPassword())) {
+                LOGGER.info("管理员登陆：用户 [{}] 登陆成功",teacherName);
                 return JsonResult.succResult(ResultCode.ADMIN_LOGIN, "登录成功", null);
             } else {
+                LOGGER.info("管理员登陆：用户 [{}] 登陆失败--错误码：[{}]，错误原因：[{}]",teacherName,ResultCode.WRONG_PASSWORD,"密码错误");
                 return JsonResult.errorResult(ResultCode.WRONG_PASSWORD, "密码错误", null);
             }
         } else {
+            LOGGER.info("管理员登陆：用户 [{}] 登陆失败--错误码：[{}]，错误原因：[{}]",teacherName,ResultCode.USER_NOT_EXIST,"用户不存在");
             return JsonResult.errorResult(ResultCode.USER_NOT_EXIST, "用户不存在", null);
         }
     }

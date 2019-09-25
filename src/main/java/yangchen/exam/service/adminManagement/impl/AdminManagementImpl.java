@@ -2,10 +2,12 @@ package yangchen.exam.service.adminManagement.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import yangchen.exam.entity.Administrator;
 import yangchen.exam.entity.TeachClassInfo;
 import yangchen.exam.entity.Teacher;
 import yangchen.exam.model.ClassModel;
 import yangchen.exam.model.TeachClassInfoList;
+import yangchen.exam.repo.AdministratorRepo;
 import yangchen.exam.repo.StudentRepo;
 import yangchen.exam.repo.TeachClassInfoRepo;
 import yangchen.exam.repo.TeacherRepo;
@@ -19,6 +21,9 @@ public class AdminManagementImpl implements AdminManagement {
 
     @Autowired
     private TeachClassInfoRepo teachClassInfoRepo;
+
+    @Autowired
+    private AdministratorRepo administratorRepo;
 
     @Autowired
     private TeacherRepo teacherRepo;
@@ -83,9 +88,8 @@ public class AdminManagementImpl implements AdminManagement {
     public List<TeachClassInfoList> getAllTeachClassInfo() {
         List<Integer> teacherIdList = teacherRepo.getTeacherId();
 
-//        List<Integer> teacherIdList = teachClassInfoRepo.getTeacherId();
         List<TeachClassInfoList> result = new ArrayList<>(teacherIdList.size());
-        teacherIdList.forEach(teacherId -> {
+        teacherIdList.parallelStream().forEach(teacherId -> {
             List<String> classNameList = teachClassInfoRepo.getClassNameByTeacherId(teacherId);
             Teacher teacher = teacherRepo.findById(teacherId).get();
             TeachClassInfoList teachClassInfoList = new TeachClassInfoList();
@@ -112,12 +116,13 @@ public class AdminManagementImpl implements AdminManagement {
         return result;
     }
 
+    @Override
+    public Administrator findByAdminName(String name) {
+        Administrator administrator = administratorRepo.findByAdminNameAndActived(name,Boolean.TRUE);
+        return administrator;
+    }
+
 }
-
-
-
-
-
 
 
 

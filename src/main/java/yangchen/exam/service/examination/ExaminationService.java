@@ -1,6 +1,7 @@
 package yangchen.exam.service.examination;
 
 import yangchen.exam.entity.ExamGroupNew;
+import yangchen.exam.entity.ExamInfo;
 import yangchen.exam.entity.ExamPaper;
 import yangchen.exam.model.*;
 

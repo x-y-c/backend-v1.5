@@ -61,11 +61,14 @@ public class QuestionServiceImpl implements QuestionService {
     @Value("${image.base64.path}")
     private String imgPath;
 
+    @Value("${image.nginx.path}")
+    private String imgUrl;
+
     @Override
     public QuestionNew createQuestion(QuestionNew question) {
         String questionBh = UUID.randomUUID().toString().replace("-", "");
         question.setQuestionBh(questionBh);
-        question.setActived(Boolean.TRUE);
+        question.setActived(Boolean.FALSE);
         QuestionNew questionNew = questionRepo.save(question);
         return questionNew;
     }
@@ -102,10 +105,16 @@ public class QuestionServiceImpl implements QuestionService {
         questionNew.setDifficulty(DifficultEnum.getDifficultCode(questionNew.getDifficulty()));
         questionNew.setQuestionType(QuestionTypeEnum.getQuestionTypeCode(questionNew.getQuestionType()));
         if (imgLabelContent != null) {
-            String randomName = UUID.randomUUID().toString().replace("-", "") + ".jpg";
-            String imagePath = imgPath + randomName;
-            Base64Util.saveImgByte(imgLabelContent, imagePath);
-            String urlImgInfo = UrlImageUrl.updateImageDomain(preQuestionDetails, randomName);
+            String urlImgInfo="";
+            if(imgLabelContent.indexOf(imgPath)!=-1){
+                urlImgInfo=questionNew.getPreQuestionDetails();
+            }else{
+                String randomName = UUID.randomUUID().toString().replace("-", "") + ".jpg";
+                String imagePath = imgPath + randomName;
+                Base64Util.saveImgByte(imgLabelContent, imagePath);
+                urlImgInfo = UrlImageUrl.updateImageDomain(preQuestionDetails, randomName);
+            }
+
             questionNew.setQuestionDetails(urlImgInfo);
             questionNew.setActived(Boolean.TRUE);
             return questionRepo.save(questionNew);
@@ -115,6 +124,41 @@ public class QuestionServiceImpl implements QuestionService {
         }
 
 
+    }
+
+    @Override
+    public QuestionNew saveQuestionWithImgDecodeNew(QuestionNew questionNew) throws IOException {
+
+        //preQuestionDetails是 前端富文本编辑器中返回的数据；
+        String preQuestionDetails = questionNew.getPreQuestionDetails();
+        //取出富文本编辑器中的<img>标签信息；(base64编码的字符串)
+        List<String> imgLabelContentList = UrlImageUrl.getImgLabels(preQuestionDetails);
+        questionNew.setStage(StageEnum.getStageCode(questionNew.getStage()));
+        questionNew.setDifficulty(DifficultEnum.getDifficultCode(questionNew.getDifficulty()));
+        questionNew.setQuestionType(QuestionTypeEnum.getQuestionTypeCode(questionNew.getQuestionType()));
+
+        if (imgLabelContentList.size() >0) {
+            List<String> randomNameList = new ArrayList<>();
+            for(String imgLabelContent:imgLabelContentList) {
+                if(imgLabelContent.indexOf(imgUrl)!=-1){
+                    randomNameList.add(imgLabelContent);
+                }
+                else{
+                    String randomName = UUID.randomUUID().toString().replace("-", "") + ".jpg";
+                    String imagePath = imgPath + randomName;
+                    String imageUrl = imgUrl + randomName;
+                    Base64Util.saveImgByte(imgLabelContent, imagePath);
+                    randomNameList.add(imageUrl);
+                }
+            }
+            String urlImgInfo = UrlImageUrl.updateImageDomainNew(preQuestionDetails, randomNameList);
+            questionNew.setQuestionDetails(urlImgInfo);
+            questionNew.setActived(Boolean.FALSE);
+            return questionRepo.save(questionNew);
+        } else {
+            questionNew.setQuestionDetails(preQuestionDetails);
+            return questionRepo.save(questionNew);
+        }
     }
 
 
@@ -330,7 +374,7 @@ public class QuestionServiceImpl implements QuestionService {
             for (QuestionNew questionNew : questionNewList) {
                 if (questionNew.getStage().equals(stageEnum.getStageCode())) {
                     QuestionLastChildren questionLastChildren = new QuestionLastChildren();
-                    questionLastChildren.setLabel(questionNew.getQuestionName());
+                    questionLastChildren.setLabel("（"+questionNew.getId()+"）\t"+questionNew.getQuestionName());
                     questionLastChildren.setQuestionBh(questionNew.getQuestionBh());
                     questionLastChildrenList.add(questionLastChildren);
                 }

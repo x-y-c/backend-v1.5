@@ -211,7 +211,7 @@ public class QuestionController {
         sourceCode.setKey(key);
         String s = gson.toJson(sourceCode).toString();
         questionNew.setSourceCode(s);
-        questionNew.setActived(Boolean.TRUE);
+        questionNew.setActived(Boolean.FALSE);
         if ("100001".equals(questionNew.getIsProgramBlank())) {
             questionNew.setMemo(questionNew.getMemo());
         }
@@ -236,12 +236,13 @@ public class QuestionController {
             questionNew.setQuestionBh(questionBh);
         }
 
-        QuestionNew questionResult = questionService.saveQuestionWithImgDecode(questionNew);
+        //QuestionNew questionResult = questionService.saveQuestionWithImgDecode(questionNew);
+        QuestionNew questionResult = questionService.saveQuestionWithImgDecodeNew(questionNew);
         if (questionResult != null) {
             QuestionLog questionLog = questionService.addQuestionLog(questionNew, flag);
             LOGGER.info(questionLog.toString());
 
-            return JsonResult.succResult(null);
+            return JsonResult.succResult(questionResult);
         } else {
             return JsonResult.errorResult(ResultCode.WRONG_PARAMS, "添加失败", null);
         }

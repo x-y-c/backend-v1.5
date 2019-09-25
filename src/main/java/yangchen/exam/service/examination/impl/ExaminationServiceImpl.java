@@ -15,7 +15,7 @@ import yangchen.exam.service.examination.ExamGroupService;
 import yangchen.exam.service.examination.ExaminationService;
 import yangchen.exam.service.question.QuestionService;
 import yangchen.exam.service.score.ScoreService;
-import yangchen.exam.service.student.studentService;
+import yangchen.exam.service.student.StudentService;
 import yangchen.exam.util.RandomUtil;
 
 import java.sql.Timestamp;
@@ -38,7 +38,7 @@ public class ExaminationServiceImpl implements ExaminationService {
     private QuestionService questionService;
 
     @Autowired
-    private studentService studentService;
+    private StudentService studentService;
 
     @Autowired
     private ExamGroupService examGroupService;
@@ -64,6 +64,9 @@ public class ExaminationServiceImpl implements ExaminationService {
     @Autowired
     private TeacherRepo teacherRepo;
 
+    @Autowired
+    private StudentRepo studentRepo;
+
 
     @Override
     public List<ExaminationDetail> examInfoDetail(Integer studentId) {
@@ -76,18 +79,21 @@ public class ExaminationServiceImpl implements ExaminationService {
     public List<ExaminationDetail> changeExamInfo(List<ExamInfo> list) {
         List<ExaminationDetail> examinationDetails = new ArrayList<>(list.size());
         for (ExamInfo examInfo : list) {
-            ExamGroupNew examGroupNew = examGroupRepo.findById(examInfo.getExamGroupId()).get();
-            ExaminationDetail examinationDetail = new ExaminationDetail();
-            examinationDetail.setId(examInfo.getExaminationId());
-            examinationDetail.setDesc(examGroupNew.getExamDesc());
-            examinationDetail.setEnd(examGroupNew.getEndTime());
-            examinationDetail.setStart(examGroupNew.getBeginTime());
-            examinationDetail.setTtl(Long.valueOf(examGroupNew.getExamTime()));
-            examinationDetails.add(examinationDetail);
+            //这个多线程会让前端显示的数据不按时间排列
+//        list.parallelStream().forEach(examInfo -> {
+          ExamGroupNew examGroupNew = examGroupRepo.findById(examInfo.getExamGroupId()).get();
+          ExaminationDetail examinationDetail = new ExaminationDetail();
+          examinationDetail.setId(examInfo.getExaminationId());
+          examinationDetail.setDesc(examGroupNew.getExamDesc());
+          examinationDetail.setEnd(examGroupNew.getEndTime());
+          examinationDetail.setStart(examGroupNew.getBeginTime());
+          examinationDetail.setTtl(Long.valueOf(examGroupNew.getExamTime()));
+          examinationDetails.add(examinationDetail);
+//        });
         }
         return examinationDetails;
 
-    }
+        }
 
     @Override
     public List<ExaminationDetail> getEndedExamination(Integer studentId) {
@@ -139,7 +145,7 @@ public class ExaminationServiceImpl implements ExaminationService {
         examGroup.setExamDesc(examParam.getExamName());
 
         grades.forEach(s -> {
-            List<StudentNew> classMate = studentService.getStudentListByGrade(s);
+            List<StudentNew> classMate = studentRepo.findByStudentGradeAndTeacherId(s,byTeacherName.getId());
             studentList.addAll(classMate);
         });
 
@@ -177,6 +183,26 @@ public class ExaminationServiceImpl implements ExaminationService {
             examPageInfo.setQuestionList(questionNamesByExamPages);
             examInforesult.add(examPageInfo);
         }
+        return examInforesult;
+    }
+
+
+
+
+    public List<ExamPageInfo> getExamPageInfoNew(Integer examGroupId) {
+        List<ExamInfo> examInfoList = examInfoService.getExamInfoByExamGroup(examGroupId);
+        List<ExamPageInfo> examInforesult = new ArrayList<>();
+       examInfoList.parallelStream().forEach(examInfo -> {
+           ExamPageInfo examPageInfo = new ExamPageInfo();
+           StudentNew student = studentService.getStudentByStudentId(examInfo.getStudentNumber());
+           examPageInfo.setStudentGrade(student.getStudentGrade());
+           examPageInfo.setStudentName(student.getStudentName());
+           examPageInfo.setStudentId(student.getStudentId());
+           List<QuestionInfo> questionNamesByExamPages = questionService.getQuestionNamesByExamPage(examInfo.getExaminationId());
+           examPageInfo.setQuestionList(questionNamesByExamPages);
+           examInforesult.add(examPageInfo);
+       });
+
         return examInforesult;
     }
 

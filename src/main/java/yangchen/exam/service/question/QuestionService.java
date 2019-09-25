@@ -51,6 +51,8 @@ public interface QuestionService {
      */
     QuestionNew saveQuestionWithImgDecode(QuestionNew questionNew) throws IOException;
 
+    QuestionNew saveQuestionWithImgDecodeNew(QuestionNew questionNew) throws IOException;
+
 
     /**
      * 通过id查找题目

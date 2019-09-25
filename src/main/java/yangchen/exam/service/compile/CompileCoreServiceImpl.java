@@ -19,7 +19,7 @@ public class CompileCoreServiceImpl implements CompileCoreService {
     private String runPath;
 
     //        /home/code/main.c
-//        /home/code/main
+    //        /home/code/main
     @Override
     public String writeSourceCode(String sourceCode) throws IOException {
 

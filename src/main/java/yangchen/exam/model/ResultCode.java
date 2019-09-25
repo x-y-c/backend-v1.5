@@ -18,6 +18,8 @@ import lombok.Data;
 public class ResultCode {
     /**
      * A0000 成功
+     * A0001 教师登陆
+     * A0002 管理员登陆
      * R0001 用户不存在
      * R0002 密码错误
      * R0003 参数错误

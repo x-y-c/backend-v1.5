@@ -5,7 +5,6 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -13,6 +12,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import yangchen.exam.Enum.UserTypeEnum;
+import yangchen.exam.entity.Administrator;
 import yangchen.exam.entity.StudentNew;
 import yangchen.exam.entity.TeachClassInfo;
 import yangchen.exam.entity.Teacher;
@@ -20,10 +21,11 @@ import yangchen.exam.model.JsonResult;
 import yangchen.exam.model.ResultCode;
 import yangchen.exam.model.StudentInfo;
 import yangchen.exam.model.StudentModifyModel;
+import yangchen.exam.repo.AdministratorRepo;
 import yangchen.exam.repo.StudentRepo;
 import yangchen.exam.repo.TeachClassInfoRepo;
 import yangchen.exam.repo.TeacherRepo;
-import yangchen.exam.service.student.studentService;
+import yangchen.exam.service.student.StudentService;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -36,12 +38,15 @@ import java.util.List;
  * @author yc
  */
 @Service
-public class StudentServiceImpl implements studentService {
+public class StudentServiceImpl implements StudentService {
     @Autowired
     private StudentRepo studentRepo;
 
     @Autowired
     private TeacherRepo teacherRepo;
+
+    @Autowired
+    private AdministratorRepo administratorRepo;
 
     @Autowired
     private TeachClassInfoRepo teachClassInfoRepo;
@@ -63,21 +68,57 @@ public class StudentServiceImpl implements studentService {
         return studentRepo.save(student);
     }
 
-    public JsonResult changePassword(Integer studentId, String oldpassword, String password) {
-        StudentNew byStudentId = studentRepo.findByStudentId(studentId);
-        if (byStudentId != null) {
-            if (byStudentId.getPassword().equals(oldpassword)) {
-                byStudentId.setPassword(password);
-                StudentNew save = studentRepo.save(byStudentId);
-                return JsonResult.succResult(null);
-            } else {
-                return JsonResult.errorResult(ResultCode.WRONG_PASSWORD, "旧密码错误", null);
-            }
+    public JsonResult changePassword(String type,String userName,String studentId, String oldPassword, String password) {
+        if(type.equals(UserTypeEnum.getUserTypeCode("学生"))){
+            StudentNew student = studentRepo.findByStudentId(Integer.valueOf(studentId));
+            if (student != null) {
+                if (student.getPassword().equals(oldPassword)) {
+                    student.setPassword(password);
+                    StudentNew save = studentRepo.save(student);
+                    return JsonResult.succResult(save);
+                } else {
+                    return JsonResult.errorResult(ResultCode.WRONG_PASSWORD, "旧密码错误", null);
+                }
 
-        } else {
-            return JsonResult.errorResult(ResultCode.USER_NOT_EXIST, "用户不存在", null);
+            } else {
+                return JsonResult.errorResult(ResultCode.USER_NOT_EXIST, "用户不存在", null);
+            }
         }
+        else if(type.equals(UserTypeEnum.getUserTypeCode("教师"))){
+            Teacher teacher = teacherRepo.findByTeacherName(userName);
+            if(teacher!=null){
+                if (teacher.getPassword().equals(oldPassword)) {
+                    teacher.setPassword(password);
+                    Teacher save = teacherRepo.save(teacher);
+                    return JsonResult.succResult(save);
+                } else {
+                    return JsonResult.errorResult(ResultCode.WRONG_PASSWORD, "旧密码错误", null);
+                }
+            }else{
+                return JsonResult.errorResult(ResultCode.USER_NOT_EXIST, "用户不存在", null);
+            }
+        }
+        else if(type.equals(UserTypeEnum.getUserTypeCode("管理员"))){
+            Administrator administrator = administratorRepo.findByAdminNameAndActived(userName,Boolean.TRUE);
+            if(administrator!=null){
+                if (administrator.getAdminPassword().equals(oldPassword)) {
+                    administrator.setAdminPassword(password);
+                    Administrator save = administratorRepo.save(administrator);
+                    return JsonResult.succResult(save);
+                } else {
+                    return JsonResult.errorResult(ResultCode.WRONG_PASSWORD, "旧密码错误", null);
+                }
+            }else{
+                return JsonResult.errorResult(ResultCode.USER_NOT_EXIST, "用户不存在", null);
+            }
+        }
+        else {
+            return JsonResult.errorResult(ResultCode.USER_NOT_EXIST,"没有此类用户","");
+        }
+
+
     }
+
 
     @Override
     public void deleteStudentInfo(Integer id) {
@@ -94,10 +135,9 @@ public class StudentServiceImpl implements studentService {
             student.setPassword("123456");
         }
 
-        if(studentNew==null){
-            return JsonResult.errorResult(ResultCode.USER_NOT_EXIST,"用户不存在","");
-        }
-        else {
+        if (studentNew == null) {
+            return JsonResult.errorResult(ResultCode.USER_NOT_EXIST, "用户不存在", "");
+        } else {
             studentNew.setStudentName(student.getStudentName());
             studentNew.setPassword(student.getPassword());
             studentNew.setStudentGrade(student.getStudentGrade());
@@ -105,6 +145,24 @@ public class StudentServiceImpl implements studentService {
             return JsonResult.succResult(studentRepo.save(studentNew));
         }
 
+    }
+
+
+    public JsonResult insertStudent(StudentModifyModel studentModifyModel) {
+        StudentNew result = studentRepo.findByStudentId(studentModifyModel.getStudentId());
+        Teacher teacher = teacherRepo.findByTeacherName(studentModifyModel.getTeacherName());
+        if (result != null) {
+            return JsonResult.errorResult(ResultCode.USER_EXIST, "用户已存在", null);
+        } else {
+            StudentNew studentNew = new StudentNew();
+            studentNew.setTeacherId(teacher.getId());
+            studentNew.setPassword("123456");
+            studentNew.setStudentGrade(studentModifyModel.getStudentGrade());
+            studentNew.setStudentId(studentModifyModel.getStudentId());
+            studentNew.setStudentName(studentModifyModel.getStudentName());
+            StudentNew save = studentRepo.save(studentNew);
+            return JsonResult.succResult(save);
+        }
     }
 
     @Override
@@ -115,17 +173,16 @@ public class StudentServiceImpl implements studentService {
         }
         StudentNew studentNew = new StudentNew();
         if (studentNew1 != null) {
-            return JsonResult.errorResult(ResultCode.USER_EXIST,"用户已存在","");
+            return JsonResult.errorResult(ResultCode.USER_EXIST, "用户已存在", "");
         } else {
             String grade = student.getStudentGrade();
             Teacher teacher = teacherRepo.findByTeacherName(student.getTeacherName());
             List<String> classNameList = teachClassInfoRepo.getClassNameByTeacherId(teacher.getId());
-            for(int i=0;i<classNameList.size();i++){
-                if(grade.equals(classNameList.get(i))){
+            for (int i = 0; i < classNameList.size(); i++) {
+                if (grade.equals(classNameList.get(i))) {
                     break;
-                }
-                else{
-                    if(i==classNameList.size()-1){
+                } else {
+                    if (i == classNameList.size() - 1) {
                         TeachClassInfo teachClassInfo = new TeachClassInfo();
                         teachClassInfo.setClassName(grade);
                         teachClassInfo.setTeacherId(teacher.getId());
@@ -179,7 +236,21 @@ public class StudentServiceImpl implements studentService {
 
     }
 
+    //获取全部学生的分页；
     @Override
+    public Page<StudentNew> getStudentPage(String teacherId, Integer pageNum, Integer pageLimit) {
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
+        Pageable pageable = PageRequest.of(pageNum - 1, pageLimit, sort);
+        if (StringUtils.isEmpty(teacherId)) {
+            return studentRepo.findAll(pageable);
+        } else {
+            Integer id = teacherRepo.findByTeacherName(teacherId).getId();
+            return studentRepo.findByTeacherId(id, pageable);
+        }
+    }
+
+    @Override
+    //查询grade的分页；
     public Page<StudentNew> getGradePage(String teacherId, String grade, Integer pageNum, Integer pageLimit) {
         Sort sort = new Sort(Sort.Direction.DESC, "id");
         Pageable pageable = PageRequest.of(pageNum - 1, pageLimit, sort);
@@ -197,9 +268,50 @@ public class StudentServiceImpl implements studentService {
 
     }
 
+    //0918 在学生表中添加学生到教师的对应关系，省去教师->班级->学生的查询，优化查询速度，使教师对学生的管理更为准确直接
+    @Override
+    public Page<StudentNew> getGradePageList(String teacherId, String grade, Integer pageNum, Integer pageLimit) {
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
+        Pageable pageable = PageRequest.of(pageNum - 1, pageLimit, sort);
+        Teacher teacher = teacherRepo.findByTeacherName(teacherId);
+        if (StringUtils.isEmpty(teacherId)) {
+            return studentRepo.findByStudentGrade(grade, pageable);
+        } else {
+            return studentRepo.findByTeacherIdAndStudentGrade(teacher.getId(), grade, pageable);
+        }
+    }
+
     @Override
     public List<String> initGrade() {
         return studentRepo.getGrade();
+    }
+
+
+    public JsonResult uploadStudentList(String teacherName, List<StudentNew> studentNewList) {
+        Teacher teacher = teacherRepo.findByTeacherName(teacherName);
+        List<StudentNew> studentNews = new ArrayList<>(studentNewList.size());
+        for (StudentNew studentNew : studentNewList) {
+            StudentNew student = studentRepo.findByStudentId(studentNew.getStudentId());
+            if (student != null) {
+                //return JsonResult.errorResult(ResultCode.USER_EXIST, "Excel中的学号已存在,请检查后再导入", studentNew.getStudentId());
+                student.setStudentName(studentNew.getStudentName());
+                student.setStudentGrade(studentNew.getStudentGrade());
+                student.setTeacherId(teacher.getId());
+                studentNews.add(student);
+
+            } else {
+//                studentNewList.parallelStream().forEach(studentNew1 -> {
+//                    studentNew1.setTeacherId(teacher.getId());
+//                });
+//                List<StudentNew> studentNews = studentRepo.saveAll(studentNewList);
+//                return JsonResult.succResult("添加成功", studentNews.size());
+                studentNew.setTeacherId(teacher.getId());
+                studentNews.add(studentNew);
+            }
+        }
+        List<StudentNew> studentList = studentRepo.saveAll(studentNews);
+        return JsonResult.succResult("添加成功", studentList.size());
+
     }
 
     @Override
@@ -212,8 +324,7 @@ public class StudentServiceImpl implements studentService {
         for (StudentNew studentNew : studentNewList) {
             if (studentRepo.findByStudentId(studentNew.getStudentId()) != null) {
                 return JsonResult.errorResult(ResultCode.USER_EXIST, "excel中的学号已存在，请检查后导入", studentNew.getStudentId());
-            }
-            else {
+            } else {
                 String grade = studentNew.getStudentGrade();
                 Teacher teacher = teacherRepo.findByTeacherName(teacherName);
 
@@ -222,52 +333,41 @@ public class StudentServiceImpl implements studentService {
 
                 int flag = -1;
                 int teachClassInfoListSize = teachClassInfoList.size();
-                if(teachClassInfoListSize==0){
-                    if(teachClassInfos.size()==0){
-//                        teachClassInfo.setTeacherId(teacher.getId());
-//                        teachClassInfo.setClassName(grade);
-//                        teachClassInfos.add(teachClassInfo);
+                if (teachClassInfoListSize == 0) {
+                    if (teachClassInfos.size() == 0) {
                         TeachClassInfo t = new TeachClassInfo();
                         t.setTeacherId(teacher.getId());
                         t.setClassName(grade);
                         teachClassInfos.add(t);
-                    }
-                    else{
-                        for(int j=0;j<teachClassInfos.size();j++){
+                    } else {
+                        for (int j = 0; j < teachClassInfos.size(); j++) {
                             if (grade.equals(teachClassInfos.get(j).getClassName())) {
                                 break;
                             } else {
                                 if (j == teachClassInfos.size() - 1) {
-
-//                                    teachClassInfo.setTeacherId(teacher.getId());
-//                                    teachClassInfo.setClassName(grade);
-//                                    teachClassInfos.add(teachClassInfo);
                                     TeachClassInfo t = new TeachClassInfo();
                                     t.setTeacherId(teacher.getId());
                                     t.setClassName(grade);
                                     teachClassInfos.add(t);
-//                            teachClassInfoRepo.save(teachClassInfo);
                                 }
                             }
                         }
                     }
-                }
-                else{
+                } else {
                     for (int i = 0; i < teachClassInfoListSize; i++) {
-                    //1 teachClassInfoList (1,2)
-                    //2 upload (2,3);
-                    //upload-->teachClassInfoList(1,2,3)
-                    if (grade.equals(teachClassInfoList.get(i).getClassName())) {
-                        break;
-                    } else {
-                        if (i == teachClassInfoList.size() - 1) {
-                            teachClassInfo.setTeacherId(teacher.getId());
-                            teachClassInfo.setClassName(grade);
-                            teachClassInfos.add(teachClassInfo);
-//                            teachClassInfoRepo.save(teachClassInfo);
+                        //1 teachClassInfoList (1,2)
+                        //2 upload (2,3);
+                        //upload-->teachClassInfoList(1,2,3)
+                        if (grade.equals(teachClassInfoList.get(i).getClassName())) {
+                            break;
+                        } else {
+                            if (i == teachClassInfoList.size() - 1) {
+                                teachClassInfo.setTeacherId(teacher.getId());
+                                teachClassInfo.setClassName(grade);
+                                teachClassInfos.add(teachClassInfo);
+                            }
                         }
                     }
-                }
 //                teachClassInfoList.remove(flag);
                 }
             }
@@ -314,5 +414,12 @@ public class StudentServiceImpl implements studentService {
         Teacher teacher = teacherRepo.findByTeacherName(teacherId);
         List<String> className = teachClassInfoRepo.getClassNameByTeacherId(teacher.getId());
         return className;
+    }
+
+
+    public List<String> getGradesByTeacherId(String teacherId) {
+        Teacher teacher = teacherRepo.findByTeacherName(teacherId);
+        List<String> grade = studentRepo.getGradeByTeacherId(teacher.getId());
+        return grade;
     }
 }
