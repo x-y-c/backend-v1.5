@@ -110,7 +110,7 @@ public class QuestionController {
         if (!StringUtils.isEmpty(questionById.getSourceCode())) {
             questionById.setSourceCode(DecodeSourceCode.getCode(questionById.getSourceCode()));
         }
-        questionById.setQuestionDetails(DecodeQuestionDetails.getRightImage(domainStr,questionById.getPreQuestionDetails()));
+        questionById.setQuestionDetails(DecodeQuestionDetails.getRightImage(domainStr, questionById.getQuestionDetails()));
 //        LOGGER.info("StageEnum.getStageName(questionById.getStage())", StageEnum.getStageName(questionById.getStage()));
         //LOGGER.info("[{}] find question by Id,the ip = [{}]", UserUtil.getUserId(httpServletRequest), IpUtil.getIpAddr(httpServletRequest));
         return JsonResult.succResult(questionById);
@@ -202,13 +202,13 @@ public class QuestionController {
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public JsonResult uploadQuestion(@RequestBody QuestionNew questionNew) throws IOException {
+    public JsonResult uploadQuestion(@RequestBody QuestionUpdate questionUpdate) throws IOException {
 
         //LOGGER.info(questionNew.toString());
         /*修改sourceCode 格式*/
         Gson gson = new GsonBuilder().disableHtmlEscaping().create();
         SourceCode sourceCode = new SourceCode();
-        String code = questionNew.getSourceCode();
+        String code = questionUpdate.getSourceCode();
         List<SourceCodeInfo> key = new ArrayList<>();
         SourceCodeInfo sourceCodeInfo = new SourceCodeInfo();
         sourceCodeInfo.setCode(code);
@@ -216,18 +216,18 @@ public class QuestionController {
         key.add(sourceCodeInfo);
         sourceCode.setKey(key);
         String s = gson.toJson(sourceCode).toString();
-        questionNew.setSourceCode(s);
-        questionNew.setActived(Boolean.FALSE);
-        if ("100001".equals(questionNew.getIsProgramBlank())) {
-            questionNew.setMemo(questionNew.getMemo());
+        questionUpdate.setSourceCode(s);
+        questionUpdate.setActived(Boolean.FALSE);
+        if ("100001".equals(questionUpdate.getIsProgramBlank())) {
+            questionUpdate.setMemo(questionUpdate.getMemo());
         }
         String flag = "";
-        QuestionNew question = questionService.findByQuestionBh(questionNew.getQuestionBh());
+        QuestionNew question = questionService.findByQuestionBh(questionUpdate.getQuestionBh());
         if (question != null) {
             LOGGER.info("question [{}] is exist", question.getQuestionBh());
-            //更新
+            //更新 id作为数据库主键，需要setID
             flag = "修改";
-            questionNew.setId(question.getId());
+            questionUpdate.setId(question.getId());
 
         } else {
             LOGGER.info("question not exist");
@@ -238,14 +238,13 @@ public class QuestionController {
             String questionBh = UUID.randomUUID().toString().replace("-", "");
             testCase.setQuestionId(questionBh);
             TestCase testCase1 = testCaseService.addTestCase(testCase);
-            //LOGGER.info("success add TestCase" + testCase1.toString());
-            questionNew.setQuestionBh(questionBh);
+            questionUpdate.setQuestionBh(questionBh);
         }
 
         //QuestionNew questionResult = questionService.saveQuestionWithImgDecode(questionNew);
-        QuestionNew questionResult = questionService.saveQuestionWithImgDecodeNew(questionNew);
+        QuestionNew questionResult = questionService.saveQuestionWithImgDecodeNew(questionUpdate);
         if (questionResult != null) {
-            QuestionLog questionLog = questionService.addQuestionLog(questionNew, flag);
+            QuestionLog questionLog = questionService.addQuestionLog(questionUpdate, flag);
             LOGGER.info(questionLog.toString());
 
             return JsonResult.succResult(questionResult);
@@ -291,7 +290,7 @@ public class QuestionController {
         private String memo;
      */
     @RequestMapping(value = "/testCaseAll", method = RequestMethod.POST)
-    public JsonResult testCaseModify(@RequestParam String testCaseBh,@RequestParam Double scoreWeight,@RequestParam String testCaseInput,@RequestParam String testCaseOutput, @RequestParam String questionId,@RequestParam Integer operate) {
+    public JsonResult testCaseModify(@RequestParam String testCaseBh, @RequestParam Double scoreWeight, @RequestParam String testCaseInput, @RequestParam String testCaseOutput, @RequestParam String questionId, @RequestParam Integer operate) {
         LOGGER.info("testCaseBh=[{}],scoreWeight=[{}],testCaseInput=[{}],testCaseOutput=[{}],questionId=[{}],operate=[{}]",
                 testCaseBh, scoreWeight, testCaseInput, testCaseOutput, questionId, operate);
         JsonResult jsonResult = testCaseService.modifyTestCase(testCaseBh, scoreWeight, testCaseInput, testCaseOutput, questionId, operate);

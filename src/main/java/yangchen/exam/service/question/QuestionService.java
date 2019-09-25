@@ -2,11 +2,8 @@ package yangchen.exam.service.question;
 
 import org.springframework.data.domain.Page;
 import yangchen.exam.entity.QuestionNew;
-import yangchen.exam.model.QuestionDetail;
-import yangchen.exam.model.QuestionInfo;
+import yangchen.exam.model.*;
 import yangchen.exam.entity.QuestionLog;
-import yangchen.exam.model.QuestionLogModel;
-import yangchen.exam.model.QuestionPractice;
 
 import java.io.IOException;
 import java.util.List;
@@ -45,13 +42,10 @@ public interface QuestionService {
     /**
      * 保存questionNew 信息，前端把图片以base64的形式传给后台，后台需要将base64--->image ，
      * 然后将pre_question_details 字段修改保存到 question_details
-     *
-     * @param questionNew
-     * @return
      */
-    QuestionNew saveQuestionWithImgDecode(QuestionNew questionNew) throws IOException;
+    //QuestionNew saveQuestionWithImgDecode(QuestionUpdate questionUpdate) throws IOException;
 
-    QuestionNew saveQuestionWithImgDecodeNew(QuestionNew questionNew) throws IOException;
+    QuestionNew saveQuestionWithImgDecodeNew(QuestionUpdate questionUpdate) throws IOException;
 
 
     /**
@@ -101,6 +95,7 @@ public interface QuestionService {
 
     String getPracticeNext(String questionBh);
 
+    QuestionLog addQuestionLog(QuestionUpdate questionNew,String flag);
     QuestionLog addQuestionLog(QuestionNew questionNew,String flag);
 
     List<QuestionLogModel> getQuestionLog();
