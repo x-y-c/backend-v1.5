@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,7 @@ import yangchen.exam.service.excelservice.ExcelServiceImpl;
 import yangchen.exam.service.question.QuestionService;
 import yangchen.exam.service.testInfo.TestCaseService;
 import yangchen.exam.service.testInfo.TestInfoService;
+import yangchen.exam.util.DecodeQuestionDetails;
 import yangchen.exam.util.DecodeSourceCode;
 import yangchen.exam.util.IpUtil;
 import yangchen.exam.util.UserUtil;
@@ -69,6 +71,9 @@ public class QuestionController {
     @Autowired
     private ModuleStatusRepo moduleStatusRepo;
 
+    @Value("${image.nginx.url.path}")
+    private String domainStr;
+
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public JsonResult createQuestion(@RequestBody QuestionNew question) {
         QuestionNew questionResult = questionService.createQuestion(question);
@@ -84,7 +89,7 @@ public class QuestionController {
     }
 
     @RequestMapping(value = "/check", method = RequestMethod.GET)
-    public JsonResult IsQuestionchecked(@RequestParam String questionBh) {
+    public JsonResult isQuestionChecked(@RequestParam String questionBh) {
         QuestionNew questionNew = questionRepo.findByQuestionBh(questionBh);
         questionNew.setActived(!questionNew.getActived());
         QuestionNew save = questionRepo.save(questionNew);
@@ -105,6 +110,7 @@ public class QuestionController {
         if (!StringUtils.isEmpty(questionById.getSourceCode())) {
             questionById.setSourceCode(DecodeSourceCode.getCode(questionById.getSourceCode()));
         }
+        questionById.setQuestionDetails(DecodeQuestionDetails.getRightImage(domainStr,questionById.getPreQuestionDetails()));
 //        LOGGER.info("StageEnum.getStageName(questionById.getStage())", StageEnum.getStageName(questionById.getStage()));
         //LOGGER.info("[{}] find question by Id,the ip = [{}]", UserUtil.getUserId(httpServletRequest), IpUtil.getIpAddr(httpServletRequest));
         return JsonResult.succResult(questionById);
@@ -232,7 +238,7 @@ public class QuestionController {
             String questionBh = UUID.randomUUID().toString().replace("-", "");
             testCase.setQuestionId(questionBh);
             TestCase testCase1 = testCaseService.addTestCase(testCase);
-            LOGGER.info("success add TestCase" + testCase1.toString());
+            //LOGGER.info("success add TestCase" + testCase1.toString());
             questionNew.setQuestionBh(questionBh);
         }
 
@@ -285,12 +291,7 @@ public class QuestionController {
         private String memo;
      */
     @RequestMapping(value = "/testCaseAll", method = RequestMethod.POST)
-    public JsonResult testCaseModify(@RequestParam String testCaseBh,
-                                     @RequestParam Double scoreWeight,
-                                     @RequestParam String testCaseInput,
-                                     @RequestParam String testCaseOutput,
-                                     @RequestParam String questionId,
-                                     @RequestParam Integer operate) {
+    public JsonResult testCaseModify(@RequestParam String testCaseBh,@RequestParam Double scoreWeight,@RequestParam String testCaseInput,@RequestParam String testCaseOutput, @RequestParam String questionId,@RequestParam Integer operate) {
         LOGGER.info("testCaseBh=[{}],scoreWeight=[{}],testCaseInput=[{}],testCaseOutput=[{}],questionId=[{}],operate=[{}]",
                 testCaseBh, scoreWeight, testCaseInput, testCaseOutput, questionId, operate);
         JsonResult jsonResult = testCaseService.modifyTestCase(testCaseBh, scoreWeight, testCaseInput, testCaseOutput, questionId, operate);
