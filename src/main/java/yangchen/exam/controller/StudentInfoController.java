@@ -125,15 +125,17 @@ public class StudentInfoController {
 
     @RequestMapping(value = "/info", method = RequestMethod.GET)
     public JsonResult getStudentInfo(@RequestParam(required = false) Integer studentId,@RequestParam String userName,String type) {
-        LOGGER.info("[{}] get [{}] studentInfo", UserUtil.getUserId(request), studentId);
         if(type.equals(UserTypeEnum.getUserTypeCode("学生"))){
+            LOGGER.info("学生用户：[{}] get [{}] studentInfo", UserUtil.getUserId(request), studentId);
             return JsonResult.succResult(studentService.getStudentByStudentId(studentId));
         }
         else if(type.equals(UserTypeEnum.getUserTypeCode("教师"))){
+            LOGGER.info("教师用户：[{}] get [{}] studentInfo", UserUtil.getUserId(request), userName );
             Teacher teacher = teacherService.findTeacherByName(userName);
             return JsonResult.succResult(teacher);
         }
         else{
+            LOGGER.info("管理员用户：[{}] get [{}] studentInfo", UserUtil.getUserId(request), userName );
             Administrator administrator = adminManagement.findByAdminName(userName);
             return JsonResult.succResult(administrator);
         }
