@@ -23,7 +23,8 @@ import yangchen.exam.service.examination.ExaminationService;
 import yangchen.exam.service.question.QuestionBaseService;
 import yangchen.exam.service.question.QuestionService;
 import yangchen.exam.util.Base64Util;
-import yangchen.exam.util.UrlImageUrl;
+import yangchen.exam.util.DecodeQuestionDetails;
+import yangchen.exam.util.UrlImageUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -62,7 +63,13 @@ public class QuestionServiceImpl implements QuestionService {
     private String imgPath;
 
     @Value("${image.nginx.path}")
-    private String imgUrl;
+    /*   /ckupload/   */
+    private String imgNginx;
+
+    @Value("${image.nginx.url.path}")
+    /*  http://211.68.35.79:2048  */
+    private String imgNginxUrl;
+
 
     @Override
     public QuestionNew createQuestion(QuestionNew question) {
@@ -94,70 +101,41 @@ public class QuestionServiceImpl implements QuestionService {
 
     }
 
-    @Override
-    public QuestionNew saveQuestionWithImgDecode(QuestionNew questionNew) throws IOException {
-
-        //preQuestionDetails是 前端富文本编辑器中返回的数据；
-        String preQuestionDetails = questionNew.getPreQuestionDetails();
-        //取出富文本编辑器中的<img>标签信息；(base64编码的字符串)
-        String imgLabelContent = UrlImageUrl.getImgLabel(preQuestionDetails);
-        questionNew.setStage(StageEnum.getStageCode(questionNew.getStage()));
-        questionNew.setDifficulty(DifficultEnum.getDifficultCode(questionNew.getDifficulty()));
-        questionNew.setQuestionType(QuestionTypeEnum.getQuestionTypeCode(questionNew.getQuestionType()));
-        if (imgLabelContent != null) {
-            String urlImgInfo="";
-            if(imgLabelContent.indexOf(imgPath)!=-1){
-                urlImgInfo=questionNew.getPreQuestionDetails();
-            }else{
-                String randomName = UUID.randomUUID().toString().replace("-", "") + ".jpg";
-                String imagePath = imgPath + randomName;
-                Base64Util.saveImgByte(imgLabelContent, imagePath);
-                urlImgInfo = UrlImageUrl.updateImageDomain(preQuestionDetails, randomName);
-            }
-
-            questionNew.setQuestionDetails(urlImgInfo);
-            questionNew.setActived(Boolean.TRUE);
-            return questionRepo.save(questionNew);
-        } else {
-            questionNew.setQuestionDetails(preQuestionDetails);
-            return questionRepo.save(questionNew);
-        }
-
-
-    }
 
     @Override
-    public QuestionNew saveQuestionWithImgDecodeNew(QuestionNew questionNew) throws IOException {
+    public QuestionNew saveQuestionWithImgDecodeNew(QuestionUpdate questionUpdate) throws IOException {
 
         //preQuestionDetails是 前端富文本编辑器中返回的数据；
-        String preQuestionDetails = questionNew.getPreQuestionDetails();
+        String preQuestionDetails = questionUpdate.getPreQuestionDetails();
         //取出富文本编辑器中的<img>标签信息；(base64编码的字符串)
-        List<String> imgLabelContentList = UrlImageUrl.getImgLabels(preQuestionDetails);
-        questionNew.setStage(StageEnum.getStageCode(questionNew.getStage()));
-        questionNew.setDifficulty(DifficultEnum.getDifficultCode(questionNew.getDifficulty()));
-        questionNew.setQuestionType(QuestionTypeEnum.getQuestionTypeCode(questionNew.getQuestionType()));
+        List<String> imgLabelContentList = UrlImageUtil.getImgLabels(preQuestionDetails);
+        //阶段，难度，题型，通过枚举把文字改成对应的编码
+        questionUpdate.setStage(StageEnum.getStageCode(questionUpdate.getStage()));
+        questionUpdate.setDifficulty(DifficultEnum.getDifficultCode(questionUpdate.getDifficulty()));
+        questionUpdate.setQuestionType(QuestionTypeEnum.getQuestionTypeCode(questionUpdate.getQuestionType()));
 
-        if (imgLabelContentList.size() >0) {
+        if (imgLabelContentList.size() > 0) {
             List<String> randomNameList = new ArrayList<>();
-            for(String imgLabelContent:imgLabelContentList) {
-                if(imgLabelContent.indexOf(imgUrl)!=-1){
+            for (String imgLabelContent : imgLabelContentList) {
+                if (imgLabelContent.indexOf(imgNginx) != -1) {
+                    //这里不应该取前面的网址
+                    imgLabelContent = imgLabelContent.replace(imgNginxUrl,"");
                     randomNameList.add(imgLabelContent);
-                }
-                else{
+                } else {
                     String randomName = UUID.randomUUID().toString().replace("-", "") + ".jpg";
                     String imagePath = imgPath + randomName;
-                    String imageUrl = imgUrl + randomName;
+                    String imageUrl = imgNginx + randomName;
                     Base64Util.saveImgByte(imgLabelContent, imagePath);
                     randomNameList.add(imageUrl);
                 }
             }
-            String urlImgInfo = UrlImageUrl.updateImageDomainNew(preQuestionDetails, randomNameList);
-            questionNew.setQuestionDetails(urlImgInfo);
-            questionNew.setActived(Boolean.FALSE);
-            return questionRepo.save(questionNew);
+            String urlImgInfo = UrlImageUtil.updateImageDomainNew(preQuestionDetails, randomNameList);
+            questionUpdate.setQuestionDetails(urlImgInfo);
+            questionUpdate.setActived(Boolean.FALSE);
+            return questionRepo.save(new QuestionNew(questionUpdate));
         } else {
-            questionNew.setQuestionDetails(preQuestionDetails);
-            return questionRepo.save(questionNew);
+            questionUpdate.setQuestionDetails(preQuestionDetails);
+            return questionRepo.save(new QuestionNew(questionUpdate));
         }
     }
 
@@ -295,43 +273,6 @@ public class QuestionServiceImpl implements QuestionService {
 //                QuestionLastChildren questionLastChildren = new QuestionLastChildren();
 //                questionLastChildren.setLabel();
      */
-    //todo 对于这里的代码，改成方法套方法的形式，清晰明了
-//    @Override
-//    public QuestionPractice getQuestionPracticeInfo() {
-//        QuestionPractice questionPractice = new QuestionPractice();
-//        questionPractice.setLabel("练习题");
-//        List<QuestionTypeChildren> questionTypeChildrenList = new ArrayList<QuestionTypeChildren>();
-//        //1、按题型查询题目
-//        for (QuestionTypeEnum questionType : QuestionTypeEnum.values()) {
-//            QuestionTypeChildren questionTypeChildren = new QuestionTypeChildren();
-//            questionTypeChildren.setLabel(questionType.getQuestionTypeName());
-//            List<QuestionNew> questionNewList = questionRepo.findByQuestionTypeAndActivedIsTrue(questionType.getQuestionTypeCode());
-//            List<QuestionStageChildren> questionStageChildrenList = new ArrayList<QuestionStageChildren>();
-//            //2、按阶段查询
-//            for (StageEnum stageEnum : StageEnum.values()) {
-//                QuestionStageChildren questionStageChildren = new QuestionStageChildren();
-//                questionStageChildren.setLabel(stageEnum.getStageName());
-//                List<QuestionLastChildren> questionLastChildrenList = new ArrayList<QuestionLastChildren>();
-//                for (QuestionNew questionNew : questionNewList) {
-//                    if (questionNew.getStage().equals(stageEnum.getStageCode())) {
-//                        QuestionLastChildren questionLastChildren = new QuestionLastChildren();
-//                        questionLastChildren.setLabel(questionNew.getQuestionName());
-//                        questionLastChildren.setQuestionBh(questionNew.getQuestionBh());
-//                        questionLastChildrenList.add(questionLastChildren);
-//                    }
-//                }
-//                questionStageChildren.setChildren(questionLastChildrenList);
-//                questionStageChildrenList.add(questionStageChildren);
-//            }
-//
-//            questionTypeChildren.setChildren(questionStageChildrenList);
-//            questionTypeChildrenList.add(questionTypeChildren);
-//        }
-//        questionTypeChildrenList.remove(questionTypeChildrenList.size()-1);
-//        questionPractice.setChildren(questionTypeChildrenList);
-//        return questionPractice;
-//    }
-
     //获取树状的练习题的数据格式
     @Override
     public QuestionPractice getQuestionPracticeInfo() {
@@ -374,7 +315,7 @@ public class QuestionServiceImpl implements QuestionService {
             for (QuestionNew questionNew : questionNewList) {
                 if (questionNew.getStage().equals(stageEnum.getStageCode())) {
                     QuestionLastChildren questionLastChildren = new QuestionLastChildren();
-                    questionLastChildren.setLabel("（"+questionNew.getId()+"）\t"+questionNew.getQuestionName());
+                    questionLastChildren.setLabel("（" + questionNew.getId() + "）\t" + questionNew.getQuestionName());
                     questionLastChildren.setQuestionBh(questionNew.getQuestionBh());
                     questionLastChildrenList.add(questionLastChildren);
                 }
@@ -402,6 +343,10 @@ public class QuestionServiceImpl implements QuestionService {
         } else {
             questionDetail.setSrc("");
         }
+
+        //questionDetail.setQuestionDetails(DecodeQuestionDetails.getRightImage(domainStr, questionById.getQuestionDetails()));
+        questionDetail.setQuestion(DecodeQuestionDetails.getRightImage(imgNginxUrl, questionNew.getQuestionDetails()));
+
         SubmitPractice submitLast = submitPracticeRepo.getSubmitLast(String.valueOf(questionNew.getId()), studentId);
         if (submitLast == null) {
             questionDetail.setSrc("");
@@ -489,6 +434,16 @@ public class QuestionServiceImpl implements QuestionService {
 
 
     @Override
+    public QuestionLog addQuestionLog(QuestionUpdate questionUpdate, String flag) {
+        QuestionLog questionLog = new QuestionLog();
+        questionLog.setEditCustomBh(questionUpdate.getCustomBh());
+        questionLog.setOptionDo(flag);
+        questionLog.setQuestionBh(questionUpdate.getQuestionBh());
+        questionLogRepo.save(questionLog);
+        return questionLog;
+    }
+
+    @Override
     public QuestionLog addQuestionLog(QuestionNew questionNew, String flag) {
         QuestionLog questionLog = new QuestionLog();
         questionLog.setEditCustomBh(questionNew.getCustomBh());
@@ -523,31 +478,31 @@ public class QuestionServiceImpl implements QuestionService {
         SourceCode sourceCode = gson.fromJson(questionNew.getSourceCode(), SourceCode.class);
         String code = sourceCode.getKey().get(0).getCode();
         if ("100001".equals(questionNew.getIsProgramBlank())) {
-            answer = add(code,questionNew.getMemo());
+            answer = add(code, questionNew.getMemo());
         } else {
             answer = code;
         }
         return answer;
     }
 
-    public String add(String line,String memo){
+    public String add(String line, String memo) {
         String result = "";
         String start = "/******start******/";
         String end = "/******end******/";
         int length1 = start.length();
         int index = line.indexOf(start);
         int index2 = line.indexOf(end);
-        for(int i=0;i<index+length1;i++){
-            result +=line.charAt(i);
+        for (int i = 0; i < index + length1; i++) {
+            result += line.charAt(i);
         }
-        String blank= memo;
-        for(int i=0;i<blank.length();i++){
-            result +=blank.charAt(i);
+        String blank = memo;
+        for (int i = 0; i < blank.length(); i++) {
+            result += blank.charAt(i);
         }
         //index2=1
 //        line.length()=3
-        for(int i=index2;i<line.length();i++){
-            result +=line.charAt(i);
+        for (int i = index2; i < line.length(); i++) {
+            result += line.charAt(i);
         }
         System.out.println(result);
         return result;

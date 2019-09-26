@@ -85,28 +85,12 @@ public class ExcelServiceImpl {
         return studentService.uploadStudentList(teacherName,studentList);
     }
 
-    public void readerExcelForQuestion(String filePath) {
-        ExcelReader reader = ExcelUtil.getReader(FileUtil.file("D://question.xlsx"));
-        List<List<Object>> all = reader.read();
-        for (int i = 1; i < 10; i++) {
-            List<Object> objects = all.get(i);
-            QuestionNew question = new QuestionNew();
-            //自定义题号
-            question.setQuestionName(objects.get(0).toString());
-            //题目
-            question.setQuestionName(objects.get(1).toString());
-            //阶段
-            question.setStage((objects.get(2).toString()));
-            //难度
-            question.setDifficulty((objects.get(4).toString()));
-            //题目描述
-            question.setQuestionDescription(objects.get(5).toString());
 
-            System.out.println(objects.toString());
-        }
-
-    }
-
+    //这个也用不到了
+    //关于取questionDescription的所有操作应该都没用了
+    //因为咱们新加的题都没有存过这个字段，系统也没问题
+    //这个方法是读Excel的题目，然后导入数据库的
+    // ok
     public JsonResult uploadQuestion(InputStream inputStream) {
         ExcelReader excelReader = ExcelUtil.getReader(inputStream);
         List<List<Object>> all = excelReader.read();
@@ -138,7 +122,7 @@ public class ExcelServiceImpl {
             //todo 难度的关系对应交给前端处理
 //            question.setDifficulty(objects.get(4).toString());
             //题目描述
-            question.setQuestionDescription(objects.get(5).toString());
+            question.setQuestionDetails(objects.get(5).toString());
 
             questionService.createQuestion(question);
         }

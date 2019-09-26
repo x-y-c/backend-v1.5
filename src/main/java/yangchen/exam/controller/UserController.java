@@ -68,12 +68,12 @@ public class UserController {
         try{
             student = StudentService.getStudentByStudentId(Integer.valueOf(studentId));
         }catch (NumberFormatException e){
-            LOGGER.info("学生登陆：用户 [{}] 登陆失败--错误码：[{}]，错误原因：[{}]",studentId,ResultCode.WRONG_PASSWORD,"用户不存在");
+            LOGGER.info("学生登陆：用户 [{}] 登陆失败--错误码：[{}]，错误原因：[{}]",studentId,ResultCode.USER_NOT_EXIST,"用户不存在");
             return JsonResult.errorResult(ResultCode.USER_NOT_EXIST, "用户不存在", null);
         }
 
         if (student == null) {
-            LOGGER.info("学生登陆：用户 [{}] 登陆失败--错误码：[{}]，错误原因：[{}]",studentId,ResultCode.WRONG_PASSWORD,"密码错误");
+            LOGGER.info("学生登陆：用户 [{}] 登陆失败--错误码：[{}]，错误原因：[{}]",studentId,ResultCode.USER_NOT_EXIST,"用户不存在");
             return JsonResult.errorResult(ResultCode.USER_NOT_EXIST, "用户不存在", null);
         }
         if (!student.getPassword().equals(password)) {

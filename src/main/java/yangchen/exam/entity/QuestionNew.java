@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
+import yangchen.exam.model.QuestionUpdate;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -23,8 +24,9 @@ public class QuestionNew {
     private String difficulty;
     @Column(name = "question_name")
     private String questionName;
-    @Column(name = "question_description")
-    private String questionDescription;
+    //是这行嘛？
+//    @Column(name = "question_description")
+//    private String questionDescription;
     private String sourceCode;
     private String startTag;
     private String endTag;
@@ -39,12 +41,28 @@ public class QuestionNew {
     @Column(name = "IsProgramBlank")
     private String isProgramBlank;
 
-    @Column(name = "pre_question_details")
-    private String preQuestionDetails;
-
     @Column(name = "actived")
     private Boolean actived;
 
     @Column(name = "memo")
     private String memo;
+
+    public QuestionNew(QuestionUpdate questionUpdate){
+        this.id = questionUpdate.getId();
+        this.questionBh = questionUpdate.getQuestionBh();
+        this.questionDetails=questionUpdate.getQuestionDetails();
+        this.questionName=questionUpdate.getQuestionName();
+        this.questionType=questionUpdate.getQuestionType();
+        this.memo = questionUpdate.getMemo();
+        this.addTime = questionUpdate.getAddTime();
+        this.isProgramBlank = questionUpdate.getIsProgramBlank();
+        this.stage = questionUpdate.getStage();
+        this.difficulty = questionUpdate.getDifficulty();
+        this.actived = questionUpdate.getActived();
+        this.answer = questionUpdate.getAnswer();
+        this.customBh = questionUpdate.getCustomBh();
+        this.sourceCode = questionUpdate.getSourceCode();
+        this.startTag = questionUpdate.getStartTag();
+        this.endTag = questionUpdate.getEndTag();
+    }
 }

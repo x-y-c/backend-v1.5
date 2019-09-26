@@ -1,4 +1,4 @@
-package yangchen.exam.service.testInfo;
+package yangchen.exam.service.testInfo.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +8,7 @@ import yangchen.exam.entity.TestCase;
 import yangchen.exam.model.JsonResult;
 import yangchen.exam.model.ResultCode;
 import yangchen.exam.repo.TestCaseRepo;
+import yangchen.exam.service.testInfo.TestCaseService;
 
 import java.util.ArrayList;
 import java.util.Iterator;

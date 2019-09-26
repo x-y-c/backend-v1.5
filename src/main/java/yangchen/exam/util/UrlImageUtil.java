@@ -10,12 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class UrlImageUrl {
+public class UrlImageUtil {
 
-    public static String setImagesDomain(String htmlStr) {
+    public static String setImagesDomain(String domainStr,String htmlStr) {
         Document document = Jsoup.parse(htmlStr);
         Elements srcs = document.select("img[src]");
-        String domainStr = "http://119.3.217.233:2048/ckupload";
+        //String domainStr = "http://119.3.217.233:2048/ckupload";
+        //domainStr = "http://119.3.217.233:2048";
         for (Element element : srcs) {
             String imgUrl = element.attr("src");
             if (imgUrl.trim().startsWith("/")) {
