@@ -62,9 +62,11 @@ public class QuestionServiceImpl implements QuestionService {
     private String imgPath;
 
     @Value("${image.nginx.path}")
+    /*   /ckupload/   */
     private String imgNginx;
 
     @Value("${image.nginx.url.path}")
+    /*  http://211.68.35.79:2048  */
     private String imgNginxUrl;
 
     @Override
@@ -97,39 +99,6 @@ public class QuestionServiceImpl implements QuestionService {
 
     }
 
-//    @Override
-//    public QuestionNew saveQuestionWithImgDecode(QuestionNew questionNew,QuestionUpdate questionUpdate) throws IOException {
-//
-//
-////        QuestionNew questionNew = new QuestionNew();
-//        //preQuestionDetails是 前端富文本编辑器中返回的数据；
-//        String preQuestionDetails = questionUpdate.getPreQuestionDetails();
-//        //取出富文本编辑器中的<img>标签信息；(base64编码的字符串)
-//        String imgLabelContent = UrlImageUtil.getImgLabel(preQuestionDetails);
-//        questionNew.setStage(StageEnum.getStageCode(questionUpdate.getStage()));
-//        questionNew.setDifficulty(DifficultEnum.getDifficultCode(questionUpdate.getDifficulty()));
-//        questionNew.setQuestionType(QuestionTypeEnum.getQuestionTypeCode(questionUpdate.getQuestionType()));
-//        if (imgLabelContent != null) {
-//            String urlImgInfo = "";
-//            if (imgLabelContent.indexOf(imgPath) != -1) {
-//                urlImgInfo = questionUpdate.getPreQuestionDetails();
-//            } else {
-//                String randomName = UUID.randomUUID().toString().replace("-", "") + ".jpg";
-//                String imagePath = imgPath + randomName;
-//                Base64Util.saveImgByte(imgLabelContent, imagePath);
-//                urlImgInfo = UrlImageUtil.updateImageDomain(preQuestionDetails, randomName);
-//            }
-//
-//            questionNew.setQuestionDetails(urlImgInfo);
-//            questionNew.setActived(Boolean.TRUE);
-//            return questionRepo.save(questionNew);
-//        } else {
-//            questionNew.setQuestionDetails(preQuestionDetails);
-//            return questionRepo.save(questionNew);
-//        }
-//
-//
-//    }
 
     @Override
     public QuestionNew saveQuestionWithImgDecodeNew(QuestionUpdate questionUpdate) throws IOException {
@@ -147,6 +116,8 @@ public class QuestionServiceImpl implements QuestionService {
             List<String> randomNameList = new ArrayList<>();
             for (String imgLabelContent : imgLabelContentList) {
                 if (imgLabelContent.indexOf(imgNginx) != -1) {
+                    //这里不应该取前面的网址
+                    imgLabelContent = imgLabelContent.replace(imgNginxUrl,"");
                     randomNameList.add(imgLabelContent);
                 } else {
                     String randomName = UUID.randomUUID().toString().replace("-", "") + ".jpg";

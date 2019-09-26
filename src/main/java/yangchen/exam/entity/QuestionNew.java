@@ -48,6 +48,7 @@ public class QuestionNew {
     private String memo;
 
     public QuestionNew(QuestionUpdate questionUpdate){
+        this.id = questionUpdate.getId();
         this.questionBh = questionUpdate.getQuestionBh();
         this.questionDetails=questionUpdate.getQuestionDetails();
         this.questionName=questionUpdate.getQuestionName();
