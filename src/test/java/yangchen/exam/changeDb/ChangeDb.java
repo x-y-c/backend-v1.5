@@ -38,13 +38,20 @@
 //                questionNew.setDifficulty(questions.getDifficulty().toString());
 //                questionNew.setEndTag(questions.getEndTag());
 //                questionNew.setQuestionBh(questions.getQuestionBh());
-//                questionNew.setQuestionDescription(questions.getDescription());
+//                questionNew.setQuestionDetails(questions.getDescription());
 //                questionNew.setQuestionName(questions.getName());
 //                questionNew.setQuestionType(questions.getQuestionType());
 //                questionNew.setSourceCode(questions.getSourceCode());
 //                questionNew.setStage(questions.getStage().toString());
 //                questionNew.setStartTag(questions.getStartTag());
 //                questionNew.setIsProgramBlank(questions.getIsProgramBlank());
+//                questionNew.setMemo(questions.getMemo());
+//                if (questions.getChecked().equals("100001")){
+//                    questionNew.setActived(Boolean.TRUE);
+//                }
+//                else {
+//                    questionNew.setActived(Boolean.FALSE);
+//                }
 //                questionNewRepo.save(questionNew);
 //            }
 //        }
@@ -52,19 +59,19 @@
 //    }
 //
 //
-//    @Test
-//    public void updateMemo() {
-//        List<Questions> all = questionsRepo.findAll();
-//        for (Questions questions : all) {
-//            if ("100001".equals(questions.getIsProgramBlank())) {
-//
-//                QuestionNew byQuestionBh = questionRepo.findByQuestionBh(questions.getQuestionBh());
-//                if (byQuestionBh != null) {
-//                    byQuestionBh.setMemo(questions.getMemo());
-//                    questionRepo.save(byQuestionBh);
-//                }
-//            }
-//        }
-//
-//    }
+////    @Test
+////    public void updateMemo() {
+////        List<Questions> all = questionsRepo.findAll();
+////        for (Questions questions : all) {
+////            if ("100001".equals(questions.getIsProgramBlank())) {
+////
+////                QuestionNew byQuestionBh = questionRepo.findByQuestionBh(questions.getQuestionBh());
+////                if (byQuestionBh != null) {
+////                    byQuestionBh.setMemo(questions.getMemo());
+////                    questionRepo.save(byQuestionBh);
+////                }
+////            }
+////        }
+////
+////    }
 //}

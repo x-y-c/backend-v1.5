@@ -23,6 +23,7 @@ import yangchen.exam.service.examination.ExaminationService;
 import yangchen.exam.service.question.QuestionBaseService;
 import yangchen.exam.service.question.QuestionService;
 import yangchen.exam.util.Base64Util;
+import yangchen.exam.util.DecodeQuestionDetails;
 import yangchen.exam.util.UrlImageUtil;
 
 import java.io.IOException;
@@ -68,6 +69,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Value("${image.nginx.url.path}")
     /*  http://211.68.35.79:2048  */
     private String imgNginxUrl;
+
 
     @Override
     public QuestionNew createQuestion(QuestionNew question) {
@@ -341,6 +343,10 @@ public class QuestionServiceImpl implements QuestionService {
         } else {
             questionDetail.setSrc("");
         }
+
+        //questionDetail.setQuestionDetails(DecodeQuestionDetails.getRightImage(domainStr, questionById.getQuestionDetails()));
+        questionDetail.setQuestion(DecodeQuestionDetails.getRightImage(imgNginxUrl, questionNew.getQuestionDetails()));
+
         SubmitPractice submitLast = submitPracticeRepo.getSubmitLast(String.valueOf(questionNew.getId()), studentId);
         if (submitLast == null) {
             questionDetail.setSrc("");
