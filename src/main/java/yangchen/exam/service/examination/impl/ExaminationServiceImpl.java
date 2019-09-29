@@ -19,10 +19,7 @@ import yangchen.exam.service.student.StudentService;
 import yangchen.exam.util.RandomUtil;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author YC
@@ -121,7 +118,7 @@ public class ExaminationServiceImpl implements ExaminationService {
     }
 
 
-    public ExamGroupNew createExam(ExamParam examParam) {
+    public JsonResult createExam(ExamParam examParam) {
         ExamGroupNew examGroup = new ExamGroupNew();
         examGroup.setBeginTime(examParam.getBeginTime());
         //这里，考试只需要考试开始时间，在开始时间的基础上加上考试时长，就是结束时间；
@@ -151,24 +148,52 @@ public class ExaminationServiceImpl implements ExaminationService {
 
 
         List<TwoTuple<String, String>> examList = examParam.getExam();
+        List<String> examListToString = new ArrayList<>();
         examList.forEach(examStageAndDiff -> {
             examStageAndDiff.setFirst(StageEnum.getStageCode(examStageAndDiff.getFirst()));
             examStageAndDiff.setSecond(DifficultEnum.getDifficultCode(examStageAndDiff.getSecond()));
+            examListToString.add(examStageAndDiff.getFirst()+","+examStageAndDiff.getSecond());
         });
         List<List<QuestionNew>> questionList = new ArrayList<>();
+        List<Integer> sizeList = new ArrayList<>();
         for (TwoTuple<String, String> exam : examList) {
             List<QuestionNew> result = questionRepo.findByStageAndDifficultyAndQuestionTypeAndActivedIsTrue(exam.first, exam.second, "1000206");
+            sizeList.add(result.size());
             questionList.add(result);
         }
-
-
+        //判断符不符合出题的资格
+//        HashSet<String> hs =new HashSet<String>(examListToString);
+//        for(String s:hs){
+//            String spilted[]=s.split(",");
+//            List<QuestionNew> result = questionRepo.findByStageAndDifficultyAndQuestionTypeAndActivedIsTrue(spilted[0], spilted[1], "1000206");
+//        }
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        for(String item: examListToString){
+            if(map.containsKey(item)){
+                map.put(item, map.get(item).intValue() + 1);
+            }else{
+                map.put(item, new Integer(1));
+            }
+        }
+        for(String key:map.keySet()){
+            String spilted[]=key.split(",");
+            List<QuestionNew> result = questionRepo.findByStageAndDifficultyAndQuestionTypeAndActivedIsTrue(spilted[0], spilted[1], "1000206");
+            if(map.get(key)>result.size()){
+                LOGGER.error("创建考试失败:[{}][{}]只有[{}]道题，不满足出卷要求",StageEnum.getStageName(spilted[0]),DifficultEnum.getDifficultName(spilted[1]),result.size());
+                return JsonResult.errorResult(ResultCode.QUSTION_NUM_ERROR,
+                        "创建考试失败:["+StageEnum.getStageName(spilted[0])+"]["+DifficultEnum.getDifficultName(spilted[1])+"]只有["+result.size()+"]道题，不满足出卷要求",
+                        "");
+            }
+        }
+        ExamGroupNew examGroup1 = examGroupService.addExamGroup(examGroup);
         studentList.forEach(student -> {
-            Boolean aBoolean = examTask(student, questionList, examParam, examGroup.getId());
+            Boolean aBoolean = examTask(student, questionList, examParam, examGroup1.getId());
         });
 
-        ExamGroupNew examGroup1 = examGroupService.addExamGroup(examGroup);
 
-        return examGroup1;
+
+//        return examGroup1;
+        return JsonResult.succResult(examGroup1.toString());
     }
 
     @Override

@@ -95,9 +95,7 @@ public class ExamController {
 
     @RequestMapping(value = "/complex", method = RequestMethod.POST)
     public JsonResult createExam(@RequestBody ExamParam examParam) {
-        ExamGroupNew exam = examinationService.createExam(examParam);
-        LOGGER.info(exam.toString());
-        return JsonResult.succResult(exam.toString());
+        return examinationService.createExam(examParam);
     }
 
     @RequestMapping(value = "/examPaperInfo", method = RequestMethod.GET)
