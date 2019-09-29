@@ -24,5 +24,5 @@ public interface ScoreRepo extends JpaRepository<Score, Integer> {
 
     //Score findByStudentIdAndQuestionId(Integer studentId,String questionId);
 
-    List<Score> findByStudentIdAndQuestionId(Integer studentId,String questionId);
+    List<Score> findByStudentIdAndQuestionIdAndExaminationId(Integer studentId,String questionId,Integer examinationId);
 }

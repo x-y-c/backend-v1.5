@@ -167,19 +167,25 @@ public class ScoreServiceImpl implements ScoreService {
             for (Submit submit : submitList) {
                 QuestionNew question = questionRepo.findByQuestionBh(submit.getQuestionId());
 
-                List<Score> scoreList = scoreRepo.findByStudentIdAndQuestionId(examInfo.getStudentNumber(), question.getQuestionBh());
+                List<Score> scoreList = scoreRepo.findByStudentIdAndQuestionIdAndExaminationId(examInfo.getStudentNumber(), question.getQuestionBh(),examInfo.getExaminationId());
 
                 if(scoreList.size()==0){
                     Score score =new Score();
                     score.setScore(0);
+                    result.add(ExcelSubmitModel.builder()
+                            .questionBh(String.valueOf(question.getId()))
+                            .src(submit.getSrc())
+                            .questionDesc(HtmlUtil.delHtmlTag(question.getQuestionDetails()))
+                            .questionName(question.getQuestionName())
+                            .score(Double.valueOf(score.getScore()) / 5)
+                            .stage(StageEnum.getStageName(question.getStage()))
+                            .examPaperId(examinationId)
+                            .studentNumber(examInfo.getStudentNumber())
+                            .studentName(examInfo.getStudentName())
+                            .build());
                 }
 
                 for(Score score:scoreList){
-
-//                    if (score == null) {
-//                        score = new Score();
-//                        score.setScore(0);
-//                    }
 
                     result.add(ExcelSubmitModel.builder()
                             .questionBh(String.valueOf(question.getId()))
@@ -286,12 +292,23 @@ public class ScoreServiceImpl implements ScoreService {
             }
             for (Submit submit : submitList) {
                 QuestionNew question = questionRepo.findByQuestionBh(submit.getQuestionId());
-                List<Score> scoreList = scoreRepo.findByStudentIdAndQuestionId(examInfo.getStudentNumber(), question.getQuestionBh());
+                List<Score> scoreList = scoreRepo.findByStudentIdAndQuestionIdAndExaminationId(examInfo.getStudentNumber(), question.getQuestionBh(),examInfo.getExaminationId());
+                if(scoreList.size()==0){
+                    Score score =new Score();
+                    score.setScore(0);
+                    result.add(ExcelSubmitModel.builder()
+                            .questionBh(String.valueOf(question.getId()))
+                            .src(submit.getSrc())
+                            .questionDesc(HtmlUtil.delHtmlTag(question.getQuestionDetails()))
+                            .questionName(question.getQuestionName())
+                            .score(Double.valueOf(score.getScore()) / 5)
+                            .stage(StageEnum.getStageName(question.getStage()))
+                            .examPaperId(examinationId)
+                            .studentNumber(examInfo.getStudentNumber())
+                            .studentName(examInfo.getStudentName())
+                            .build());
+                }
                 for(Score score:scoreList) {
-                    if (score == null) {
-                        score = new Score();
-                        score.setScore(0);
-                    }
 
                     result.add(ExcelSubmitModel.builder()
                             .questionBh(String.valueOf(question.getId()))
