@@ -160,11 +160,13 @@ public class ExaminationServiceImpl implements ExaminationService {
             List<QuestionNew> result = questionRepo.findByStageAndDifficultyAndQuestionTypeAndActivedIsTrue(exam.first, exam.second, "1000206");
             questionList.add(result);
         }
-        ExamGroupNew examGroup1 = examGroupService.addExamGroup(examGroup);
+
 
         studentList.forEach(student -> {
-            Boolean aBoolean = examTask(student, questionList, examParam, examGroup1.getId());
+            Boolean aBoolean = examTask(student, questionList, examParam, examGroup.getId());
         });
+
+        ExamGroupNew examGroup1 = examGroupService.addExamGroup(examGroup);
 
         return examGroup1;
     }
@@ -172,7 +174,7 @@ public class ExaminationServiceImpl implements ExaminationService {
     @Override
     public List<ExamPageInfo> getExamPageInfo(Integer examGroupId) {
         List<ExamInfo> examInfoList = examInfoService.getExamInfoByExamGroup(examGroupId);
-        List<ExamPageInfo> examInforesult = new ArrayList<>();
+        List<ExamPageInfo> examInfoResult = new ArrayList<>();
         for (ExamInfo examInfo : examInfoList) {
             ExamPageInfo examPageInfo = new ExamPageInfo();
             StudentNew student = studentService.getStudentByStudentId(examInfo.getStudentNumber());
@@ -181,30 +183,11 @@ public class ExaminationServiceImpl implements ExaminationService {
             examPageInfo.setStudentId(student.getStudentId());
             List<QuestionInfo> questionNamesByExamPages = questionService.getQuestionNamesByExamPage(examInfo.getExaminationId());
             examPageInfo.setQuestionList(questionNamesByExamPages);
-            examInforesult.add(examPageInfo);
+            examInfoResult.add(examPageInfo);
         }
-        return examInforesult;
+        return examInfoResult;
     }
 
-
-
-
-    public List<ExamPageInfo> getExamPageInfoNew(Integer examGroupId) {
-        List<ExamInfo> examInfoList = examInfoService.getExamInfoByExamGroup(examGroupId);
-        List<ExamPageInfo> examInforesult = new ArrayList<>();
-       examInfoList.parallelStream().forEach(examInfo -> {
-           ExamPageInfo examPageInfo = new ExamPageInfo();
-           StudentNew student = studentService.getStudentByStudentId(examInfo.getStudentNumber());
-           examPageInfo.setStudentGrade(student.getStudentGrade());
-           examPageInfo.setStudentName(student.getStudentName());
-           examPageInfo.setStudentId(student.getStudentId());
-           List<QuestionInfo> questionNamesByExamPages = questionService.getQuestionNamesByExamPage(examInfo.getExaminationId());
-           examPageInfo.setQuestionList(questionNamesByExamPages);
-           examInforesult.add(examPageInfo);
-       });
-
-        return examInforesult;
-    }
 
     public List<ExamPageInfo> getExamPageInfoFast(Integer examGroupId) {
         List<ExamInfo> examInfoList = examInfoService.getExamInfoByExamGroup(examGroupId);
@@ -238,6 +221,14 @@ public class ExaminationServiceImpl implements ExaminationService {
             for (Object o : random) {
                 //获取一道题目
                 QuestionNew question = questions.get(Integer.valueOf(String.valueOf(o)));
+
+                while(stringBuilder.toString().contains(question.getId().toString())){
+//                    假设你要产生5到10之间的随机数，可以用下面方法：
+//                    int Min = 5;    int Max = 10;
+//                    int result = Min + (int)(Math.random() * ((Max - Min) + 1));
+                    int randomNum = 0 + (int)(Math.random() * ((questions.size() - 1 - 0) + 1));
+                    question = questions.get(randomNum);
+                }
                 stringBuilder.append(question.getId());
                 stringBuilder.append(",");
             }
