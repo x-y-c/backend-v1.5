@@ -212,8 +212,18 @@ public class ExamController {
     }
 
     @GetMapping(value = "/getPracticeRecord")
-    public JsonResult getPracticeRecord(@RequestParam String teacherName,Integer page, Integer pageLimit){
-        Page<SubmitPracticeModel> submitPracticeList = submitService.getSubmitPracticeList(teacherName, page, pageLimit);
+    public JsonResult getPracticeRecord(@RequestParam(required = false)String condition,@RequestParam(required = false)String value,@RequestParam String teacherName,Integer page, Integer pageLimit){
+        Page<SubmitPracticeModel> submitPracticeList = null;//
+        if(StringUtils.isEmpty(condition)||StringUtils.isEmpty(value)){
+            //condition value
+            submitPracticeList = submitService.getSubmitPracticeList(teacherName, page, pageLimit);
+
+        }else {
+            submitPracticeList = submitService.getSubmitPracticeListCondition(condition,value,teacherName, page, pageLimit);
+        }
+
+
+
         return JsonResult.succResult(submitPracticeList);
     }
 

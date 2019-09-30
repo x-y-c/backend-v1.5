@@ -17,7 +17,7 @@ public interface StudentRepo extends JpaRepository<StudentNew, Integer> {
     List<StudentNew> findByStudentGrade(String grade);
 
 
-    List<StudentNew>findByStudentGradeAndTeacherId(String grade,Integer teacherId);
+    List<StudentNew> findByStudentGradeAndTeacherId(String grade, Integer teacherId);
 
 
     @Query(value = "select distinct student_grade from student_new", nativeQuery = true)
@@ -26,6 +26,7 @@ public interface StudentRepo extends JpaRepository<StudentNew, Integer> {
     @Query(value = "select student_grade from student_new where student_id=?1", nativeQuery = true)
     String getStudentGrade(Integer studentId);
 
+    StudentNew findByStudentName(String studentName);
 
     Page<StudentNew> findByStudentGrade(String grade, Pageable pageable);
 
@@ -49,7 +50,7 @@ public interface StudentRepo extends JpaRepository<StudentNew, Integer> {
     List<String> getGradeByTeacherId(Integer teacherId);
 
 
-    @Query(value = "select student_id from student_new where teacher_id=?1",nativeQuery = true)
+    @Query(value = "select student_id from student_new where teacher_id=?1", nativeQuery = true)
     List<Integer> getStudentNumberByTeacherId(Integer teacherId);
 
 }

@@ -12,4 +12,8 @@ public interface SubmitPracticeRepo extends JpaRepository<SubmitPractice, Intege
 
     List<SubmitPractice> findByStudentIdInOrderByIdDesc(List<Integer> studentId);
 
+    List<SubmitPractice> findByStudentIdOrderByIdDesc(Integer studentId);
+
+    List<SubmitPractice> findByQuestionIdAndStudentIdInOrderByIdDesc(String questionId, List<Integer> studentId);
+
 }

@@ -23,4 +23,6 @@ public interface SubmitService {
     //List<SubmitPracticeModel> getSubmitPracticeList(String teacherName,Integer page,Integer pageLimit);
     Page<SubmitPracticeModel> getSubmitPracticeList(String teacherName, Integer page, Integer pageLimit);
 
+    Page<SubmitPracticeModel> getSubmitPracticeListCondition(String condition,String value,String teacherName, Integer page, Integer pageLimit);
+
 }
