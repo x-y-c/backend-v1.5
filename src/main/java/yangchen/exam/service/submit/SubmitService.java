@@ -1,5 +1,6 @@
 package yangchen.exam.service.submit;
 
+import org.springframework.data.domain.Page;
 import yangchen.exam.entity.Submit;
 import yangchen.exam.entity.SubmitPractice;
 import yangchen.exam.model.SubmitPracticeModel;
@@ -19,6 +20,7 @@ public interface SubmitService {
      */
     Submit addSubmit(Submit submit);
 
-    List<SubmitPracticeModel> getSubmitPracticeList(String teacherName);
+    //List<SubmitPracticeModel> getSubmitPracticeList(String teacherName,Integer page,Integer pageLimit);
+    Page<SubmitPracticeModel> getSubmitPracticeList(String teacherName, Integer page, Integer pageLimit);
 
 }

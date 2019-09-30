@@ -10,6 +10,6 @@ public interface SubmitPracticeRepo extends JpaRepository<SubmitPractice, Intege
     @Query(value = "select * from submit_practice where question_id=?1 and student_id=?2 order by id desc limit 0,1", nativeQuery = true)
     SubmitPractice getSubmitLast(String questionId, Integer studentId);
 
-    List<SubmitPractice> findByStudentIdIn(List<Integer> studentId);
+    List<SubmitPractice> findByStudentIdInOrderByIdDesc(List<Integer> studentId);
 
 }
