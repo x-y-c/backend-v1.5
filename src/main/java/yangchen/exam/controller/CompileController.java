@@ -43,7 +43,6 @@ public class CompileController {
 
     Logger Logger = LoggerFactory.getLogger(CompileController.class);
 
-
     @Autowired
     private CompileService compileService;
     /**
@@ -53,7 +52,6 @@ public class CompileController {
      * 截取error以后的字符串
      * @throws IOException
      */
-
 
     /**
      * 更新注释，首先，前端传来的代码，可以不被转义，使用codeMirror组件就可以避免不必要的转义，

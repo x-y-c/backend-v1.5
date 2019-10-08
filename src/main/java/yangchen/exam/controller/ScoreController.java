@@ -30,14 +30,17 @@ import java.util.Map;
 @RequestMapping(value = "/score", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ScoreController {
 
+
     @Autowired
     private ScoreService scoreService;
+
 
     @GetMapping(value = "/info")
     public JsonResult getScoreList(@RequestParam Integer studentId) {
         List<ScoreDetail> scoreDetailByStudentId = scoreService.getScoreDetailByStudentId(studentId);
         return JsonResult.succResult(scoreDetailByStudentId);
     }
+
 
     @GetMapping(value = "/admin")
     public JsonResult getScoreAdmin(@RequestParam Integer examGroupId) {
@@ -74,7 +77,6 @@ public class ScoreController {
     }
 
 
-
     @GetMapping(value = "/excel")
     public void downloadScoreExcel(HttpServletResponse response,@RequestParam Integer examGroupId) throws IOException {
         scoreService.exportScore(response,examGroupId);
@@ -85,6 +87,7 @@ public class ScoreController {
     public void downloadSubmit(HttpServletResponse response,@RequestParam Integer id) throws IOException {
         List<ExcelSubmitModel> excelSubmitModels = scoreService.exportSubmit(response,id);
     }
+
 
     @GetMapping("/xyc")
     public void downloadSubmitAll(HttpServletResponse response,@RequestParam Integer id)throws IOException{

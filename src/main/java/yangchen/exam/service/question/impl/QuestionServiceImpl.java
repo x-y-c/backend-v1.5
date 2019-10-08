@@ -347,14 +347,16 @@ public class QuestionServiceImpl implements QuestionService {
         //questionDetail.setQuestionDetails(DecodeQuestionDetails.getRightImage(domainStr, questionById.getQuestionDetails()));
         questionDetail.setQuestion(DecodeQuestionDetails.getRightImage(imgNginxUrl, questionNew.getQuestionDetails()));
 
-        SubmitPractice submitLast = submitPracticeRepo.getSubmitLast(String.valueOf(questionNew.getId()), studentId);
-        if (submitLast == null) {
-            questionDetail.setSrc("");
-            questionDetail.setScore(0);
-        } else {
-            questionDetail.setSrc(submitLast.getSrc());
-            questionDetail.setScore(submitLast.getScore());
-        }
+        //todo
+        //暂时把代码保存的部分删了，这部分逻辑有问题
+//        SubmitPractice submitLast = submitPracticeRepo.getSubmitLast(String.valueOf(questionNew.getId()), studentId);
+//        if (submitLast == null) {
+//            questionDetail.setSrc("");
+//            questionDetail.setScore(0);
+//        } else {
+//            questionDetail.setSrc(submitLast.getSrc());
+//            questionDetail.setScore(submitLast.getScore());
+//        }
 
         return questionDetail;
     }
