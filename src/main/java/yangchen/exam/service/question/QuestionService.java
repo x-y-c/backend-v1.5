@@ -101,4 +101,6 @@ public interface QuestionService {
     List<QuestionLogModel> getQuestionLog();
 
     String getAnswer(String questionBh);
+
+    List<QuestionNew> getQuestion(String questionType);
 }

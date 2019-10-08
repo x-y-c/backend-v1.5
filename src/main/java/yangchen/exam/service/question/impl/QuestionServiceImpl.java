@@ -485,6 +485,12 @@ public class QuestionServiceImpl implements QuestionService {
         return answer;
     }
 
+    @Override
+    public List<QuestionNew> getQuestion(String questionType) {
+        List<QuestionNew> questionList = questionRepo.findByQuestionTypeAndActivedIsTrue(questionType);
+        return questionList;
+    }
+
     public String add(String line, String memo) {
         String result = "";
         String start = "/******start******/";
