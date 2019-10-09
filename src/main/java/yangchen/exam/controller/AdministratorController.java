@@ -66,17 +66,28 @@ public class AdministratorController {
     @ApiOperation(value = "添加教师")
     @RequestMapping(value = "/update/teacher", method = RequestMethod.POST)
     public JsonResult updateTeacher(@RequestBody Teacher teacher) {
-        Teacher byTeacherName = teacherRepo.findByTeacherName(teacher.getTeacherName());
-//        LOGGER.info(teacher.toString());
+
+        //LOGGER.info(teacher.toString());
+        //查找寻找的这个老师在没在数据库里
+        Teacher findTeacher = teacherRepo.findByTeacherName(teacher.getTeacherName());
+
+        //如果在，那么不论是新增还是修改都不可以，因为教师表不允许重名，直接返回error
+        if (findTeacher != null) {
+            return JsonResult.errorResult(ResultCode.USER_EXIST, "用户名已存在", null);
+        }
+
+        //如果不在，那就需要判断是新增还是修改
+        //如果传来的对象能获取到id，那就是修改，否则是新增
+
+        //修改
         if (teacher.getId() != null) {
             teacher.setActive(Boolean.TRUE);
-            teacher.setPassword("123456");
+            teacher.setPassword(teacherRepo.findById(teacher.getId()).get().getPassword());
             Teacher save = teacherRepo.save(teacher);
             return JsonResult.succResult(save);
         }
-        if (byTeacherName != null) {
-            return JsonResult.errorResult(ResultCode.USER_EXIST, "用户名已存在", null);
-        }
+
+        //新增
         teacher.setActive(Boolean.TRUE);
         teacher.setPassword("123456");
         Teacher save = teacherRepo.save(teacher);
@@ -112,5 +123,14 @@ public class AdministratorController {
     public JsonResult getClassList() {
         return JsonResult.succResult(adminManagement.getClassList());
 
+    }
+
+
+    @RequestMapping(value ="/resetPw",method = RequestMethod.GET)
+    public JsonResult resetPw(String teacherId){
+        Teacher teacher = teacherRepo.findById(Integer.valueOf(teacherId)).get();
+        teacher.setPassword("123456");
+        teacherRepo.save(teacher);
+        return JsonResult.succResult(null);
     }
 }

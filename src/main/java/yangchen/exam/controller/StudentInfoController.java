@@ -197,4 +197,13 @@ public class StudentInfoController {
         }
 
     }
+
+    @RequestMapping(value ="/resetPw",method = RequestMethod.GET)
+    public JsonResult resetPw(String studentId){
+        StudentNew studentNew = studentRepo.findById(Integer.valueOf(studentId)).get();
+        studentNew.setPassword("123456");
+        studentRepo.save(studentNew);
+        return JsonResult.succResult(null);
+    }
+
 }
