@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import yangchen.exam.Enum.DifficultEnum;
 import yangchen.exam.Enum.StageEnum;
@@ -16,6 +17,7 @@ import yangchen.exam.service.examination.ExaminationService;
 import yangchen.exam.service.question.QuestionService;
 import yangchen.exam.service.score.ScoreService;
 import yangchen.exam.service.student.StudentService;
+import yangchen.exam.util.DecodeQuestionDetails;
 import yangchen.exam.util.RandomUtil;
 
 import java.sql.Timestamp;
@@ -30,6 +32,10 @@ import java.util.*;
 public class ExaminationServiceImpl implements ExaminationService {
 
     private static Logger LOGGER = LoggerFactory.getLogger(ExaminationServiceImpl.class);
+
+    @Value("${image.nginx.url.path}")
+    /*  http://211.68.35.79:2048  */
+    private String imgNginxUrl;
 
     @Autowired
     private QuestionService questionService;
@@ -295,6 +301,7 @@ public class ExaminationServiceImpl implements ExaminationService {
             if (questionById != null) {
                 QuestionDetail questionDetail = new QuestionDetail();
                 questionDetail.setQuestion(questionById.getQuestionDetails());
+                questionDetail.setQuestion(DecodeQuestionDetails.getRightImage(imgNginxUrl, questionById.getQuestionDetails()));
                 questionDetail.setTitle(questionById.getQuestionName());
                 questionDetail.setCustomBh(questionById.getCustomBh());
                 questionDetail.setId(String.valueOf(questionById.getId()));
