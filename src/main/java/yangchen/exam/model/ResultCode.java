@@ -55,6 +55,6 @@ public class ResultCode {
     public static String UPLOAD_NULL = "R0013";
     public static String MODULE_CLOSE = "R0014";
     public static String QUESTION_NUM_ERROR = "R0015";
-    public static String QUESTION_TYPE_ERROR = "R0026";
+    public static String QUESTION_TYPE_ERROR = "R0016";
 
 }

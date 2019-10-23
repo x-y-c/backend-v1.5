@@ -71,7 +71,10 @@ public class AndroidController {
     public JsonResult getQuestion(@RequestParam String questionType){
         try{
            questionType = QuestionTypeEnum.getQuestionTypeCode(questionType);
-
+//           LOGGER.error("[{}]",questionType);
+           if(questionType==null){
+               return JsonResult.errorResult(ResultCode.QUESTION_TYPE_ERROR,"没有此类型的题目","");
+           }
         }catch (Exception e){
             return JsonResult.errorResult(ResultCode.QUESTION_TYPE_ERROR,"没有此类型的题目","");
         }
