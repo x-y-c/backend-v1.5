@@ -186,7 +186,7 @@ public class ExaminationServiceImpl implements ExaminationService {
             List<QuestionNew> result = questionRepo.findByStageAndDifficultyAndQuestionTypeAndActivedIsTrue(spilted[0], spilted[1], "1000206");
             if(map.get(key)>result.size()){
                 LOGGER.error("创建考试失败:[{}][{}]只有[{}]道题，不满足出卷要求",StageEnum.getStageName(spilted[0]),DifficultEnum.getDifficultName(spilted[1]),result.size());
-                return JsonResult.errorResult(ResultCode.QUSTION_NUM_ERROR,
+                return JsonResult.errorResult(ResultCode.QUESTION_NUM_ERROR,
                         "创建考试失败:["+StageEnum.getStageName(spilted[0])+"]["+DifficultEnum.getDifficultName(spilted[1])+"]只有["+result.size()+"]道题，不满足出卷要求",
                         "");
             }

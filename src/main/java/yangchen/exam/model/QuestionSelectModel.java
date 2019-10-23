@@ -18,4 +18,5 @@ public class QuestionSelectModel {
     String questionName;
     String questionDetails;
     String stage;
+    String difficulty;
 }

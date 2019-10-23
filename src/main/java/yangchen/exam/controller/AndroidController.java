@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import yangchen.exam.Enum.DifficultEnum;
 import yangchen.exam.Enum.QuestionTypeEnum;
+import yangchen.exam.Enum.StageEnum;
 import yangchen.exam.entity.QuestionNew;
 import yangchen.exam.entity.StudentNew;
 import yangchen.exam.model.ExaminationDetail;
@@ -66,8 +68,13 @@ public class AndroidController {
     }
 
     @RequestMapping(value = "/getQuestion", method = RequestMethod.GET)
-    public JsonResult getQuestion(){
-        String questionType = QuestionTypeEnum.getQuestionTypeCode("选择题");
+    public JsonResult getQuestion(@RequestParam String questionType){
+        try{
+           questionType = QuestionTypeEnum.getQuestionTypeCode(questionType);
+
+        }catch (Exception e){
+            return JsonResult.errorResult(ResultCode.QUESTION_TYPE_ERROR,"没有此类型的题目","");
+        }
         List<QuestionNew> questionNewList = questionService.getQuestion(questionType);
         List<QuestionSelectModel> questionSelectModels = new ArrayList<>();
         questionNewList.forEach(questionNew -> {
@@ -77,9 +84,11 @@ public class AndroidController {
             questionSelect.setQuestionBh(questionNew.getQuestionBh());
             questionSelect.setQuestionDetails(questionNew.getQuestionDetails());
             questionSelect.setQuestionName(questionNew.getQuestionName());
-            questionSelect.setStage(questionNew.getStage());
+            questionSelect.setStage(StageEnum.getStageName(questionNew.getStage()));
+            questionSelect.setDifficulty(DifficultEnum.getDifficultName(questionNew.getDifficulty()));
             questionSelectModels.add(questionSelect);
         });
         return JsonResult.succResult(questionSelectModels);
+
     }
 }
