@@ -36,6 +36,7 @@ public class ResultCode {
      * R0014 模块关闭
      * R0015 所选阶段题目数不足不能生成试卷
      * R0016 按类型查题目时没有这类型的题目
+     * R0017 测试用例输出不一致
      */
     public static String SUCCESS = "A0000";
     public static String TEACHER_LOGIN = "A0001";
@@ -56,5 +57,6 @@ public class ResultCode {
     public static String MODULE_CLOSE = "R0014";
     public static String QUESTION_NUM_ERROR = "R0015";
     public static String QUESTION_TYPE_ERROR = "R0016";
+    public static String TESTCASE_NOT_SAME = "R0017";
 
 }

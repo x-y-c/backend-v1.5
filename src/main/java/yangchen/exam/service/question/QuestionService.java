@@ -6,6 +6,7 @@ import yangchen.exam.model.*;
 import yangchen.exam.entity.QuestionLog;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -44,7 +45,6 @@ public interface QuestionService {
      * 然后将pre_question_details 字段修改保存到 question_details
      */
     //QuestionNew saveQuestionWithImgDecode(QuestionUpdate questionUpdate) throws IOException;
-
     QuestionNew saveQuestionWithImgDecodeNew(QuestionUpdate questionUpdate) throws IOException;
 
 
@@ -103,4 +103,11 @@ public interface QuestionService {
     String getAnswer(String questionBh);
 
     List<QuestionNew> getQuestion(String questionType);
+
+
+    HashMap<String,String> getQuestionInput2Output(String questionBh);
+
+    List<String> getQuestionInput(String questionBh);
+    List<String> getQuestionOutput(String questionBh);
+
 }

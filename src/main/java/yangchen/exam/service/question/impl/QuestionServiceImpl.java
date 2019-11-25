@@ -13,10 +13,7 @@ import org.springframework.stereotype.Service;
 import yangchen.exam.Enum.DifficultEnum;
 import yangchen.exam.Enum.QuestionTypeEnum;
 import yangchen.exam.Enum.StageEnum;
-import yangchen.exam.entity.ExamPaper;
-import yangchen.exam.entity.QuestionLog;
-import yangchen.exam.entity.QuestionNew;
-import yangchen.exam.entity.SubmitPractice;
+import yangchen.exam.entity.*;
 import yangchen.exam.model.*;
 import yangchen.exam.repo.*;
 import yangchen.exam.service.examination.ExaminationService;
@@ -27,10 +24,7 @@ import yangchen.exam.util.DecodeQuestionDetails;
 import yangchen.exam.util.UrlImageUtil;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author yc
@@ -45,7 +39,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Autowired
     private ExaminationService examinationService;
     @Autowired
-    private TestCaseRepo TestCaseRepo;
+    private TestCaseRepo testCaseRepo;
 
     @Autowired
     private ExamPaperRepo examPaperRepo;
@@ -491,6 +485,36 @@ public class QuestionServiceImpl implements QuestionService {
     public List<QuestionNew> getQuestion(String questionType) {
         List<QuestionNew> questionList = questionRepo.findByQuestionTypeAndActivedIsTrue(questionType);
         return questionList;
+    }
+
+    @Override
+    public HashMap<String,String> getQuestionInput2Output(String questionBh) {
+        HashMap<String,String> input2output = new HashMap<>();
+        List<TestCase> testCaseList = testCaseRepo.findByQuestionId(questionBh);
+        testCaseList.forEach(testCase -> {
+            input2output.put(testCase.getTestCaseInput(),testCase.getTestCaseOutput());
+        });
+        return input2output;
+    }
+
+    @Override
+    public List<String> getQuestionInput(String questionBh) {
+        List<TestCase> testCaseList = testCaseRepo.findByQuestionId(questionBh);
+        List<String> input = new ArrayList<>();
+        testCaseList.forEach(testCase -> {
+            input.add(testCase.getTestCaseInput());
+        });
+        return input;
+    }
+
+    @Override
+    public List<String> getQuestionOutput(String questionBh) {
+        List<TestCase> testCaseList = testCaseRepo.findByQuestionId(questionBh);
+        List<String> output = new ArrayList<>();
+        testCaseList.forEach(testCase -> {
+            output.add(testCase.getTestCaseOutput());
+        });
+        return output;
     }
 
     public String add(String line, String memo) {

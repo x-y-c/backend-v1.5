@@ -2,29 +2,40 @@ package yangchen.exam.controller;
 
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.models.auth.In;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import yangchen.exam.Enum.QuestionTypeEnum;
+import yangchen.exam.Enum.StageEnum;
 import yangchen.exam.entity.QuestionNew;
-import yangchen.exam.model.CompileFront;
-import yangchen.exam.model.JsonResult;
-import yangchen.exam.model.ResultCode;
-import yangchen.exam.model.SourceCode;
+import yangchen.exam.entity.TestCase;
+import yangchen.exam.model.*;
 import yangchen.exam.repo.QuestionRepo;
 import yangchen.exam.service.compile.CompileCoreService;
 import yangchen.exam.service.compileService.CompileService;
+import yangchen.exam.service.http.IOkhttpService;
+import yangchen.exam.service.question.QuestionService;
+import yangchen.exam.service.testInfo.TestCaseService;
+import yangchen.exam.util.JavaJWTUtil;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author yangchen
@@ -39,6 +50,15 @@ public class CompileController {
     private CompileCoreService compileCoreService;
     @Autowired
     private QuestionRepo questionRepo;
+    @Autowired
+    private QuestionService questionService;
+
+    @Autowired
+    private IOkhttpService okhttpService;
+
+    @Value("${compile.url.path}")
+    private String compileUrl;
+
     Gson gson = new Gson();
 
     Logger Logger = LoggerFactory.getLogger(CompileController.class);
@@ -117,4 +137,63 @@ public class CompileController {
     }
 
 
+    /***
+     * 检测题库中题目的正确与否
+     * @return
+     */
+    @RequestMapping(value = "/cccheck",method = RequestMethod.GET)
+    public JsonResult cccheck(){
+        List<Integer> passNo = new ArrayList<>();
+        List<Integer> errorNo = new ArrayList<>();
+        List<QuestionNew> questionList = new ArrayList<>();
+        try {
+            questionList = questionRepo.findByQuestionTypeAndActivedIsTrue(QuestionTypeEnum.getQuestionTypeCode("编程题"));
+        }catch (NullPointerException e){
+            return JsonResult.errorResult(ResultCode.QUESTION_NUM_ERROR,"该题型题目数为0","空");
+        }
+        List<TestCase> TestCaseList = new ArrayList<>();
+        for(QuestionNew question:questionList){
+            SourceCode sourceCode = gson.fromJson(question.getSourceCode(), SourceCode.class);
+            String src = sourceCode.getKey().get(0).getCode();
+
+            CompileModel compileModel = new CompileModel();
+            List<String> input = questionService.getQuestionInput(question.getQuestionBh());
+            List<String> output = questionService.getQuestionOutput(question.getQuestionBh());
+
+            compileModel.setInput(input);
+            compileModel.setOutput(output);
+            compileModel.setJudgeId(1);
+            compileModel.setSrc(src);
+            compileModel.setMemoryLimit(65535L);
+            compileModel.setTimeLimit(1000L);
+
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            Gson gson = gsonBuilder.create();
+            gsonBuilder.disableHtmlEscaping();
+            String compileModelJson = gson.toJson(compileModel);
+            Logger.info(compileModelJson);
+            String jsonResult = okhttpService.postJsonBody(compileUrl, compileModelJson);
+            Logger.info(jsonResult);
+            CompileResult compileResult = gson.fromJson(jsonResult, CompileResult.class);
+            if (compileResult.getResult() != null) {
+                //for (Result result : compileResult.getResult()) {
+                for (int i = 0; i < compileResult.getResult().size(); i++) {
+
+                    if (compileResult.getResult().get(i).getResult().equals("0") || compileResult.getResult().get(i).getResult().equals("1")) {
+                        //return JsonResult.succResult(compileResult.getResult().get(i).getResult());
+                        passNo.add(question.getId());
+                    }
+                    else {
+                        //return JsonResult.errorResult(ResultCode.TESTCASE_NOT_SAME,"测试用例不一致",question.getId());
+                        errorNo.add(question.getId());
+                    }
+                }
+            }
+        }
+        //return JsonResult.errorResult(ResultCode.QUESTION_NUM_ERROR,"该题型题目数为0","空");
+
+        JavaJWTUtil.removeDuplicate(errorNo);
+        return JsonResult.succResult(errorNo.toString());
+
+    }
 }
