@@ -228,6 +228,10 @@ public class ExamController {
     }
 
 
+    @RequestMapping(value = "/getServerTime",method = RequestMethod.GET)
+    public JsonResult getSeverTime(){
+        return JsonResult.succResult(new Timestamp(System.currentTimeMillis()));
+    }
 
 
 
