@@ -1,5 +1,6 @@
 package yangchen.exam.service.submit;
 
+import io.swagger.models.auth.In;
 import org.springframework.data.domain.Page;
 import yangchen.exam.entity.Submit;
 import yangchen.exam.entity.SubmitPractice;
@@ -24,5 +25,7 @@ public interface SubmitService {
     Page<SubmitPracticeModel> getSubmitPracticeList(String teacherName, Integer page, Integer pageLimit);
 
     Page<SubmitPracticeModel> getSubmitPracticeListCondition(String condition,String value,String teacherName, Integer page, Integer pageLimit);
+
+    Submit getCodeHistory(Integer questionId, Integer examinationId);
 
 }

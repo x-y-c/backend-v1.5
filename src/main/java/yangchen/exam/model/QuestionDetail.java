@@ -20,4 +20,5 @@ public class QuestionDetail {
     private String isProgramBlank;
     private String src;
     private Integer score;
+    private String codeHistory;
 }

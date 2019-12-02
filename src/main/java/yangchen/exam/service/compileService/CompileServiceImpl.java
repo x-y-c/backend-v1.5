@@ -70,7 +70,6 @@ public class CompileServiceImpl implements CompileService {
             questionBy = questionService.getQuestionBy(examinationId, index);
             submitService.addSubmit(Submit.builder().examinationId(examinationId).questionId(questionBy.getQuestionBh()).src(src).studentId(Long.valueOf(studentId)).build());
         } else {
-
             //练习的情况
             isPractice = true;
             questionBy = questionRepo.findByQuestionBh(questionBh);

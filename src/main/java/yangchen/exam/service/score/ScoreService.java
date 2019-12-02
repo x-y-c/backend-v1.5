@@ -46,4 +46,6 @@ public interface ScoreService {
     List<ScoreAdmin> getScoreAdminByExamGroupId(Integer examinationId);
 
 
+    Score findByExaminationIdAndIndex(Integer examination,Integer number);
+
 }

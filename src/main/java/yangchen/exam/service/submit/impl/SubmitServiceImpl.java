@@ -1,15 +1,15 @@
 package yangchen.exam.service.submit.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import yangchen.exam.entity.StudentNew;
-import yangchen.exam.entity.Submit;
-import yangchen.exam.entity.SubmitPractice;
-import yangchen.exam.entity.Teacher;
+import yangchen.exam.controller.ExamController;
+import yangchen.exam.entity.*;
 import yangchen.exam.model.SubmitPracticeModel;
 import yangchen.exam.repo.*;
 import yangchen.exam.service.submit.SubmitService;
@@ -18,6 +18,7 @@ import yangchen.exam.util.PageUtil;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author YC
@@ -47,6 +48,8 @@ public class SubmitServiceImpl implements SubmitService {
     @Autowired
     private TeachClassInfoRepo teachClassInfoRepo;
 
+    public static final Logger LOGGER = LoggerFactory.getLogger(SubmitServiceImpl.class);
+
     @Override
     public Submit addSubmit(Submit submit) {
 
@@ -68,6 +71,20 @@ public class SubmitServiceImpl implements SubmitService {
     public Page<SubmitPracticeModel> getSubmitPracticeListCondition(String condition, String value, String teacherName, Integer pageNum, Integer pageLimit) {
         Page<SubmitPracticeModel> models = submitPracticeModelPageByCondition(condition, value, teacherName, pageNum, pageLimit);
         return models;
+    }
+
+    @Override
+    public Submit getCodeHistory(Integer questionId, Integer examinationId) {
+        //questionId 是question表里的id不是questionBh
+        //LOGGER.info(questionId.toString());
+        Optional<QuestionNew> byId = questionRepo.findById(questionId);
+        if(byId.toString().equals("Optional.empty")){
+            return null;
+        }
+        else {
+            QuestionNew question= byId.get();
+            return submitRepo.getLastSubmit(examinationId,question.getQuestionBh());
+        }
     }
 
 

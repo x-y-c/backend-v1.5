@@ -17,6 +17,7 @@ import yangchen.exam.service.examination.ExaminationService;
 import yangchen.exam.service.question.QuestionService;
 import yangchen.exam.service.score.ScoreService;
 import yangchen.exam.service.student.StudentService;
+import yangchen.exam.service.submit.SubmitService;
 import yangchen.exam.util.DecodeQuestionDetails;
 import yangchen.exam.util.RandomUtil;
 
@@ -69,6 +70,9 @@ public class ExaminationServiceImpl implements ExaminationService {
 
     @Autowired
     private StudentRepo studentRepo;
+
+    @Autowired
+    private SubmitService submitService;
 
 
     @Override
@@ -291,16 +295,20 @@ public class ExaminationServiceImpl implements ExaminationService {
 
     @Override
     public List<QuestionDetail> getQuestionInfo(Integer id) {
+        //id是exam_paper的id
         Optional<ExamPaper> byId = examPaperRepo.findById(id);
         List<QuestionDetail> result = new ArrayList<>();
+        //titles是question那张表里的id
         String titles = byId.get().getTitleId();
         String[] split = titles.split(",");
-        LOGGER.info(String.valueOf(split.length));
-        for (String title : split) {
-            QuestionNew questionById = questionService.findQuestionById(Integer.valueOf(title));
+//        LOGGER.info(String.valueOf(split.length));
+//        for (String title : split) {
+        for (int i=0; i<split.length; i++){
+            //QuestionNew questionById = questionService.findQuestionById(Integer.valueOf(title));
+            QuestionNew questionById = questionService.findQuestionById(Integer.valueOf(split[i]));
             if (questionById != null) {
                 QuestionDetail questionDetail = new QuestionDetail();
-                questionDetail.setQuestion(questionById.getQuestionDetails());
+                //questionDetail.setQuestion(questionById.getQuestionDetails());
                 questionDetail.setQuestion(DecodeQuestionDetails.getRightImage(imgNginxUrl, questionById.getQuestionDetails()));
                 questionDetail.setTitle(questionById.getQuestionName());
                 questionDetail.setCustomBh(questionById.getCustomBh());
@@ -311,6 +319,18 @@ public class ExaminationServiceImpl implements ExaminationService {
                     questionDetail.setSrc(sourceCode.getKey().get(0).getCode());
                 } else {
                     questionDetail.setSrc("");
+                }
+
+                //i 是 index
+                //score 的来源是score表里的 定位examnationId和number去定位唯一score
+                Score score = scoreService.findByExaminationIdAndIndex(id,i);
+                if(score!=null){
+                    questionDetail.setScore(score.getScore());
+                }
+                //codeHistory的来源是submit表里的 定位student_id和examination_id和questionId联合查询，按id降序找出top1
+                Submit codeHistory = submitService.getCodeHistory(Integer.valueOf(split[i]),id);
+                if(codeHistory!=null) {
+                    questionDetail.setCodeHistory(codeHistory.getSrc());
                 }
                 result.add(questionDetail);
             }
@@ -324,12 +344,12 @@ public class ExaminationServiceImpl implements ExaminationService {
         ExamPaper examination = byId.get();
         ExamInfo examInfo = examInfoRepo.findByExaminationId(id);
         if (!examInfo.getStudentNumber().equals(studentId)) {
-
             return JsonResult.errorResult(ResultCode.NO_PERMISSION, "没有权限查看该试卷", null);
         }
         if (examination.getFinished() == Boolean.TRUE) {
             return JsonResult.succResult(QuestionResult.builder().used(1).questionInfo(null).build());
-        } else {
+        }
+        else {
             return JsonResult.succResult(QuestionResult.builder().used(0).questionInfo(getQuestionInfo(id)).build());
         }
     }
@@ -344,6 +364,7 @@ public class ExaminationServiceImpl implements ExaminationService {
     public Boolean submitTest(Integer id, Integer studentId) {
         ExamPaper examination = examPaperRepo.findById(id).get();
         examination.setFinished(Boolean.TRUE);
+        LOGGER.info("学生[{}]交卷",studentId);
         ExamPaper save = examPaperRepo.save(examination);
         Integer finalScore = 0;
         List<Score> byExaminationAndStudentId = scoreService.findByExaminationAndStudentId(examination.getId(), studentId);

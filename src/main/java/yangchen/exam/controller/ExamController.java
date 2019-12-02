@@ -108,8 +108,6 @@ public class ExamController {
     public JsonResult getExamPaperInfoFast(@RequestParam Integer examGroupId) {
         List<ExamPageInfo> examPageInfoFast = examinationService.getExamPageInfoFast(examGroupId);
         return JsonResult.succResult(examPageInfoFast);
-
-
     }
 
 
@@ -137,17 +135,19 @@ public class ExamController {
      */
     @RequestMapping(value = "/question", method = RequestMethod.GET)
     public JsonResult getQuestionInfo(Integer id, Integer studentNumber) {
-        IpAddr ip = new IpAddr();
         ExamInfo examInfo = examInfoService.getExamInfoByExaminationId(id);
         Optional<ExamGroupNew> examGroupNew = examGroupRepo.findById(examInfo.getExamGroupId());
+
+        //记录ip地址
+        IpAddr ip = new IpAddr();
         ip.setIpAddress(IpUtil.getIpAddr(request));
         ip.setBrowser(UserAgentUtil.parse(request.getHeader("user-agent")).getBrowser().getName());
         ip.setStudentId(studentNumber);
-
         ip.setExamGroupId(examInfo.getExamGroupId());
         ip.setExamGroupDesc(examGroupNew.get().getExamDesc());
         ip.setStudentName(examInfo.getStudentName());
         ipAddrRepo.save(ip);
+
         return examinationService.getQuestionInfoResult(studentNumber, id);
     }
 
@@ -221,8 +221,6 @@ public class ExamController {
         }else {
             submitPracticeList = submitService.getSubmitPracticeListCondition(condition,value,teacherName, page, pageLimit);
         }
-
-
 
         return JsonResult.succResult(submitPracticeList);
     }

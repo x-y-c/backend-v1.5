@@ -71,6 +71,11 @@ public class ScoreServiceImpl implements ScoreService {
         return scoreRepo.findByStudentIdAndExaminationId(studentId, examination);
     }
 
+    @Override
+    public Score findByExaminationIdAndIndex(Integer examinationId,Integer number){
+        return scoreRepo.findByExaminationIdAndIndex(examinationId,number);
+    }
+
 
     public Score saveOrUpdate(Score score) {
         Score score1 = scoreRepo.findByStudentIdAndExaminationIdAndIndexAndQuestionId(score.getStudentId(),

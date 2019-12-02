@@ -329,7 +329,7 @@ public class QuestionServiceImpl implements QuestionService {
         questionDetail.setCustomBh(questionNew.getCustomBh());
         questionDetail.setIsProgramBlank(questionNew.getIsProgramBlank());
         questionDetail.setQuestion(questionNew.getQuestionDetails());
-//        questionDetail.setSrc();
+
         if ("100001".equals(questionNew.getIsProgramBlank())) {
             Gson gson = new Gson();
             SourceCode sourceCode = gson.fromJson(questionNew.getSourceCode(), SourceCode.class);
@@ -338,17 +338,12 @@ public class QuestionServiceImpl implements QuestionService {
             questionDetail.setSrc("");
         }
 
-        //questionDetail.setQuestionDetails(DecodeQuestionDetails.getRightImage(domainStr, questionById.getQuestionDetails()));
         questionDetail.setQuestion(DecodeQuestionDetails.getRightImage(imgNginxUrl, questionNew.getQuestionDetails()));
 
-        //todo
-        //暂时把代码保存的部分删了，这部分逻辑有问题
+        //todo 暂时把代码保存的部分删了，这部分逻辑有问题
 //        SubmitPractice submitLast = submitPracticeRepo.getSubmitLast(String.valueOf(questionNew.getId()), studentId);
-//        if (submitLast == null) {
-//            questionDetail.setSrc("");
-//            questionDetail.setScore(0);
-//        } else {
-//            questionDetail.setSrc(submitLast.getSrc());
+//        if (submitLast != null) {
+//            questionDetail.setCodeHistory(submitLast.getSrc());
 //            questionDetail.setScore(submitLast.getScore());
 //        }
 

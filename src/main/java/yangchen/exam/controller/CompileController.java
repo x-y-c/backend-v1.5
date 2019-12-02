@@ -86,8 +86,13 @@ public class CompileController {
     @ApiImplicitParams({@ApiImplicitParam(name = "code",value = "源代码",required = true,dataType = "String"),
                         @ApiImplicitParam(name = "examinationId",value = "试卷编号",required = true,dataType = "Integer")})
     @RequestMapping(value = {"/", ""}, method = RequestMethod.POST)
-    public JsonResult compileTest(@RequestParam String code, @RequestParam(required = false) Integer examinationId, @RequestParam(required = false) Integer index, @RequestParam Integer studentId,@RequestParam(required = false) String questionBh) {
-        CompileFront compileFront = compileService.compileCode(examinationId, index, code, studentId,questionBh);
+    public JsonResult compileTest(@RequestParam String code,
+                                  @RequestParam(required = false) Integer examinationId,
+                                  @RequestParam(required = false) Integer index,
+                                  @RequestParam Integer studentId,
+                                  @RequestParam(required = false) String questionBh) {
+
+        CompileFront compileFront = compileService.compileCode(examinationId, index, code, studentId, questionBh);
         return JsonResult.succResult(compileFront);
     }
 
@@ -106,7 +111,7 @@ public class CompileController {
             result +=blank.charAt(i);
         }
         //index2=1
-//        line.length()=3
+        //line.length()=3
         for(int i=index2;i<line.length();i++){
             result +=line.charAt(i);
         }
