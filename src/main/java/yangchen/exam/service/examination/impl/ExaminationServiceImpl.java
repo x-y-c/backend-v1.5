@@ -361,10 +361,19 @@ public class ExaminationServiceImpl implements ExaminationService {
     }
 
     @Override
-    public Boolean submitTest(Integer id, Integer studentId) {
+    public Boolean submitTest(Integer id, Integer studentId,Integer sign) {
         ExamPaper examination = examPaperRepo.findById(id).get();
         examination.setFinished(Boolean.TRUE);
-        LOGGER.info("学生[{}]交卷",studentId);
+
+        if(sign==1) {
+            LOGGER.info("学生[{}]交卷 备注:sign=[{}]，主动交卷", studentId, sign);
+        }
+        else if(sign==2){
+            LOGGER.info("学生[{}]交卷 备注:sign=[{}]，被动交卷", studentId, sign);
+        }
+        else{
+            LOGGER.info("学生[{}]交卷 备注:sign=[{}]，未知情况", studentId, sign);
+        }
         ExamPaper save = examPaperRepo.save(examination);
         Integer finalScore = 0;
         List<Score> byExaminationAndStudentId = scoreService.findByExaminationAndStudentId(examination.getId(), studentId);

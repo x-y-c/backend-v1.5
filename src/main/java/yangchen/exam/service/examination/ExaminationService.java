@@ -78,5 +78,5 @@ public interface ExaminationService {
     ExamPaper getExaminationById(Integer id);
 
 
-    Boolean submitTest(Integer id, Integer studentId);
+    Boolean submitTest(Integer id, Integer studentId,Integer sign);
 }
