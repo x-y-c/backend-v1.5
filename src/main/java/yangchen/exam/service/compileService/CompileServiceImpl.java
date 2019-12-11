@@ -106,19 +106,18 @@ public class CompileServiceImpl implements CompileService {
         Gson gson = gsonBuilder.create();
         gsonBuilder.disableHtmlEscaping();
         String compileModelJson = gson.toJson(compileModel);
-        LOGGER.info(compileModelJson);
+        LOGGER.info("compileModelJson=[{}]",compileModelJson);
+        //todo  /*jsonResult 如果报错会返回null，需要再这里加一些处理*/
         String jsonResult = okhttpService.postJsonBody(compileUrl, compileModelJson);
-        LOGGER.info(jsonResult);
+        LOGGER.info("jsonResult=[{}]",jsonResult);
         CompileResult compileResult = gson.fromJson(jsonResult, CompileResult.class);
         if (compileResult.getResult() != null) {
-//            for (Result result : compileResult.getResult()) {
+            // for (Result result : compileResult.getResult()) {
             for (int i = 0; i < compileResult.getResult().size(); i++) {
-
                 if (compileResult.getResult().get(i).getResult().equals("0") || compileResult.getResult().get(i).getResult().equals("1")) {
                     score = TestCaseList.get(i).getScoreWeight() + score;
                 }
             }
-
         }
 
         if (isPractice) {
@@ -132,9 +131,7 @@ public class CompileServiceImpl implements CompileService {
             score1.setIndex(index);
             score1.setQuestionId(questionBy.getQuestionBh());
             scoreService.saveOrUpdate(score1);
-
         }
-
 
         CompileFront compileFront = new CompileFront();
         compileFront.setCompileMsg(compileResult.getGlobalMsg());

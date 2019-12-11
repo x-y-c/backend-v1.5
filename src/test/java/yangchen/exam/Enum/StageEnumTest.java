@@ -19,6 +19,7 @@ public class StageEnumTest {
      System.out.println(StageEnum.getStageName("1000301"));
     }
 
+    @Test
     public void test2(){
         for (QuestionTypeEnum q: QuestionTypeEnum.values()){
             System.out.println(q.getQuestionTypeName());

@@ -32,8 +32,8 @@ public class OkHttpServiceImpl implements IOkhttpService {
     @Override
     public String get(String url) {
         Long ts = LocalDate.now().toEpochDay();
+        LOGGER.info("Call GET url=[{}] ts=[{}] ", url, ts);
         try {
-            LOGGER.info("Call GET url=[{}] ts=[{}] ", url, ts);
             Request request = new Request.Builder()
                     .url(url)
                     .get()
@@ -51,8 +51,8 @@ public class OkHttpServiceImpl implements IOkhttpService {
     @Override
     public String postJsonBody(String url, String body) {
         Long ts = LocalDate.now().toEpochDay();
+        LOGGER.info("Call POST json url=[{}] ts=[{}] body=[{}]", url, ts, body);
         try {
-            LOGGER.info("Call POST json url=[{}] ts=[{}] body=[{}]", url, ts, body);
             RequestBody requestBody = RequestBody.create(JSON, body);
             Request request = new Request.Builder()
                     .url(url)
@@ -71,8 +71,8 @@ public class OkHttpServiceImpl implements IOkhttpService {
     @Override
     public String postForm(String url, Map<String, String> formData) {
         Long ts = LocalDate.now().toEpochDay();
+        LOGGER.info("Call POST form url=[{}] ts=[{}] body=[{}]", url, ts, formData);
         try {
-            LOGGER.info("Call POST form url=[{}] ts=[{}] body=[{}]", url, ts, formData);
             FormBody.Builder builder = new FormBody.Builder();
             formData.forEach((k, v) -> builder.add(k, v));
             RequestBody requestBody = builder.build();
