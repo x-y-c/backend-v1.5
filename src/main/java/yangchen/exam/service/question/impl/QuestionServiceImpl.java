@@ -164,7 +164,8 @@ public class QuestionServiceImpl implements QuestionService {
             QuestionNew question = questionBaseService.getQuestionById(Integer.valueOf(split[i]));
             QuestionInfo questionInfo = new QuestionInfo();
             questionInfo.setLabel("题目" + (i + 1));
-            questionInfo.setValue(question.getQuestionName());
+            // questionInfo.setValue(question.getQuestionName());
+            questionInfo.setValue('['+question.getId().toString()+"]"+question.getQuestionName());
             examNameList.add(questionInfo);
         }
         return examNameList;

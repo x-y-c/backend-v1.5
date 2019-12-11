@@ -28,4 +28,6 @@ public interface ExamInfoRepo extends JpaRepository<ExamInfo, Integer> {
     @Query(value = "select examination_id from exam_info where exam_group_id=?",nativeQuery = true)
     List<Integer> searchExamPaper(Integer id);
 
+    ExamInfo findByStudentNumberAndExamGroupId(Integer studentId,Integer examGroupId);
+
 }

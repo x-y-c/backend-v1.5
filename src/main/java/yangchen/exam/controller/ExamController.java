@@ -12,9 +12,12 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import yangchen.exam.entity.ExamGroupNew;
 import yangchen.exam.entity.ExamInfo;
+import yangchen.exam.entity.ExamPaper;
 import yangchen.exam.entity.IpAddr;
 import yangchen.exam.model.*;
 import yangchen.exam.repo.ExamGroupRepo;
+import yangchen.exam.repo.ExamInfoRepo;
+import yangchen.exam.repo.ExamPaperRepo;
 import yangchen.exam.repo.IpAddrRepo;
 import yangchen.exam.service.examInfo.ExamInfoService;
 import yangchen.exam.service.examination.ExamGroupService;
@@ -48,6 +51,12 @@ public class ExamController {
 
     @Autowired
     private ExamGroupRepo examGroupRepo;
+
+    @Autowired
+    private ExamPaperRepo examPaperRepo;
+
+    @Autowired
+    private ExamInfoRepo examInfoRepo;
 
     @Autowired
     private HttpServletRequest request;
@@ -110,6 +119,18 @@ public class ExamController {
         return JsonResult.succResult(examPageInfoFast);
     }
 
+    @RequestMapping(value = "/changeExamPaperStatus", method = RequestMethod.GET)
+    public JsonResult changeExamPaperStatus(Integer examGroupId,Integer studentId){
+//        QuestionNew questionNew = questionRepo.findByQuestionBh(questionBh);
+//        questionNew.setActived(!questionNew.getActived());
+//        QuestionNew save = questionRepo.save(questionNew);
+        LOGGER.info("examGroupID=[{}],studentId=[{}]",examGroupId.toString(),studentId.toString());
+        ExamInfo examInfo = examInfoRepo.findByStudentNumberAndExamGroupId(studentId, examGroupId);
+        ExamPaper examPaper = examPaperRepo.findById(examInfo.getExaminationId()).get();
+        examPaper.setFinished(!examPaper.getFinished());
+        ExamPaper examPaperNew = examPaperRepo.save(examPaper);
+        return JsonResult.succResult(examPaperNew);
+    }
 
     @RequestMapping(value = "/unUsed", method = RequestMethod.GET)
     public JsonResult queryExamUnused() {

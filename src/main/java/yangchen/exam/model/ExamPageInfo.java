@@ -17,4 +17,5 @@ public class ExamPageInfo {
     private String studentName;
     private String studentGrade;
     private List<QuestionInfo> questionList;
+    private boolean examPaperStatus;
 }

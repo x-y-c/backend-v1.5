@@ -235,6 +235,8 @@ public class ExaminationServiceImpl implements ExaminationService {
             examPageInfo.setStudentId(student.getStudentId());
             List<QuestionInfo> questionNamesByExamPages = questionService.getQuestionNamesByExamPage(examInfo.getExaminationId());
             examPageInfo.setQuestionList(questionNamesByExamPages);
+            ExamPaper byId = examPaperRepo.findById(examInfo.getExaminationId()).get();
+            examPageInfo.setExamPaperStatus(byId.getFinished());
             examInfoResult.add(examPageInfo);
         });
 
