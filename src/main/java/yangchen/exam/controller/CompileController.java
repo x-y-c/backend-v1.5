@@ -46,6 +46,7 @@ import java.util.List;
 @RequestMapping(value = "/compile", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CompileController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CompileController.class);
     @Autowired
     private CompileCoreService compileCoreService;
     @Autowired
@@ -91,6 +92,21 @@ public class CompileController {
                                   @RequestParam(required = false) Integer index,
                                   @RequestParam Integer studentId,
                                   @RequestParam(required = false) String questionBh) {
+        /*Test*/
+//        Runnable runnable = new Runnable() {
+//            @Override
+//            public void run() {
+//                LOGGER.info("start === compileFront");
+//                CompileFront compileFront = compileService.compileCode(examinationId, index, code, studentId, questionBh);
+//            }
+//        };
+//
+//        //Countdownlatch
+//        for(int i = 0; i < 50; i++){//10-20
+//            Thread thread = new Thread(runnable);
+//            thread.start();
+//        }
+        /*Test*/
 
         CompileFront compileFront = compileService.compileCode(examinationId, index, code, studentId, questionBh);
         return JsonResult.succResult(compileFront);
