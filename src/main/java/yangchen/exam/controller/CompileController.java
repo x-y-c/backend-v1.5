@@ -112,28 +112,29 @@ public class CompileController {
         return JsonResult.succResult(compileFront);
     }
 
-    public String add(String line,String memo){
-        String result = "";
-        String start = "/******start******/";
-        String end = "/******end******/";
-        int length1 = start.length();
-        int index = line.indexOf(start);
-        int index2 = line.indexOf(end);
-        for(int i=0;i<index+length1;i++){
-            result +=line.charAt(i);
-        }
-        String blank= memo;
-        for(int i=0;i<blank.length();i++){
-            result +=blank.charAt(i);
-        }
-        //index2=1
-        //line.length()=3
-        for(int i=index2;i<line.length();i++){
-            result +=line.charAt(i);
-        }
-        System.out.println(result);
-        return result;
-    }
+//    public String add(String line,String memo){
+//        String result = "";
+//        String start = "/******start******/";
+//        String end = "/******end******/";
+//        int length1 = start.length();
+//        int index = line.indexOf(start);
+//        int index2 = line.indexOf(end);
+//        for(int i=0;i<index+length1;i++){
+//            result +=line.charAt(i);
+//        }
+//        String blank= memo;
+//        for(int i=0;i<blank.length();i++){
+//            result +=blank.charAt(i);
+//        }
+//        //index2=1
+//        //line.length()=3
+//        for(int i=index2;i<line.length();i++){
+//            result +=line.charAt(i);
+//        }
+//        System.out.println(result);
+//        return result;
+//    }
+
 
     @RequestMapping(value = "/sourceCode", method = RequestMethod.GET)
     public JsonResult compileSourceCode(@RequestParam String input, @RequestParam String questionBh) throws IOException, InterruptedException {
@@ -142,7 +143,8 @@ public class CompileController {
         SourceCode sourceCode = gson.fromJson(question.getSourceCode(), SourceCode.class);
         String code = sourceCode.getKey().get(0).getCode();
         if ("100001".equals(question.getIsProgramBlank())){
-            code = add(code, question.getMemo());
+            code = question.getMemo();
+//            code = add(code, question.getMemo());
         }
         String filePath = compileCoreService.writeSourceCode(code);
         String compileResult = compileCoreService.compileCode();
@@ -174,8 +176,15 @@ public class CompileController {
         }
         List<TestCase> TestCaseList = new ArrayList<>();
         for(QuestionNew question:questionList){
-            SourceCode sourceCode = gson.fromJson(question.getSourceCode(), SourceCode.class);
-            String src = sourceCode.getKey().get(0).getCode();
+            //todo 代码填空和代码编程题的区分
+            String src = "";
+            if ("100001".equals(question.getIsProgramBlank())){
+                src = question.getMemo();
+            }
+            else{
+                SourceCode sourceCode = gson.fromJson(question.getSourceCode(), SourceCode.class);
+                src = sourceCode.getKey().get(0).getCode();
+            }
 
             CompileModel compileModel = new CompileModel();
             List<String> input = questionService.getQuestionInput(question.getQuestionBh());

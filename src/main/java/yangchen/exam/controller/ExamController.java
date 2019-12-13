@@ -121,14 +121,12 @@ public class ExamController {
 
     @RequestMapping(value = "/changeExamPaperStatus", method = RequestMethod.GET)
     public JsonResult changeExamPaperStatus(Integer examGroupId,Integer studentId){
-//        QuestionNew questionNew = questionRepo.findByQuestionBh(questionBh);
-//        questionNew.setActived(!questionNew.getActived());
-//        QuestionNew save = questionRepo.save(questionNew);
-        LOGGER.info("examGroupID=[{}],studentId=[{}]",examGroupId.toString(),studentId.toString());
+        // LOGGER.info("examGroupID=[{}],studentId=[{}]",examGroupId.toString(),studentId.toString());
         ExamInfo examInfo = examInfoRepo.findByStudentNumberAndExamGroupId(studentId, examGroupId);
         ExamPaper examPaper = examPaperRepo.findById(examInfo.getExaminationId()).get();
         examPaper.setFinished(!examPaper.getFinished());
         ExamPaper examPaperNew = examPaperRepo.save(examPaper);
+        LOGGER.info("学生[{}]试卷状态修改，备注：教师端操作,将试卷状态置为[{}]",studentId.toString(),examPaper.getFinished().toString());
         return JsonResult.succResult(examPaperNew);
     }
 
@@ -162,6 +160,7 @@ public class ExamController {
         //记录ip地址
         IpAddr ip = new IpAddr();
         ip.setIpAddress(IpUtil.getIpAddr(request));
+        //LOGGER.info("学生[{}]的IP地址[{}]",studentNumber.toString(),IpUtil.getIpAddr(request).toString());
         ip.setBrowser(UserAgentUtil.parse(request.getHeader("user-agent")).getBrowser().getName());
         ip.setStudentId(studentNumber);
         ip.setExamGroupId(examInfo.getExamGroupId());

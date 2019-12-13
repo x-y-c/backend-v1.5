@@ -470,7 +470,8 @@ public class QuestionServiceImpl implements QuestionService {
         SourceCode sourceCode = gson.fromJson(questionNew.getSourceCode(), SourceCode.class);
         String code = sourceCode.getKey().get(0).getCode();
         if ("100001".equals(questionNew.getIsProgramBlank())) {
-            answer = add(code, questionNew.getMemo());
+//            answer = add(code, questionNew.getMemo());
+            answer = questionNew.getMemo();
         } else {
             answer = code;
         }
@@ -513,28 +514,28 @@ public class QuestionServiceImpl implements QuestionService {
         return output;
     }
 
-    public String add(String line, String memo) {
-        String result = "";
-        String start = "/******start******/";
-        String end = "/******end******/";
-        int length1 = start.length();
-        int index = line.indexOf(start);
-        int index2 = line.indexOf(end);
-        for (int i = 0; i < index + length1; i++) {
-            result += line.charAt(i);
-        }
-        String blank = memo;
-        for (int i = 0; i < blank.length(); i++) {
-            result += blank.charAt(i);
-        }
-        //index2=1
-//        line.length()=3
-        for (int i = index2; i < line.length(); i++) {
-            result += line.charAt(i);
-        }
-        System.out.println(result);
-        return result;
-    }
+//    public String add(String line, String memo) {
+//        String result = "";
+//        String start = "/******start******/";
+//        String end = "/******end******/";
+//        int length1 = start.length();
+//        int index = line.indexOf(start);
+//        int index2 = line.indexOf(end);
+//        for (int i = 0; i < index + length1; i++) {
+//            result += line.charAt(i);
+//        }
+//        String blank = memo;
+//        for (int i = 0; i < blank.length(); i++) {
+//            result += blank.charAt(i);
+//        }
+//        //index2=1
+////        line.length()=3
+//        for (int i = index2; i < line.length(); i++) {
+//            result += line.charAt(i);
+//        }
+//        System.out.println(result);
+//        return result;
+//    }
 
 
 }
