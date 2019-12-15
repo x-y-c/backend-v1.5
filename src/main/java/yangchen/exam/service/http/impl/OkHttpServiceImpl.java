@@ -4,7 +4,7 @@ import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import yangchen.exam.service.http.IOkhttpService;
+import yangchen.exam.service.http.OkhttpService;
 
 import java.time.LocalDate;
 import java.util.Map;
@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 @Service
-public class OkHttpServiceImpl implements IOkhttpService {
+public class OkHttpServiceImpl implements OkhttpService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OkHttpServiceImpl.class);
     private static final OkHttpClient okhttpClient = new OkHttpClient.Builder()
@@ -49,9 +49,9 @@ public class OkHttpServiceImpl implements IOkhttpService {
     }
 
     @Override
-    public String postJsonBody(String url, String body) {
+    public String postJsonBody(Integer studentId,String url, String body) {
         Long ts = LocalDate.now().toEpochDay();
-        LOGGER.info("Call POST json url=[{}] ts=[{}] body=[{}]", url, ts, body);
+        LOGGER.info("学生[{}]提交 Call POST json url=[{}] ts=[{}] body=[{}]",studentId, url, ts, body);
         try {
             RequestBody requestBody = RequestBody.create(JSON, body);
             Request request = new Request.Builder()
@@ -60,10 +60,10 @@ public class OkHttpServiceImpl implements IOkhttpService {
                     .build();
             Response response = okhttpClient.newCall(request).execute();
             String result = response.body().string();
-            LOGGER.info("Call POST json url=[{}] ts=[{}] code=[{}] result=[{}]", url, ts, response.code(), result);
+            LOGGER.info("学生[{}]提交 Call POST json url=[{}] ts=[{}] code=[{}] result=[{}]",studentId, url, ts, response.code(), result);
             return result;
         } catch (Exception e) {
-            LOGGER.error("Call POST json url=[{}] ts=[{}] e=[{}]", url, ts, e.getMessage(), e);
+            LOGGER.error("学生[{}]提交 Call POST json url=[{}] ts=[{}] e=[{}]",studentId, url, ts, e.getMessage(), e);
             return null;
         }
     }

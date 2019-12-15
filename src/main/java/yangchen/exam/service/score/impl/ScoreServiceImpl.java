@@ -163,8 +163,7 @@ public class ScoreServiceImpl implements ScoreService {
             for (String questionBh : questionBhList) {
                 Submit lastSubmit = submitRepo.getLastSubmit(examinationId, questionBh);
                 if (lastSubmit == null) {
-
-                    submitList.add(Submit.builder().questionId(questionBh).studentId(Long.valueOf(examInfo.getStudentNumber())).src("未提交").build());
+                    submitList.add(Submit.builder().questionId(questionBh).studentId(Long.valueOf(examInfo.getStudentNumber())).src(" ").build());
                 } else {
                     submitList.add(lastSubmit);
                 }
@@ -290,7 +289,7 @@ public class ScoreServiceImpl implements ScoreService {
                 Submit lastSubmit = submitRepo.getLastSubmit(examinationId, questionBh);
                 if (lastSubmit == null) {
 
-                    submitList.add(Submit.builder().questionId(questionBh).studentId(Long.valueOf(examInfo.getStudentNumber())).src("未提交").build());
+                    submitList.add(Submit.builder().questionId(questionBh).studentId(Long.valueOf(examInfo.getStudentNumber())).src(" ").build());
                 } else {
                     submitList.add(lastSubmit);
                 }

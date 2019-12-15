@@ -7,7 +7,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.models.auth.In;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,22 +18,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import yangchen.exam.Enum.QuestionTypeEnum;
-import yangchen.exam.Enum.StageEnum;
 import yangchen.exam.entity.QuestionNew;
 import yangchen.exam.entity.TestCase;
 import yangchen.exam.model.*;
 import yangchen.exam.repo.QuestionRepo;
 import yangchen.exam.service.compile.CompileCoreService;
 import yangchen.exam.service.compileService.CompileService;
-import yangchen.exam.service.http.IOkhttpService;
+import yangchen.exam.service.http.OkhttpService;
 import yangchen.exam.service.question.QuestionService;
-import yangchen.exam.service.testInfo.TestCaseService;
 import yangchen.exam.util.JavaJWTUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -55,7 +50,7 @@ public class CompileController {
     private QuestionService questionService;
 
     @Autowired
-    private IOkhttpService okhttpService;
+    private OkhttpService okhttpService;
 
     @Value("${compile.url.path}")
     private String compileUrl;
@@ -202,7 +197,7 @@ public class CompileController {
             gsonBuilder.disableHtmlEscaping();
             String compileModelJson = gson.toJson(compileModel);
             Logger.info(compileModelJson);
-            String jsonResult = okhttpService.postJsonBody(compileUrl, compileModelJson);
+            String jsonResult = okhttpService.postJsonBody(-1,compileUrl, compileModelJson);
             Logger.info(jsonResult);
             CompileResult compileResult = gson.fromJson(jsonResult, CompileResult.class);
             if (compileResult.getResult() != null) {

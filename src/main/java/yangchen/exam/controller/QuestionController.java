@@ -85,6 +85,8 @@ public class QuestionController {
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
     public JsonResult deleteQuestionByQuestionBh(@RequestParam String questionBh) {
         questionService.deleteQuestion(questionBh);
+//        LOGGER.info("[{}] delete question, the ip = [{}]",
+//                UserUtil.getUserId(httpServletRequest), IpUtil.getIpAddr(httpServletRequest));
         return JsonResult.succResult(null);
     }
 
@@ -95,8 +97,7 @@ public class QuestionController {
         QuestionNew save = questionRepo.save(questionNew);
         String flag = "审核";
         QuestionLog questionLog = questionService.addQuestionLog(questionNew, flag);
-        LOGGER.info(questionLog.toString());
-
+        LOGGER.info("用户[{}]审核题目[{}],当前题目状态为[{}]",questionLog.getEditCustomBh(),questionLog.getQuestionBh(),questionNew.getActived());
         return JsonResult.succResult(save);
     }
 
@@ -224,13 +225,12 @@ public class QuestionController {
         String flag = "";
         QuestionNew question = questionService.findByQuestionBh(questionUpdate.getQuestionBh());
         if (question != null) {
-            LOGGER.info("question [{}] is exist", question.getQuestionBh());
             //更新 id作为数据库主键，需要setID
             flag = "修改";
             questionUpdate.setId(question.getId());
-
+            LOGGER.info("修改题目：question [{}]", question.getQuestionBh());
         } else {
-            LOGGER.info("question not exist");
+
             flag = "新增";
             TestCase testCase = new TestCase();
             testCase.setTestCaseBh(UUID.randomUUID().toString().replace("-", ""));
@@ -239,14 +239,14 @@ public class QuestionController {
             testCase.setQuestionId(questionBh);
             TestCase testCase1 = testCaseService.addTestCase(testCase);
             questionUpdate.setQuestionBh(questionBh);
+            LOGGER.info("新增题目question[{}]",question.getQuestionBh());
         }
 
         //QuestionNew questionResult = questionService.saveQuestionWithImgDecode(questionNew);
         QuestionNew questionResult = questionService.saveQuestionWithImgDecodeNew(questionUpdate);
         if (questionResult != null) {
             QuestionLog questionLog = questionService.addQuestionLog(questionUpdate, flag);
-            LOGGER.info(questionLog.toString());
-
+            LOGGER.info("questionLog.toString()===[{}]",questionLog.toString());
             return JsonResult.succResult(questionResult);
         } else {
             return JsonResult.errorResult(ResultCode.WRONG_PARAMS, "添加失败", null);
@@ -258,7 +258,7 @@ public class QuestionController {
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     public JsonResult searchStage(@RequestParam(required = false) String condition, @RequestParam(required = false) String value, int page, int pageLimit) {
-        LOGGER.info("[{}],[{}],[{}],[{}]", condition, value, page, pageLimit);
+//        LOGGER.info("[{}],[{}],[{}],[{}]", condition, value, page, pageLimit);
         if (StringUtils.isEmpty(value) || StringUtils.isEmpty(condition)) {
             Page<QuestionNew> pageQuestion = questionService.getPageQuestion(page - 1, pageLimit);
             return JsonResult.succResult(pageQuestion);
@@ -291,8 +291,8 @@ public class QuestionController {
      */
     @RequestMapping(value = "/testCaseAll", method = RequestMethod.POST)
     public JsonResult testCaseModify(@RequestParam String testCaseBh, @RequestParam Double scoreWeight, @RequestParam String testCaseInput, @RequestParam String testCaseOutput, @RequestParam String questionId, @RequestParam Integer operate) {
-        LOGGER.info("testCaseBh=[{}],scoreWeight=[{}],testCaseInput=[{}],testCaseOutput=[{}],questionId=[{}],operate=[{}]",
-                testCaseBh, scoreWeight, testCaseInput, testCaseOutput, questionId, operate);
+//        LOGGER.info("testCaseBh=[{}],scoreWeight=[{}],testCaseInput=[{}],testCaseOutput=[{}],questionId=[{}],operate=[{}]",
+//                testCaseBh, scoreWeight, testCaseInput, testCaseOutput, questionId, operate);
         JsonResult jsonResult = testCaseService.modifyTestCase(testCaseBh, scoreWeight, testCaseInput, testCaseOutput, questionId, operate);
         return jsonResult;
     }

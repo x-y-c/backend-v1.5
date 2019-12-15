@@ -376,6 +376,7 @@ public class ExaminationServiceImpl implements ExaminationService {
         else{
             LOGGER.info("学生[{}]交卷 备注:sign=[{}]，未知情况", studentId, sign);
         }
+        //todo 计算成绩的方法
         ExamPaper save = examPaperRepo.save(examination);
         Integer finalScore = 0;
         List<Score> byExaminationAndStudentId = scoreService.findByExaminationAndStudentId(examination.getId(), studentId);

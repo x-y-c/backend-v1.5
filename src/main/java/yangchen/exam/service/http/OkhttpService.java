@@ -7,11 +7,11 @@ import java.util.Map;
  * @date 2019/5/4 10:48
  * O(∩_∩)O)
  */
-public interface IOkhttpService {
+public interface OkhttpService {
 
     String get(String url);
 
-    String postJsonBody(String url, String body);
+    String postJsonBody(Integer studentId,String url, String body);
 
     String postForm(String url, Map<String, String> formData);
 

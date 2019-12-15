@@ -93,4 +93,9 @@ public class ScoreController {
     public void downloadSubmitAll(HttpServletResponse response,@RequestParam Integer id)throws IOException{
         scoreService.exportSubmitAll(response,id);
     }
+
+    //todo 定时任务 在考试结束后1分钟操作  将所有试卷提交的任务
+    public void submitTest(){
+
+    }
 }

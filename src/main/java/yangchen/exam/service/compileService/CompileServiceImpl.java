@@ -14,7 +14,7 @@ import yangchen.exam.model.CompileModel;
 import yangchen.exam.model.CompileResult;
 import yangchen.exam.repo.QuestionRepo;
 import yangchen.exam.repo.SubmitPracticeRepo;
-import yangchen.exam.service.http.IOkhttpService;
+import yangchen.exam.service.http.OkhttpService;
 import yangchen.exam.service.question.QuestionService;
 import yangchen.exam.service.score.ScoreService;
 import yangchen.exam.service.submit.SubmitService;
@@ -38,7 +38,7 @@ public class CompileServiceImpl implements CompileService {
     private TestCaseService testCaseService;
 
     @Autowired
-    private IOkhttpService okhttpService;
+    private OkhttpService okhttpService;
 
     @Autowired
     private SubmitService submitService;
@@ -106,10 +106,10 @@ public class CompileServiceImpl implements CompileService {
         Gson gson = gsonBuilder.create();
         gsonBuilder.disableHtmlEscaping();
         String compileModelJson = gson.toJson(compileModel);
-        LOGGER.info("compileModelJson=[{}]",compileModelJson);
+        LOGGER.info("学生[{}]提交，compileModelJson=[{}]",studentId,compileModelJson);
         //todo  /*jsonResult 如果报错会返回null，需要再这里加一些处理*/
-        String jsonResult = okhttpService.postJsonBody(compileUrl, compileModelJson);
-        LOGGER.info("jsonResult=[{}]",jsonResult);
+        String jsonResult = okhttpService.postJsonBody(studentId,compileUrl, compileModelJson);
+        LOGGER.info("学生[{}]提交，jsonResult=[{}]",studentId,jsonResult);
         CompileResult compileResult = gson.fromJson(jsonResult, CompileResult.class);
         if (compileResult.getResult() != null) {
             // for (Result result : compileResult.getResult()) {

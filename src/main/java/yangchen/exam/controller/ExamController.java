@@ -223,7 +223,7 @@ public class ExamController {
     @RequestMapping(value = "/edit", method = RequestMethod.GET)
     public JsonResult editExamGroupInfo(@RequestParam String examGroupId) {
         ExamGroupNew examGroupNew = examGroupRepo.findById(Integer.valueOf(examGroupId)).get();
-        LOGGER.info(examGroupId.toString());
+        LOGGER.info("[{}]正在编辑考试[{}]信息",examGroupNew.getExamTeacher(),examGroupId);
         if (examGroupNew.getEndTime().before(new Timestamp(System.currentTimeMillis()))) {
             return JsonResult.errorResult(ResultCode.OVER_ENDTIME, "over", null);
         } else {
@@ -254,11 +254,7 @@ public class ExamController {
 
     @RequestMapping(value = "/getTimeDifferenceBeforeExamStart",method = RequestMethod.GET)
     public JsonResult getTimeDifferenceBeforeExamStart(Integer examinationId){
-        System.out.println(examinationId);
-
         ExamInfo examInfo = examInfoRepo.findByExaminationId(examinationId);
-        System.out.println(examInfo);
-        System.out.println(examInfo.getExamGroupId());
         ExamGroupNew examGroupNew = examGroupRepo.findById(examInfo.getExamGroupId()).get();
         Timestamp beginTime = examGroupNew.getBeginTime();
         Timestamp nowTime = new Timestamp(System.currentTimeMillis());

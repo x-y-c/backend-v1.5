@@ -78,8 +78,7 @@ public class StudentInfoController {
 
     @RequestMapping(value = "/page", method = RequestMethod.GET)
     public JsonResult getPagedStudent(@RequestParam(required = false) String teacherId, @RequestParam(required = false) String grade, Integer page, Integer pageLimit) {
-        LOGGER.info("查询分页信息");
-        LOGGER.error("[{}],[{}],[{}],[{}]", teacherId, grade, page, pageLimit);
+        LOGGER.error("查询分页信息[{}],[{}],[{}],[{}]", teacherId, grade, page, pageLimit);
         if (StringUtils.isEmpty(grade)) {
             return JsonResult.succResult(studentService.getStudentPage(teacherId, page, pageLimit));
         } else {
@@ -90,7 +89,7 @@ public class StudentInfoController {
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public JsonResult addStudent(@RequestBody StudentModifyModel student) {
-        LOGGER.info("[{}] add student", UserUtil.getUserId(request));
+        LOGGER.info("[{}] add student[{}]", student.getTeacherName(),student.getStudentId());
         if (student.getType().equals(0)) {
             return studentService.insertStudent(student);
         } else {
@@ -100,6 +99,7 @@ public class StudentInfoController {
 
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
     public JsonResult deleteUserByStudentId(@RequestParam Integer studentId) {
+        LOGGER.info("学生[{}]被[{}]删除",studentId,UserUtil.getUserId(request));
         studentService.deleteStudentInfo(studentId);
         return JsonResult.succResult(null);
     }
@@ -107,7 +107,7 @@ public class StudentInfoController {
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public JsonResult updateStudent(@RequestBody StudentNew student) {
-        LOGGER.info("[{}] update student", UserUtil.getUserId(request));
+        LOGGER.info("[{}] update student[{}]", student.getTeacherId(),student.getStudentId());
         return JsonResult.succResult(studentService.changeStudentInfo(student));
     }
 
@@ -117,7 +117,7 @@ public class StudentInfoController {
                                      @RequestParam String password,
                                      @RequestParam String type,
                                      @RequestParam String userName) {
-        //LOGGER.info("[{}] change password", UserUtil.getUserId(request));
+        LOGGER.info("[{}] change password", userName);
 
         return studentService.changePassword(type,userName,studentId, oldPassword, password);
 
@@ -126,16 +126,16 @@ public class StudentInfoController {
     @RequestMapping(value = "/info", method = RequestMethod.GET)
     public JsonResult getStudentInfo(@RequestParam(required = false) Integer studentId,@RequestParam String userName,String type) {
         if(type.equals(UserTypeEnum.getUserTypeCode("学生"))){
-            LOGGER.info("学生用户：[{}] get [{}] studentInfo", UserUtil.getUserId(request), studentId);
+//            LOGGER.info("学生用户：[{}] get [{}] studentInfo", UserUtil.getUserId(request), studentId);
             return JsonResult.succResult(studentService.getStudentByStudentId(studentId));
         }
         else if(type.equals(UserTypeEnum.getUserTypeCode("教师"))){
-            LOGGER.info("教师用户：[{}] get [{}] studentInfo", UserUtil.getUserId(request), userName );
+//            LOGGER.info("教师用户：[{}] get [{}] studentInfo", UserUtil.getUserId(request), userName );
             Teacher teacher = teacherService.findTeacherByName(userName);
             return JsonResult.succResult(teacher);
         }
         else{
-            LOGGER.info("管理员用户：[{}] get [{}] studentInfo", UserUtil.getUserId(request), userName );
+//            LOGGER.info("管理员用户：[{}] get [{}] studentInfo", UserUtil.getUserId(request), userName );
             Administrator administrator = adminManagement.findByAdminName(userName);
             return JsonResult.succResult(administrator);
         }

@@ -67,16 +67,17 @@ public class TestCaseServiceImpl implements TestCaseService {
                                      String testCaseOutput, String questionId, Integer operate) {
 
         initModifyList(questionId);
-        LOGGER.info("the init list size=[{}]", modifyList.size());
-        LOGGER.info("the init list =[{}]", modifyList.toString());
+//        LOGGER.info("the init list size=[{}]", modifyList.size());
+//        LOGGER.info("the init list =[{}]", modifyList.toString());
         Double sum = 0.0;//计算权重
         switch (operate) {
             // 增加
             case 1:
                 TestCase testCase = new TestCase(testCaseBh, scoreWeight, testCaseInput, testCaseOutput, questionId);
                 modifyList.add(testCase);
-                LOGGER.info("the add list size=[{}]", modifyList.size());
-                LOGGER.info("the add list =[{}]", modifyList.toString());
+//                LOGGER.info("the add list size=[{}]", modifyList.size());
+//                LOGGER.info("the add list =[{}]", modifyList.toString());
+                LOGGER.info("增加的测试用例：[{}]",testCase.toString());
                 break;
             //修改
             case 2:
@@ -88,8 +89,9 @@ public class TestCaseServiceImpl implements TestCaseService {
                 TestCase modifyTestCase = modifyList.get(testCaseIndex);
                 TestCase modifyedTestCode = updateTestCase(modifyTestCase, scoreWeight, testCaseInput, testCaseOutput);
                 modifyList.set(testCaseIndex, modifyedTestCode);
-                LOGGER.info("the modify list size=[{}]", modifyList.size());
-                LOGGER.info("the modify list =[{}]", modifyList.toString());
+//                LOGGER.info("the modify list size=[{}]", modifyList.size());
+//                LOGGER.info("the modify list =[{}]", modifyList.toString());
+                LOGGER.info("修改的测试用例[{}]，testCaseIndex=[{}]",modifyedTestCode.toString(),testCaseIndex);
                 break;
             //delete
             case 3:
