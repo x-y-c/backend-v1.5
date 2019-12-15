@@ -252,5 +252,29 @@ public class ExamController {
     }
 
 
+    @RequestMapping(value = "/getTimeDifferenceBeforeExamStart",method = RequestMethod.GET)
+    public JsonResult getTimeDifferenceBeforeExamStart(Integer examinationId){
+        System.out.println(examinationId);
+
+        ExamInfo examInfo = examInfoRepo.findByExaminationId(examinationId);
+        System.out.println(examInfo);
+        System.out.println(examInfo.getExamGroupId());
+        ExamGroupNew examGroupNew = examGroupRepo.findById(examInfo.getExamGroupId()).get();
+        Timestamp beginTime = examGroupNew.getBeginTime();
+        Timestamp nowTime = new Timestamp(System.currentTimeMillis());
+        long timeDifference = beginTime.getTime() - nowTime.getTime();
+        return JsonResult.succResult(new Timestamp(timeDifference));
+    }
+
+
+    @RequestMapping(value = "/getTimeDifferenceBeforeExamEnd",method = RequestMethod.GET)
+    public JsonResult getTimeDifferenceBeforeExamEnd(Integer examinationId){
+        ExamInfo examInfo = examInfoRepo.findByExaminationId(examinationId);
+        ExamGroupNew examGroupNew = examGroupRepo.findById(examInfo.getExamGroupId()).get();
+        Timestamp endTime = examGroupNew.getEndTime();
+        Timestamp nowTime = new Timestamp(System.currentTimeMillis());
+        long timeDifference = endTime.getTime() - nowTime.getTime();
+        return JsonResult.succResult(new Timestamp(timeDifference));
+    }
 
 }
