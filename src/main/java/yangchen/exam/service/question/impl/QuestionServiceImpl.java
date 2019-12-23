@@ -449,7 +449,8 @@ public class QuestionServiceImpl implements QuestionService {
     public List<QuestionLogModel> getQuestionLog() {
         List<QuestionLog> questionLogList = questionLogRepo.findAll();
         List<QuestionLogModel> questionLogModelList = new ArrayList<>();
-        questionLogList.parallelStream().forEach(questionLog -> {
+        //questionLogList.parallelStream().forEach(questionLog -> {
+        questionLogList.forEach(questionLog -> {
             QuestionLogModel questionLogModel = new QuestionLogModel();
             questionLogModel.setOptionDo(questionLog.getOptionDo());
             questionLogModel.setName(questionLog.getEditCustomBh());
@@ -512,6 +513,48 @@ public class QuestionServiceImpl implements QuestionService {
             output.add(testCase.getTestCaseOutput());
         });
         return output;
+    }
+
+    @Override
+    public Boolean isChangeSrc(QuestionNew question,String src) {
+        Gson gson = new Gson();
+        SourceCode sourceCode = gson.fromJson(question.getSourceCode(), SourceCode.class);
+        String codeInDB = sourceCode.getKey().get(0).getCode();
+
+        src = washData(src);
+        codeInDB = washData(codeInDB);
+        System.out.println("result\n"+src.equals(codeInDB));
+        if(src.equals(codeInDB)){
+            return false;
+        }
+        return true;
+    }
+
+
+    public String washData(String src){
+        int pos = 0;
+        int lengthStart = "/******start******/".length();
+        int lengthEnd = "/******end******/".length();
+        StringBuilder s = new StringBuilder(src);
+        int num1 = 0;
+        int num2 = 0;
+        while(true){
+
+            num1=src.indexOf("/******start******/",pos);
+            if(num1!=-1){
+                num1 = src.indexOf("/******start******/",pos) + lengthStart;
+            }
+            num2 = src.indexOf("/******end******/",pos);
+
+            if(num1==-1||num2==-1){
+                break;
+            }
+            src = s.replace(num1,num2,"").toString();
+            num2 = src.indexOf("/******end******/",pos);
+            pos = num2 + lengthEnd;
+        }
+        System.out.println("================\n"+src);
+        return src;
     }
 
 //    public String add(String line, String memo) {

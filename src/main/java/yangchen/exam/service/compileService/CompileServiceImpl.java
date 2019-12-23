@@ -64,15 +64,35 @@ public class CompileServiceImpl implements CompileService {
         int succCount = 0;
         List<TestCase> TestCaseList = new ArrayList<>();
         QuestionNew questionBy = null;
+        Boolean isChangeSrc = false;
         SubmitPractice submitPractice = new SubmitPractice();
+
+
 
         if (StringUtils.isEmpty(questionBh)) {
             questionBy = questionService.getQuestionBy(examinationId, index);
-            submitService.addSubmit(Submit.builder().examinationId(examinationId).questionId(questionBy.getQuestionBh()).src(src).studentId(Long.valueOf(studentId)).build());
-        } else {
+            if(questionBy.getIsProgramBlank().equals("100001")){
+                if(questionService.isChangeSrc(questionBy,src)){
+                    return null;
+                }
+            }
+            submitService.addSubmit(
+                    Submit.builder()
+                            .examinationId(examinationId)
+                            .questionId(questionBy.getQuestionBh())
+                            .src(src)
+                            .studentId(Long.valueOf(studentId))
+                    .build());
+        }
+        else {
             //练习的情况
             isPractice = true;
             questionBy = questionRepo.findByQuestionBh(questionBh);
+            if(questionBy.getIsProgramBlank().equals("100001")){
+                if(questionService.isChangeSrc(questionBy,src)){
+                    return null;
+                }
+            }
             //todo
             //需要一张记录练习题的表嘛？yes
             submitPractice.setQuestionId(String.valueOf(questionBy.getId()));
@@ -111,6 +131,7 @@ public class CompileServiceImpl implements CompileService {
         String jsonResult = okhttpService.postJsonBody(studentId,compileUrl, compileModelJson);
         LOGGER.info("学生[{}]提交，jsonResult=[{}]",studentId,jsonResult);
         CompileResult compileResult = gson.fromJson(jsonResult, CompileResult.class);
+        LOGGER.info("学生[{}]提交，compileResult=[{}]",studentId,compileResult);
         if (compileResult.getResult() != null) {
             // for (Result result : compileResult.getResult()) {
             for (int i = 0; i < compileResult.getResult().size(); i++) {

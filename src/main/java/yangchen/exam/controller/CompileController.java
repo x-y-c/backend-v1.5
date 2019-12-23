@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import yangchen.exam.Enum.DifficultEnum;
 import yangchen.exam.Enum.QuestionTypeEnum;
 import yangchen.exam.entity.QuestionNew;
 import yangchen.exam.entity.TestCase;
@@ -79,8 +80,8 @@ public class CompileController {
      */
 
     @ApiOperation(value = "获取编译结果")
-    @ApiImplicitParams({@ApiImplicitParam(name = "code",value = "源代码",required = true,dataType = "String"),
-                        @ApiImplicitParam(name = "examinationId",value = "试卷编号",required = true,dataType = "Integer")})
+    @ApiImplicitParams({@ApiImplicitParam(name = "code", value = "源代码", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "examinationId", value = "试卷编号", required = true, dataType = "Integer")})
     @RequestMapping(value = {"/", ""}, method = RequestMethod.POST)
     public JsonResult compileTest(@RequestParam String code,
                                   @RequestParam(required = false) Integer examinationId,
@@ -104,6 +105,9 @@ public class CompileController {
         /*Test*/
 
         CompileFront compileFront = compileService.compileCode(examinationId, index, code, studentId, questionBh);
+        if (compileFront == null) {
+            return JsonResult.errorResult("R0019", "代码填空题初始代码被修改", "");
+        }
         return JsonResult.succResult(compileFront);
     }
 
@@ -137,18 +141,18 @@ public class CompileController {
         QuestionNew question = questionRepo.findByQuestionBh(questionBh);
         SourceCode sourceCode = gson.fromJson(question.getSourceCode(), SourceCode.class);
         String code = sourceCode.getKey().get(0).getCode();
-        if ("100001".equals(question.getIsProgramBlank())){
+        if ("100001".equals(question.getIsProgramBlank())) {
             code = question.getMemo();
 //            code = add(code, question.getMemo());
         }
         String filePath = compileCoreService.writeSourceCode(code);
         String compileResult = compileCoreService.compileCode();
-        if (!StringUtils.isEmpty(compileResult)&&compileResult.indexOf("error")!=-1) {
+        if (!StringUtils.isEmpty(compileResult) && compileResult.indexOf("error") != -1) {
             Logger.error("compileError =[{}]", compileResult);
             return JsonResult.errorResult(ResultCode.COMPILE_ERROR, "编译出错", compileResult);
         } else {
             String output = compileCoreService.getOutput(input);
-            Logger.info("compileSuccess![{}]",output);
+            Logger.info("[{}]compileSuccess!the output [{}]", questionBh, output);
             return JsonResult.succResult(output);
         }
 
@@ -159,24 +163,29 @@ public class CompileController {
      * 检测题库中题目的正确与否
      * @return
      */
-    @RequestMapping(value = "/cccheck",method = RequestMethod.GET)
-    public JsonResult cccheck(){
+    @RequestMapping(value = "/cccheck", method = RequestMethod.GET)
+    public JsonResult cccheck() {
         List<Integer> passNo = new ArrayList<>();
         List<Integer> errorNo = new ArrayList<>();
+        Boolean isChangeSrc = false;
         List<QuestionNew> questionList = new ArrayList<>();
         try {
             questionList = questionRepo.findByQuestionTypeAndActivedIsTrue(QuestionTypeEnum.getQuestionTypeCode("编程题"));
-        }catch (NullPointerException e){
-            return JsonResult.errorResult(ResultCode.QUESTION_NUM_ERROR,"该题型题目数为0","空");
+        } catch (NullPointerException e) {
+            return JsonResult.errorResult(ResultCode.QUESTION_NUM_ERROR, "该题型题目数为0", "空");
         }
+
+
         List<TestCase> TestCaseList = new ArrayList<>();
-        for(QuestionNew question:questionList){
+        for (QuestionNew question : questionList) {
             //todo 代码填空和代码编程题的区分
             String src = "";
-            if ("100001".equals(question.getIsProgramBlank())){
+            if ("100001".equals(question.getIsProgramBlank())) {
                 src = question.getMemo();
-            }
-            else{
+                if (questionService.isChangeSrc(question, src)) {
+                    errorNo.add(question.getId());
+                }
+            } else {
                 SourceCode sourceCode = gson.fromJson(question.getSourceCode(), SourceCode.class);
                 src = sourceCode.getKey().get(0).getCode();
             }
@@ -196,9 +205,9 @@ public class CompileController {
             Gson gson = gsonBuilder.create();
             gsonBuilder.disableHtmlEscaping();
             String compileModelJson = gson.toJson(compileModel);
-            Logger.info(compileModelJson);
-            String jsonResult = okhttpService.postJsonBody(-1,compileUrl, compileModelJson);
-            Logger.info(jsonResult);
+//            Logger.info(compileModelJson);
+            String jsonResult = okhttpService.postJsonBody(-1, compileUrl, compileModelJson);
+//            Logger.info(jsonResult);
             CompileResult compileResult = gson.fromJson(jsonResult, CompileResult.class);
             if (compileResult.getResult() != null) {
                 //for (Result result : compileResult.getResult()) {
@@ -207,8 +216,7 @@ public class CompileController {
                     if (compileResult.getResult().get(i).getResult().equals("0") || compileResult.getResult().get(i).getResult().equals("1")) {
                         //return JsonResult.succResult(compileResult.getResult().get(i).getResult());
                         passNo.add(question.getId());
-                    }
-                    else {
+                    } else {
                         //return JsonResult.errorResult(ResultCode.TESTCASE_NOT_SAME,"测试用例不一致",question.getId());
                         errorNo.add(question.getId());
                     }
@@ -220,5 +228,48 @@ public class CompileController {
         JavaJWTUtil.removeDuplicate(errorNo);
         return JsonResult.succResult(errorNo.toString());
 
+    }
+
+
+    /***
+     * 检测题库中Input有没有回车
+     * @return
+     */
+    @RequestMapping(value = "/cccheckInput", method = RequestMethod.GET)
+    public JsonResult cccheckInput() {
+        List<QuestionNew> questionList = new ArrayList<>();
+        List<Integer> errorNo = new ArrayList<>();
+        try {
+            questionList = questionRepo.findByQuestionTypeAndActivedIsTrue(QuestionTypeEnum.getQuestionTypeCode("编程题"));
+        } catch (NullPointerException e) {
+            return JsonResult.errorResult(ResultCode.QUESTION_NUM_ERROR, "该题型题目数为0", "空");
+        }
+        for (QuestionNew question : questionList) {
+            if (question.getDifficulty().equals(DifficultEnum.getDifficultCode("困难"))) {
+
+            } else {
+                SourceCode sourceCode = gson.fromJson(question.getSourceCode(), SourceCode.class);
+                String src = sourceCode.getKey().get(0).getCode();
+                //查找src中是否含有gets或者scanf("%s")
+                if(src.indexOf("gets")!=-1 || src.indexOf("scanf(\"%s")!=-1){
+                    List<String> inputList = questionService.getQuestionInput(question.getQuestionBh());
+                    for(String input:inputList){
+                        if(input.indexOf("\r\n")!=-1){
+                            errorNo.add(question.getId());
+                        }
+                    }
+                }
+
+//                if(src.indexOf("== \'\\n\'")!=-1 || src.indexOf("!= \'\\n\'")!=-1){
+//                    errorNo.add(question.getId());
+//                }
+
+//                if (src.indexOf("float") != -1 || src.indexOf("double") != -1) {
+//                    errorNo.add(question.getId());
+//                }
+            }
+        }
+        JavaJWTUtil.removeDuplicate(errorNo);
+        return JsonResult.succResult(errorNo.toString());
     }
 }
