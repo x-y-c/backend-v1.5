@@ -21,8 +21,7 @@ public class GlobalExceptionHandler {
             msg = "服务器出错";
         }
         e.printStackTrace();
-        LOGGER.info(e.getMessage());
-
+        LOGGER.info("定位:GlobalExceptionHandler=",msg);
         return JsonResult.errorResult("fail", msg, null);
     }
 }

@@ -13,13 +13,12 @@ public class UAService {
 
 public static Logger LOGGER = LoggerFactory.getLogger(UAService.class);
     public void testUa(String ua) throws IOException {
-//       UASparser uaSparser =null;
-//
-//                uaSparser = new UASparser(OnlineUpdater.getVendoredInputStream());
+//      UASparser uaSparser =null;
+//      uaSparser = new UASparser(OnlineUpdater.getVendoredInputStream());
 
         UserAgent uatest = UserAgentUtil.parse(ua);
 
-      LOGGER.info(  uatest.getBrowser().toString());//Chrome
+        LOGGER.info(uatest.getBrowser().toString());//Chrome
         LOGGER.info(uatest.getVersion());//14.0.835.163
         LOGGER.info(uatest.getEngine().toString());//Webkit
         LOGGER.info(uatest.getEngineVersion());//535.1
