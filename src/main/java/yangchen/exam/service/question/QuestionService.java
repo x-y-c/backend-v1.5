@@ -110,4 +110,7 @@ public interface QuestionService {
     List<String> getQuestionInput(String questionBh);
     List<String> getQuestionOutput(String questionBh);
 
+
+    Boolean isChangeSrc(QuestionNew question,String src);
+
 }
