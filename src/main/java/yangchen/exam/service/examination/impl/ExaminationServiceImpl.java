@@ -1,6 +1,7 @@
 package yangchen.exam.service.examination.impl;
 
 import com.google.gson.Gson;
+import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import yangchen.exam.service.examInfo.ExamInfoService;
 import yangchen.exam.service.examination.ExamGroupService;
 import yangchen.exam.service.examination.ExaminationService;
 import yangchen.exam.service.question.QuestionService;
+import yangchen.exam.service.score.QuartzService;
 import yangchen.exam.service.score.ScoreService;
 import yangchen.exam.service.student.StudentService;
 import yangchen.exam.service.submit.SubmitService;
@@ -73,6 +75,9 @@ public class ExaminationServiceImpl implements ExaminationService {
 
     @Autowired
     private SubmitService submitService;
+
+    @Autowired
+    private QuartzService quartzService;
 
 
     @Override
@@ -200,7 +205,21 @@ public class ExaminationServiceImpl implements ExaminationService {
             Boolean aBoolean = examTask(student, questionList, examParam, examGroup1.getId());
         });
 
-
+        //添加进timer中
+        //判断时间是不是在今天
+        long examEndTime = examGroup1.getEndTime().getTime();
+        long todayStartTime = QuartzService.getStartTime().getTime();
+        long todayEndTime = QuartzService.getnowEndTime().getTime();
+        if(examEndTime> todayStartTime &&examEndTime < todayEndTime){
+            List<ExamInfo> examInfoList = examInfoRepo.findByExamGroupId(examGroup1.getId());
+            for(ExamInfo examInfo:examInfoList){
+                Date executeTime = new Date(examGroup1.getEndTime().getTime());
+                ExamPaper examPaper = examPaperRepo.findById(examInfo.getExaminationId()).get();
+                Integer studentId = examInfo.getStudentNumber();
+                quartzService.submitTest(executeTime,examPaper,studentId);
+                LOGGER.info("创建考试时增加的timer,examgroupId = [{}]",examGroup1.getId());
+            }
+        }
 
 //        return examGroup1;
         return JsonResult.succResult(examGroup1.toString());
@@ -364,22 +383,29 @@ public class ExaminationServiceImpl implements ExaminationService {
 
     @Override
     public Boolean submitTest(Integer id, Integer studentId,Integer sign) {
-        ExamPaper examination = examPaperRepo.findById(id).get();
-        examination.setFinished(Boolean.TRUE);
+        ExamPaper examPaper = examPaperRepo.findById(id).get();
 
+        examPaper.setFinished(Boolean.TRUE);
+        examPaper = examPaperRepo.save(examPaper);
+
+        Integer finalScore = computeScore(examPaper,studentId);
         if(sign==1) {
-            LOGGER.info("学生[{}]交卷 备注:sign=[{}]，主动交卷", studentId, sign);
+            LOGGER.info("学生[{}]交卷，试卷编号[{}], 备注:sign=[{}]，主动交卷，成绩 [{}] 分", studentId, id, sign, finalScore);
         }
         else if(sign==2){
-            LOGGER.info("学生[{}]交卷 备注:sign=[{}]，被动交卷", studentId, sign);
+            LOGGER.info("学生[{}]交卷，试卷编号[{}], 备注:sign=[{}]，被动交卷, 成绩 [{}] 分", studentId, id, sign, finalScore);
         }
         else{
-            LOGGER.info("学生[{}]交卷 备注:sign=[{}]，未知情况", studentId, sign);
+            LOGGER.info("学生[{}]交卷，试卷编号[{}], 备注:sign=[{}]，其他情况, 成绩 [{}] 分", studentId, id, sign, finalScore);
         }
+        return examPaper != null;
+    }
+
+    @Override
+    public Integer computeScore(ExamPaper examPaper, Integer studentId){
         //todo 计算成绩的方法
-        ExamPaper save = examPaperRepo.save(examination);
         Integer finalScore = 0;
-        List<Score> byExaminationAndStudentId = scoreService.findByExaminationAndStudentId(examination.getId(), studentId);
+        List<Score> byExaminationAndStudentId = scoreService.findByExaminationAndStudentId(examPaper.getId(), studentId);
         for (Score score1 : byExaminationAndStudentId) {
             finalScore = finalScore + score1.getScore();
         }
@@ -392,10 +418,10 @@ public class ExaminationServiceImpl implements ExaminationService {
              */
             finalScore = finalScore / 5;
         }
-        ExamInfo examInfoByExaminationId = examInfoService.getExamInfoByExaminationId(examination.getId());
+        ExamInfo examInfoByExaminationId = examInfoService.getExamInfoByExaminationId(examPaper.getId());
         examInfoByExaminationId.setExaminationScore(finalScore);
         examInfoRepo.save(examInfoByExaminationId);
-        return save != null;
+        return finalScore;
     }
 
 }

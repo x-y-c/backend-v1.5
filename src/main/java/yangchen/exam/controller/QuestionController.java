@@ -196,7 +196,7 @@ public class QuestionController {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            LOGGER.info(e.getMessage());
+            LOGGER.info("定位/exam/question/image=[{}]",e.getMessage());
         }
         return JsonResult.errorResult(ResultCode.WRONG_PARAMS, "呜呜呜呜", returnMap);
 
@@ -228,7 +228,7 @@ public class QuestionController {
             //更新 id作为数据库主键，需要setID
             flag = "修改";
             questionUpdate.setId(question.getId());
-            LOGGER.info("修改题目：question [{}]", question.getQuestionBh());
+            LOGGER.info("用户[{}]修改题目：question [{}]", question.getCustomBh(),question.getQuestionBh());
         } else {
 
             flag = "新增";

@@ -1,6 +1,8 @@
 package yangchen.exam.controller;
 
 
+import cn.hutool.http.useragent.UserAgent;
+import cn.hutool.http.useragent.UserAgentUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +66,13 @@ public class UserController {
 //        LOGGER.info("the ip is [{}]", IpUtil.getIpAddr(request));
 //        String userId = request.getHeader("userId");
 //        LOGGER.info("the userId is [{}]", userId);
+        String header = request.getHeader("User-Agent");
+        UserAgent userAgent = UserAgentUtil.parse(header);
+//        LOGGER.info("[{}],[{}]",userAgent,userAgent.getBrowser());
+        if(!userAgent.getBrowser().toString().equals("Chrome")){
+            LOGGER.info("学生登陆：用户 [{}] 登陆失败--错误码：[{}]，错误原因：[{}]",studentId,ResultCode.BROWSER_NOT_CHROME,"未使用谷歌浏览器");
+            return JsonResult.errorResult(ResultCode.BROWSER_NOT_CHROME,"请使用谷歌浏览器登陆",null);
+        }
         StudentNew student;
         try{
             student = StudentService.getStudentByStudentId(Integer.valueOf(studentId));

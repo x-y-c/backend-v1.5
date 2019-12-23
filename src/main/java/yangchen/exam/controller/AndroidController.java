@@ -2,7 +2,6 @@ package yangchen.exam.controller;
 
 
 import io.swagger.annotations.Api;
-import org.aspectj.weaver.patterns.TypePatternQuestions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,6 @@ import yangchen.exam.Enum.QuestionTypeEnum;
 import yangchen.exam.Enum.StageEnum;
 import yangchen.exam.entity.QuestionNew;
 import yangchen.exam.entity.StudentNew;
-import yangchen.exam.model.ExaminationDetail;
 import yangchen.exam.model.JsonResult;
 import yangchen.exam.model.QuestionSelectModel;
 import yangchen.exam.model.ResultCode;

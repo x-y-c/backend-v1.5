@@ -79,4 +79,6 @@ public interface ExaminationService {
 
 
     Boolean submitTest(Integer id, Integer studentId,Integer sign);
+
+    Integer computeScore(ExamPaper examPaper, Integer studentId);
 }
