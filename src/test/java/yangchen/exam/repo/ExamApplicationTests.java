@@ -1,4 +1,4 @@
-package yangchen.exam;
+package yangchen.exam.repo;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

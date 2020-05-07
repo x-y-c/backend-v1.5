@@ -1,10 +1,8 @@
 package yangchen.exam.service.score;
 
-import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import yangchen.exam.entity.ExamGroupNew;
@@ -13,12 +11,8 @@ import yangchen.exam.entity.ExamPaper;
 import yangchen.exam.repo.ExamGroupRepo;
 import yangchen.exam.repo.ExamInfoRepo;
 import yangchen.exam.repo.ExamPaperRepo;
-import yangchen.exam.service.examination.ExamGroupService;
-import yangchen.exam.service.examination.ExaminationService;
 import yangchen.exam.service.examination.impl.ExaminationServiceImpl;
 
-import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -104,7 +98,7 @@ public class QuartzService {
     //在指定的日期运行一次定时任务
     /*如果executeDate日期在今天之前，则启动定时器后，立即运行一次定时任务run方法*/
     /*如果executeDate日期在今天之后，则启动定时器后，会在指定的将来日期运行一次任务run方法*/
-    public void submitTest(Date executeDate,ExamPaper examPaper,Integer studentId) {
+    public void submitTest(Date executeDate, ExamPaper ExamPaper, Integer studentId) {
 
 //    public void submitTest(Date excuteTime) throws ParseException {
 //        String sdate = "2019-12-15 18:00:00";
@@ -117,10 +111,10 @@ public class QuartzService {
             @Override
             public void run() {
                 System.out.println("开始计算成绩...");
-                Integer finalScore = examinationServiceImpl.computeScore(examPaper,studentId);
-                System.out.println(examPaper.getId()+" "+studentId+" "+finalScore);
+                Integer finalScore = examinationServiceImpl.computeScore(ExamPaper,studentId);
+                System.out.println(ExamPaper.getId()+" "+studentId+" "+finalScore);
                 LOGGER.info("当前时间=[{}],examEndTime=[{}],examPaper.getId()= [{}],studentId= [{}],finalScore= [{}]",
-                        new Date(),executeDate,examPaper.getId(),studentId,finalScore);
+                        new Date(),executeDate, ExamPaper.getId(),studentId,finalScore);
                 timer.cancel();
             }
         }, executeDate);

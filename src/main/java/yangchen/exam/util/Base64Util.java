@@ -15,8 +15,9 @@ public class Base64Util {
         //data:image/jpeg;base64,
         String imgBase64 = imgBase64Code.replaceAll("(data:image/).*(;base64,)", "");
         Base64 base64=new Base64();
-        byte[] bytes = base64.decode(imgBase64);
-        return bytes;
+        //byte[] bytes = base64.decode(imgBase64);
+        //return bytes;
+        return null;
     }
 
     public static void saveImgByte(String imgBase, String imgPath) throws IOException {

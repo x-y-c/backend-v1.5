@@ -8,6 +8,7 @@ import yangchen.exam.entity.QuestionLog;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author yc
@@ -112,5 +113,6 @@ public interface QuestionService {
 
 
     Boolean isChangeSrc(QuestionNew question,String src);
+
 
 }

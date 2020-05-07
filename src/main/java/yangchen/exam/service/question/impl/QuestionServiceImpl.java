@@ -531,6 +531,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
 
+
     public String washData(String src){
         int pos = 0;
         int lengthStart = "/******start******/".length();
@@ -579,6 +580,5 @@ public class QuestionServiceImpl implements QuestionService {
 //        System.out.println(result);
 //        return result;
 //    }
-
 
 }
