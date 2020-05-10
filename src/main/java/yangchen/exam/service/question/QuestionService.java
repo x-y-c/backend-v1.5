@@ -115,4 +115,7 @@ public interface QuestionService {
     Boolean isChangeSrc(QuestionNew question,String src);
 
 
+    List<ClassModel> getQuestionsAndId(String stage);
+
+
 }

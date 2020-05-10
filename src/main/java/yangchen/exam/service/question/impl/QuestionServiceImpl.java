@@ -530,6 +530,18 @@ public class QuestionServiceImpl implements QuestionService {
         return true;
     }
 
+    @Override
+    public List<ClassModel> getQuestionsAndId(String stage) {
+        List<QuestionNew> questionList = questionRepo.findByStageAndActivedIsTrue(stage);
+        List<ClassModel> questionAndIdList = new ArrayList<>(questionList.size());
+        questionList.forEach(question -> {
+            ClassModel classModel = new ClassModel();
+            classModel.setValue(question.getId().toString());
+            classModel.setLabel("("+question.getId().toString()+")"+question.getQuestionName());
+            questionAndIdList.add(classModel);
+        });
+        return questionAndIdList;
+    }
 
 
     public String washData(String src){
