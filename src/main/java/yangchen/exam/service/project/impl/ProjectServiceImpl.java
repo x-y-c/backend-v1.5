@@ -46,7 +46,7 @@ public class ProjectServiceImpl implements ProjectService {
         //考试班级
         List<String> gradeList = projectParam.getGrades();
         //教师id
-        Integer teacherId = teacherRepo.findByTeacherName(projectParam.getTeacherId()).getId();
+        Integer teacherId = teacherRepo.findByTeacherName(projectParam.getTeacherName()).getId();
         //学生list
         List<StudentNew> studentList = new ArrayList<>();
         for (String grade : gradeList) {

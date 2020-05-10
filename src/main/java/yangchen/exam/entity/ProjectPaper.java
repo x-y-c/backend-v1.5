@@ -11,6 +11,7 @@ import javax.persistence.*;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name="project_paper")
 public class ProjectPaper {
 
     @Column(name = "id")

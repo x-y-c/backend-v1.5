@@ -16,7 +16,7 @@ public class ProjectParam {
     private Integer ttl;
     private List<String> grades;
     private String homeworkName;
-    private String teacherId;
+    private String teacherName;
     private List<Integer> homework;
 
 }

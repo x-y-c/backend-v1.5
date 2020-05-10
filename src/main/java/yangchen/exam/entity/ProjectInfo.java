@@ -11,6 +11,7 @@ import java.util.Date;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name="project_info")
 public class ProjectInfo {
 
     @Column(name = "id")
