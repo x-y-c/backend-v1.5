@@ -21,6 +21,7 @@ public interface QuestionRepo extends JpaRepository<QuestionNew, Integer> {
     Page<QuestionNew> findByStage(String stage, Pageable pageable);
 
     List<QuestionNew> findByStageAndActivedIsTrue(String stage);
+    List<QuestionNew> findByStageAndQuestionTypeAndActivedIsTrue(String stage,String questionType);
 
     Page<QuestionNew> findById(Integer id, Pageable pageable);
 

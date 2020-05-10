@@ -27,10 +27,10 @@ public class ProjectController {
     @Autowired
     private QuestionService questionService;
 
-    @RequestMapping(value = "/showSelect", method = RequestMethod.POST)
+    @RequestMapping(value = "/showSelect", method = RequestMethod.GET)
     public JsonResult showSelect(String stage) {
         List<ClassModel> questionsAndId = questionService.getQuestionsAndId(stage);
-        if(questionsAndId==null){
+        if(questionsAndId.size()==0){
             return JsonResult.errorResult(ResultCode.QUESTION_TYPE_ERROR,"此阶段没有习题","");
         }
         return JsonResult.succResult(questionsAndId);

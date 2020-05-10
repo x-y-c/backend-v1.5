@@ -532,7 +532,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public List<ClassModel> getQuestionsAndId(String stage) {
-        List<QuestionNew> questionList = questionRepo.findByStageAndActivedIsTrue(stage);
+        List<QuestionNew> questionList = questionRepo.findByStageAndQuestionTypeAndActivedIsTrue(stage,QuestionTypeEnum.QUESTION_CODING.getQuestionTypeCode());
         List<ClassModel> questionAndIdList = new ArrayList<>(questionList.size());
         questionList.forEach(question -> {
             ClassModel classModel = new ClassModel();
