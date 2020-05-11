@@ -46,7 +46,7 @@ public class ProjectServiceImpl implements ProjectService {
         Timestamp beginTime = projectParam.getBeginTime();
         long bTime = beginTime.getTime();
         //结束时间
-        Timestamp endTime = new Timestamp(bTime + projectParam.getTtl() * 1000 * 60 * 24);
+        Timestamp endTime = new Timestamp(bTime + projectParam.getTtl() * 1000 * 60 * 60 * 24);
         //考试班级
         List<String> gradeList = projectParam.getGrades();
         //教师id
