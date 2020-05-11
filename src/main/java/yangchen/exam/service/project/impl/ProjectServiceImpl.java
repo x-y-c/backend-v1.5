@@ -1,6 +1,10 @@
 package yangchen.exam.service.project.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.ProjectGroup;
 import yangchen.exam.entity.ProjectInfo;
@@ -92,4 +96,14 @@ public class ProjectServiceImpl implements ProjectService {
 
         return project;
     }
+
+    @Override
+    public Page<ProjectGroup> getProjectPage(Integer page, Integer pageLimit, String teacherName) {
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
+        Pageable pageable = PageRequest.of(page, pageLimit, sort);
+        Integer teacherId = teacherRepo.findByTeacherName(teacherName).getId();
+        Page<ProjectGroup> projectGroupPage = projectGroupRepo.findByTeacherId(pageable, teacherId);
+        return projectGroupPage;
+    }
+
 }
