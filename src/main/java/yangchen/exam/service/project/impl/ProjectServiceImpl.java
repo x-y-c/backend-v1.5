@@ -1,5 +1,9 @@
 package yangchen.exam.service.project.impl;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.io.IoUtil;
+import cn.hutool.poi.excel.ExcelUtil;
+import cn.hutool.poi.excel.ExcelWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,9 +15,18 @@ import yangchen.exam.model.*;
 import yangchen.exam.repo.*;
 import yangchen.exam.service.project.ProjectService;
 import yangchen.exam.service.question.QuestionService;
+import yangchen.exam.service.score.ScoreService;
+import yangchen.exam.util.ZipUtil;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.net.URLEncoder;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -151,6 +164,182 @@ public class ProjectServiceImpl implements ProjectService {
             ProjectScoreModelList.add(projectScoreModel);
         }
         return ProjectScoreModelList;
+    }
+
+    @Override
+    public void exportScore(HttpServletResponse response, Integer homeworkGroupId) throws IOException {
+        List<ExcelScoreModel> excelScoreModels = new ArrayList<>();
+        ProjectGroup projectGroup = projectGroupRepo.findById(homeworkGroupId).get();
+        List<ProjectInfo> projectInfoList = projectInfoRepo.findByProjectGroupId(homeworkGroupId);
+        String examGroupName = projectGroup.getProjectName();
+        for (int i = 0; i < projectInfoList.size(); i++) {
+            StudentNew student = studentRepo.findByStudentId(projectInfoList.get(i).getStudentId());
+
+            excelScoreModels.add(ExcelScoreModel.builder()
+                    .id(i + 1)
+                    .name(student.getStudentName())
+                    .grade(student.getStudentGrade())
+                    .score(Double.valueOf(projectInfoList.get(i).getScore()))
+                    .studentID(projectInfoList.get(i).getStudentId())
+                    .build());
+        }
+        excelScore(response,excelScoreModels,examGroupName);
+    }
+
+    @Override
+    public void exportSubmitAll(HttpServletResponse response, Integer homeworkGroupId) throws IOException {
+
+        ProjectGroup projectGroup = projectGroupRepo.findById(homeworkGroupId).get();
+        List<ProjectInfo> projectInfoList = projectInfoRepo.findByProjectGroupId(homeworkGroupId);
+
+        String projectName = projectGroup.getProjectName();
+
+        List<ExcelSubmitModel> result = new ArrayList<>();
+        for(ProjectInfo projectInfo:projectInfoList){
+            StudentNew student = studentRepo.findByStudentId(projectInfo.getStudentId());
+
+            List<QuestionNew> questionNewList = questionService.getProjectPaperByProjectInfoId(projectInfo.getId());
+
+            List<ExcelSubmitModel> submitInformation = getSubmitInformation(questionNewList, projectInfo, student);
+            submitInformation.forEach(excelSubmitModel -> {
+                result.add(excelSubmitModel);
+            });
+        }
+        excelSubmitAll(response,result,projectName);
+
+    }
+
+    @Override
+    public void exportSubmit(HttpServletResponse response, Integer homeworkGroupId) throws IOException {
+        HashMap<String, ByteArrayOutputStream> excel = new HashMap<>();
+        ProjectGroup projectGroup = projectGroupRepo.findById(homeworkGroupId).get();
+        List<ProjectInfo> projectInfoList = projectInfoRepo.findByProjectGroupId(homeworkGroupId);
+
+        String projectName = projectGroup.getProjectName();
+
+        for(ProjectInfo projectInfo:projectInfoList){
+            StudentNew student = studentRepo.findByStudentId(projectInfo.getStudentId());
+            List<QuestionNew> questionNewList = questionService.getProjectPaperByProjectInfoId(projectInfo.getId());
+            List<ExcelSubmitModel> result = getSubmitInformation(questionNewList,projectInfo,student);
+
+            ByteArrayOutputStream byteArrayInputStream = new ByteArrayOutputStream();
+            ExcelWriter writer = ExcelUtil.getWriter();
+            writer.addHeaderAlias("studentNumber", "学号");
+            writer.addHeaderAlias("studentName", "姓名");
+            writer.addHeaderAlias("examPaperId", "试卷编号");
+            writer.addHeaderAlias("questionBh", "题目编号");
+            writer.addHeaderAlias("questionName", "题目名称");
+            writer.addHeaderAlias("stage", "阶段");
+            writer.addHeaderAlias("questionDesc", "题目描述");
+            writer.addHeaderAlias("src", "学生代码");
+            writer.addHeaderAlias("codeLines","代码行数");
+            writer.addHeaderAlias("score", "成绩");
+
+            result.add(ExcelSubmitModel.builder().score(Double.valueOf(projectInfo.getScore())).build());
+            //LOGGER.info("submit" + result.toString());
+            List<ExcelSubmitModel> rows = CollUtil.newArrayList(result);
+            writer.write(rows, true);
+            writer.flush(byteArrayInputStream, true);
+            writer.close();
+            excel.put(projectName + "_" + student.getStudentId() + "_" + student.getStudentName() + ".xls", byteArrayInputStream);
+
+            byteArrayInputStream.close();
+        }
+        ByteArrayOutputStream zip = ZipUtil.zip(excel, new File("d://test8.zip"));
+
+        response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(projectName + "_学生提交记录.zip", "utf-8"));
+        response.setContentType("application/zip");
+        response.getOutputStream().write(zip.toByteArray());
+    }
+
+    public void excelScore(HttpServletResponse response,List<ExcelScoreModel> excelScoreModels,String examGroupName) throws IOException{
+
+        List<ExcelScoreModel> rows = CollUtil.newArrayList(excelScoreModels);
+        ExcelWriter writer = ExcelUtil.getWriter();
+        writer.addHeaderAlias("id", "序号");
+        writer.addHeaderAlias("grade", "班级");
+        writer.addHeaderAlias("studentID", "学号");
+        writer.addHeaderAlias("name", "姓名");
+        writer.addHeaderAlias("score", "成绩");
+        writer.write(rows, true);
+
+        response.setContentType("application/vnd.ms-excel;charset=utf-8");
+        String value = "attachment;filename=" + URLEncoder.encode(examGroupName + ".xls", "UTF-8");
+        response.setHeader("Content-Disposition", value);
+        ServletOutputStream outputStream = response.getOutputStream();
+
+        writer.flush(outputStream, true);
+        writer.close();
+        IoUtil.close(outputStream);
+    }
+
+    public void excelSubmitAll(HttpServletResponse response,List<ExcelSubmitModel> result ,String examDesc) throws IOException {
+
+        ExcelWriter writer = ExcelUtil.getWriter();
+        writer.addHeaderAlias("studentNumber", "学号");
+        writer.addHeaderAlias("studentName", "姓名");
+        writer.addHeaderAlias("examPaperId", "试卷编号");
+        writer.addHeaderAlias("questionBh", "题目编号");
+        writer.addHeaderAlias("questionName", "题目名称");
+        writer.addHeaderAlias("stage", "阶段");
+        writer.addHeaderAlias("questionDesc", "题目描述");
+        writer.addHeaderAlias("src", "学生代码");
+        writer.addHeaderAlias("codeLines","代码行数");
+        writer.addHeaderAlias("score", "成绩");
+        //LOGGER.info("submitAll" + result.toString());
+//        System.out.println(result.toString());
+        List<ExcelSubmitModel> rows = CollUtil.newArrayList(result);
+        writer.write(rows, true);
+
+        response.setContentType("application/vnd.ms-excel;charset=utf-8");
+        String value = "attachment;filename=" + URLEncoder.encode(examDesc + "_学生提交记录导出（总）" + ".xls", "UTF-8");
+        response.setHeader("Content-Disposition", value);
+        ServletOutputStream outputStream = response.getOutputStream();
+
+        writer.flush(outputStream, true);
+        writer.close();
+        IoUtil.close(outputStream);
+    }
+
+    private List<ExcelSubmitModel> getSubmitInformation(List<QuestionNew> questionNewList, ProjectInfo fixExamInfo, StudentNew student){
+//        List<ExcelSubmitModel> excelSubmitModelList = new ArrayList<>();
+//        for(int index=0; index<questionNewList.size(); index++){
+//            QuestionNew question = questionNewList.get(index);
+//            FixSubmit lastSubmit = fixSubmitRepo.getLastSubmit(fixExamInfo.getStudentID(), fixExamInfo.getExamPaperId(), index);
+//            System.out.println(lastSubmit);
+//            if (lastSubmit == null) {
+//                excelSubmitModelList.add(
+//                        setExcelSubmitModel(
+//                                question.getId(),
+//                                "",
+//                                0,
+//                                question.getQuestionDetails(),
+//                                question.getQuestionName(),
+//                                0.0,
+//                                question.getStage(),
+//                                fixExamInfo.getExamPaperId(),
+//                                fixExamInfo.getStudentID(),
+//                                student.getStudentName()
+//                        ));
+//            }
+//            else{
+//                excelSubmitModelList.add(
+//                        setExcelSubmitModel(
+//                                question.getId(),
+//                                lastSubmit.getSrc(),
+//                                lastSubmit.getCodeLines(),
+//                                question.getQuestionDetails(),
+//                                question.getQuestionName(),
+//                                lastSubmit.getScore()/questionNewList.size(),
+//                                question.getStage(),
+//                                fixExamInfo.getExamPaperId(),
+//                                fixExamInfo.getStudentID(),
+//                                student.getStudentName()));
+//            }
+//
+//        }
+//        return excelSubmitModelList;
+        return null;
     }
 
 

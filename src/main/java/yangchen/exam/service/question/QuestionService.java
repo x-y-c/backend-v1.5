@@ -119,4 +119,6 @@ public interface QuestionService {
 
     List<QuestionNew> getProjectPaper(Integer projectPaperId);
 
+    List<QuestionNew> getProjectPaperByProjectInfoId(Integer examInfoId);
+
 }

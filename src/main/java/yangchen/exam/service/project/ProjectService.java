@@ -8,6 +8,8 @@ import yangchen.exam.model.ProjectDetails;
 import yangchen.exam.model.ProjectParam;
 import yangchen.exam.model.ProjectScoreModel;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 public interface ProjectService {
@@ -22,5 +24,12 @@ public interface ProjectService {
 
    List<ProjectScoreModel> getScoreByTeacher(Integer homeworkGroupId);
 
+   //导出成绩
+   void exportScore(HttpServletResponse response, Integer homeworkGroupId) throws IOException;
 
+   //导出全部提交记录
+   void exportSubmitAll(HttpServletResponse response, Integer homeworkGroupId) throws IOException;
+
+   //导出个人提交记录
+   void exportSubmit(HttpServletResponse response, Integer homeworkGroupId) throws IOException;
 }

@@ -17,4 +17,7 @@ public interface ProjectPaperRepo extends JpaRepository<ProjectPaper,Integer>{
 
     @Query(value = "select question_list from project_paper where id =?1", nativeQuery = true)
     String getQuestions(Integer projectPaperId);
+
+    @Query(value = "select question_list from project_paper where id =(select project_paper_id from project_info where id =?1)", nativeQuery = true)
+    String getQuestionList(Integer projectInfoId);
 }

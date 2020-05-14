@@ -554,6 +554,13 @@ public class QuestionServiceImpl implements QuestionService {
         return questionList;
     }
 
+    @Override
+    public List<QuestionNew> getProjectPaperByProjectInfoId(Integer examInfoId) {
+        String questions = projectPaperRepo.getQuestionList(examInfoId);
+        List<QuestionNew> questionList = getQuestionList(questions);
+        return questionList;
+    }
+
     private List<QuestionNew> getQuestionList(String questions){
         List<String> questionList= Arrays.asList(questions .split(",")).stream().map(s -> (s.trim())).collect(Collectors.toList());
         List<QuestionNew> questionNewList = new ArrayList<>();

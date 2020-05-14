@@ -14,6 +14,8 @@ import yangchen.exam.service.question.QuestionService;
 import yangchen.exam.util.IpUtil;
 import yangchen.exam.util.UserUtil;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,6 +71,21 @@ public class ProjectController {
     public JsonResult getProjectScoreByTeacher(@RequestParam Integer homeworkGroupId){
         List<ProjectScoreModel> score = projectService.getScoreByTeacher(homeworkGroupId);
         return JsonResult.succResult(score);
+    }
+
+    @GetMapping(value = "/downScore")
+    public void downloadScoreExcel(HttpServletResponse response, @RequestParam Integer homeworkGroupId) throws IOException {
+        projectService.exportScore(response,homeworkGroupId);
+    }
+
+    @GetMapping("/downSubmit")
+    public void downloadSubmit(HttpServletResponse response,@RequestParam Integer homeworkGroupId) throws IOException {
+        projectService.exportSubmit(response,homeworkGroupId);
+    }
+
+    @GetMapping("/downSubmitAll")
+    public void downloadSubmitAll(HttpServletResponse response,@RequestParam Integer homeworkGroupId)throws IOException{
+        projectService.exportSubmitAll(response,homeworkGroupId);
     }
 
 }
