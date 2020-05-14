@@ -10,12 +10,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import yangchen.exam.Enum.StageEnum;
 import yangchen.exam.entity.*;
 import yangchen.exam.model.*;
 import yangchen.exam.repo.*;
 import yangchen.exam.service.project.ProjectService;
 import yangchen.exam.service.question.QuestionService;
-import yangchen.exam.service.score.ScoreService;
+import yangchen.exam.util.HtmlUtil;
 import yangchen.exam.util.ZipUtil;
 
 import javax.servlet.ServletOutputStream;
@@ -49,6 +50,9 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Autowired
     private QuestionService questionService;
+
+    @Autowired
+    private ProjectSubmitRepo projectSubmitRepo;
 
     @Override
     public ProjectGroup createProject(ProjectParam projectParam) {
@@ -301,46 +305,58 @@ public class ProjectServiceImpl implements ProjectService {
         IoUtil.close(outputStream);
     }
 
-    private List<ExcelSubmitModel> getSubmitInformation(List<QuestionNew> questionNewList, ProjectInfo fixExamInfo, StudentNew student){
-//        List<ExcelSubmitModel> excelSubmitModelList = new ArrayList<>();
-//        for(int index=0; index<questionNewList.size(); index++){
-//            QuestionNew question = questionNewList.get(index);
-//            FixSubmit lastSubmit = fixSubmitRepo.getLastSubmit(fixExamInfo.getStudentID(), fixExamInfo.getExamPaperId(), index);
-//            System.out.println(lastSubmit);
-//            if (lastSubmit == null) {
-//                excelSubmitModelList.add(
-//                        setExcelSubmitModel(
-//                                question.getId(),
-//                                "",
-//                                0,
-//                                question.getQuestionDetails(),
-//                                question.getQuestionName(),
-//                                0.0,
-//                                question.getStage(),
-//                                fixExamInfo.getExamPaperId(),
-//                                fixExamInfo.getStudentID(),
-//                                student.getStudentName()
-//                        ));
-//            }
-//            else{
-//                excelSubmitModelList.add(
-//                        setExcelSubmitModel(
-//                                question.getId(),
-//                                lastSubmit.getSrc(),
-//                                lastSubmit.getCodeLines(),
-//                                question.getQuestionDetails(),
-//                                question.getQuestionName(),
-//                                lastSubmit.getScore()/questionNewList.size(),
-//                                question.getStage(),
-//                                fixExamInfo.getExamPaperId(),
-//                                fixExamInfo.getStudentID(),
-//                                student.getStudentName()));
-//            }
-//
-//        }
-//        return excelSubmitModelList;
-        return null;
-    }
+    private List<ExcelSubmitModel> getSubmitInformation(List<QuestionNew> questionNewList, ProjectInfo projectInfo, StudentNew student){
+        List<ExcelSubmitModel> excelSubmitModelList = new ArrayList<>();
+        for(int index=0; index<questionNewList.size(); index++){
+            QuestionNew question = questionNewList.get(index);
+            ProjectSubmit lastSubmit = projectSubmitRepo.getLastSubmit(projectInfo.getStudentId(), projectInfo.getProjectPaperId(), index);
+            if (lastSubmit == null) {
+                excelSubmitModelList.add(
+                        setExcelSubmitModel(
+                                question.getId(),
+                                "",
+                                0,
+                                question.getQuestionDetails(),
+                                question.getQuestionName(),
+                                0.0,
+                                question.getStage(),
+                                projectInfo.getProjectPaperId(),
+                                projectInfo.getStudentId(),
+                                student.getStudentName()
+                        ));
+            }
+            else{
+                excelSubmitModelList.add(
+                        setExcelSubmitModel(
+                                question.getId(),
+                                lastSubmit.getSrc(),
+                                lastSubmit.getCodeLines(),
+                                question.getQuestionDetails(),
+                                question.getQuestionName(),
+                                lastSubmit.getScore()/questionNewList.size(),
+                                question.getStage(),
+                                projectInfo.getProjectPaperId(),
+                                projectInfo.getStudentId(),
+                                student.getStudentName()));
+            }
 
+        }
+        return excelSubmitModelList;
+    }
+    private ExcelSubmitModel setExcelSubmitModel(Integer id, String src, Integer codeLines, String questionDetails, String questionName, double score, String stage, Integer examPaperId, Integer studentId, String studentName){
+        ExcelSubmitModel excelSubmitModel  = ExcelSubmitModel.builder()
+                .questionBh(String.valueOf(id))
+                .src(src)
+                .codeLines(codeLines)
+                .questionDesc(HtmlUtil.delHtmlTag(questionDetails))
+                .questionName(questionName)
+                .score(Double.valueOf(score))
+                .stage(StageEnum.getStageName(stage))
+                .examPaperId(examPaperId)
+                .studentNumber(studentId)
+                .studentName(studentName)
+                .build();
+        return excelSubmitModel;
+    }
 
 }

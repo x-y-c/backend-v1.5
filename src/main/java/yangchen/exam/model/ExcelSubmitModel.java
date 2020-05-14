@@ -20,5 +20,6 @@ public class ExcelSubmitModel {
     private String stage;
     private String questionDesc;
     private String src;
+    private Integer codeLines;
     private Double score;
 }
