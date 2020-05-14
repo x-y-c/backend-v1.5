@@ -10,4 +10,6 @@ public interface ProjectService {
    ProjectGroup createProject(ProjectParam projectParam);
 
    Page<ProjectGroup> getProjectPage(Integer page, Integer pageLimit, String teacherName);
+
+   void deleteProject(Integer homeworkId);
 }

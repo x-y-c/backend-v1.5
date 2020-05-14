@@ -49,4 +49,10 @@ public class ProjectController {
         Page<ProjectGroup> projectPage = projectService.getProjectPage(page-1, pageLimit, teacherName);
         return JsonResult.succResult(projectPage);
     }
+
+    @RequestMapping(value = "/homeworkInfo/delete",method = RequestMethod.POST)
+    public JsonResult deleteHomeworkInfo(@RequestParam Integer homeworkId){
+        projectService.deleteProject(homeworkId);
+        return JsonResult.succResult(null);
+    }
 }

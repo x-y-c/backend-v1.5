@@ -106,4 +106,14 @@ public class ProjectServiceImpl implements ProjectService {
         return projectGroupPage;
     }
 
+    @Override
+    public void deleteProject(Integer homeworkId) {
+
+        List<Integer> projectPapers = projectInfoRepo.searchProjectPaper(homeworkId);
+        projectGroupRepo.deleteProjectGroupById(homeworkId);
+        projectInfoRepo.deleteProjectInfoByProjectGroupId(homeworkId);
+        projectPaperRepo.deleteProjectPaperByIdIn(projectPapers);
+
+    }
+
 }
