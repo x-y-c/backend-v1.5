@@ -10,11 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import yangchen.exam.Enum.StageEnum;
 import yangchen.exam.entity.*;
 import yangchen.exam.model.*;
@@ -494,5 +493,24 @@ public class ProjectServiceImpl implements ProjectService {
         long nowTime = new Timestamp(System.currentTimeMillis()).getTime();
         long t = (time - nowTime)/1000;
         return t >0 ? t : 0;
+    }
+
+    @Override
+    public Page<ScoreDetail> getScorePage(Integer pageNum, Integer pageLimit, Integer studentId) {
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
+        Pageable pageable = PageRequest.of(pageNum - 1, pageLimit, sort);
+        int start = (int) pageable.getOffset();
+        List<ProjectInfo> list = projectInfoRepo.findByStudentIdOrderByIdDesc(studentId);
+        int end = (start + pageable.getPageSize()) > list.size() ? list.size() : (start + pageable.getPageSize());
+        List<ProjectInfo> projectInfoList = list.subList(start, end);
+        List<ScoreDetail> result = new ArrayList<>(projectInfoList.size());
+        projectInfoList.forEach(projectInfo -> {
+            ScoreDetail scoreDetail = new ScoreDetail();
+            scoreDetail.setExamGroupId(projectInfo.getProjectGroupId());
+            scoreDetail.setScore(Double.valueOf(projectInfo.getScore()));
+            scoreDetail.setExamName(projectGroupRepo.findById(projectInfo.getProjectGroupId()).get().getProjectName());
+            result.add(scoreDetail);
+        });
+        return new PageImpl<ScoreDetail>(result, pageable, list.size());
     }
 }

@@ -6,13 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import yangchen.exam.entity.ProjectGroup;
-import yangchen.exam.entity.QuestionNew;
+import yangchen.exam.entity.*;
 import yangchen.exam.model.*;
 import yangchen.exam.service.project.ProjectService;
 import yangchen.exam.service.question.QuestionService;
-import yangchen.exam.util.IpUtil;
-import yangchen.exam.util.UserUtil;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -118,5 +115,11 @@ public class ProjectController {
     public JsonResult getStartTime(@RequestParam Integer projectInfoId){
         long startTime =  projectService.getStartTime(projectInfoId);
         return JsonResult.succResult(startTime);
+    }
+
+    @GetMapping(value = "/info")
+    public JsonResult getScoreList(@RequestParam Integer studentId, Integer page, Integer pageLimit) {
+        Page<ScoreDetail> scorePage = projectService.getScorePage(page, pageLimit, studentId);
+        return JsonResult.succResult(scorePage);
     }
 }

@@ -42,4 +42,6 @@ public interface ProjectService {
    long getEndTime(Integer projectInfoId);
 
    long getStartTime(Integer projectInfoId);
+
+   Page<ScoreDetail> getScorePage(Integer pageNum, Integer pageLimit, Integer studentId);
 }

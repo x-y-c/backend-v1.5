@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ScoreDetail {
+    private Integer examGroupId;
     private String examName;
     private Double score;
 }
