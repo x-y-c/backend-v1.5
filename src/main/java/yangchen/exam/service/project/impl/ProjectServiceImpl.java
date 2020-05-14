@@ -2,9 +2,12 @@ package yangchen.exam.service.project.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.http.useragent.UserAgentUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +19,9 @@ import yangchen.exam.model.*;
 import yangchen.exam.repo.*;
 import yangchen.exam.service.project.ProjectService;
 import yangchen.exam.service.question.QuestionService;
+import yangchen.exam.util.DecodeQuestionDetails;
 import yangchen.exam.util.HtmlUtil;
+import yangchen.exam.util.IpUtil;
 import yangchen.exam.util.ZipUtil;
 
 import javax.servlet.ServletOutputStream;
@@ -27,11 +32,16 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
+
+    @Value("${image.nginx.url.path}")
+    private String imgNginxUrl;
 
     @Autowired
     private TeacherRepo teacherRepo;
@@ -390,5 +400,46 @@ public class ProjectServiceImpl implements ProjectService {
             projectDetails.add(examinationDetail);
         }
         return projectDetails;
+    }
+
+    @Override
+    public JsonResult getProjectPaper(Integer projectInfoId, Integer studentId) {
+
+        ProjectInfo projectInfo = projectInfoRepo.findById(projectInfoId).get();
+        if (!projectInfo.getStudentId().equals(studentId)) {
+            return JsonResult.errorResult(ResultCode.NO_PERMISSION, "没有权限查看该试卷", null);
+        }
+        else if(projectInfo.getFinished() == Boolean.TRUE) {
+            return JsonResult.succResult(QuestionResult.builder().used(1).questionInfo(null).build());
+        }
+        else {
+            List<QuestionDetail> questionDetailList = new ArrayList<>();
+            String questionList = projectPaperRepo.getQuestions(projectInfo.getProjectPaperId());
+            List<String> ql= Arrays.asList(questionList .split(",")).stream().map(s -> (s.trim())).collect(Collectors.toList());
+            for(int i=0; i<ql.size(); i++){
+                QuestionNew questionById = questionService.findQuestionById(Integer.valueOf(ql.get(i)));
+                if (questionById != null) {
+                    QuestionDetail questionDetail = new QuestionDetail();
+                    questionDetail.setQuestion(DecodeQuestionDetails.getRightImage(imgNginxUrl, questionById.getQuestionDetails()));
+                    questionDetail.setTitle(questionById.getQuestionName());
+                    questionDetail.setCustomBh(questionById.getCustomBh());
+                    questionDetail.setId(String.valueOf(questionById.getId()));
+                    if ("100001".equals(questionById.getIsProgramBlank())) {
+                        Gson gson = new Gson();
+                        SourceCode sourceCode = gson.fromJson(questionById.getSourceCode(), SourceCode.class);
+                        questionDetail.setSrc(sourceCode.getKey().get(0).getCode());
+                    } else {
+                        questionDetail.setSrc("");
+                    }
+                    ProjectSubmit lastSubmit = projectSubmitRepo.getLastSubmit(studentId, projectInfo.getProjectPaperId(), i);
+                    if (lastSubmit!=null){
+                        questionDetail.setScore(lastSubmit.getScore());
+                        questionDetail.setCodeHistory(lastSubmit.getSrc());
+                    }
+                    questionDetailList.add(questionDetail);
+                }
+            }
+            return JsonResult.succResult(QuestionResult.builder().used(0).questionInfo(questionDetailList).build());
+        }
     }
 }

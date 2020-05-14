@@ -4,10 +4,7 @@ package yangchen.exam.service.project;
 import org.springframework.data.domain.Page;
 import yangchen.exam.entity.ProjectGroup;
 import yangchen.exam.entity.ProjectSubmit;
-import yangchen.exam.model.ExaminationDetail;
-import yangchen.exam.model.ProjectDetails;
-import yangchen.exam.model.ProjectParam;
-import yangchen.exam.model.ProjectScoreModel;
+import yangchen.exam.model.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -37,4 +34,6 @@ public interface ProjectService {
    ProjectSubmit addSubmit(ProjectSubmit projectSubmit);
 
    List<ExaminationDetail> getProjectDetail(Integer studentId);
+
+   JsonResult getProjectPaper(Integer projectInfoId, Integer studentId);
 }

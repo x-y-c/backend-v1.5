@@ -93,4 +93,9 @@ public class ProjectController {
         List<ExaminationDetail> projectDetails = projectService.getProjectDetail(studentId);
         return JsonResult.succResult(projectDetails);
     }
+
+    @RequestMapping(value = "/homeworkInfo/question", method = RequestMethod.GET)
+    public JsonResult getQuestionInfo(Integer id, Integer studentId) {
+        return projectService.getProjectPaper(id, studentId);
+    }
 }
