@@ -36,4 +36,6 @@ public interface ProjectService {
    List<ExaminationDetail> getProjectDetail(Integer studentId);
 
    JsonResult getProjectPaper(Integer projectInfoId, Integer studentId);
+
+   Boolean projectSubmitExamPaper(Integer projectInfoId, Integer studentId, Integer sign);
 }

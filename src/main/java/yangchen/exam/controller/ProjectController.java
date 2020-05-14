@@ -98,4 +98,13 @@ public class ProjectController {
     public JsonResult getQuestionInfo(Integer id, Integer studentId) {
         return projectService.getProjectPaper(id, studentId);
     }
+
+    @RequestMapping(value = "/homeworkInfo/submit", method = RequestMethod.GET)
+    public JsonResult submitExamPaper(@RequestParam Integer examInfoId,
+                                      @RequestParam Integer studentId,
+                                      @RequestParam(required = false) Integer sign){
+        Boolean aBoolean = projectService.projectSubmitExamPaper(examInfoId, studentId, sign);
+        return JsonResult.succResult(aBoolean);
+    }
+
 }

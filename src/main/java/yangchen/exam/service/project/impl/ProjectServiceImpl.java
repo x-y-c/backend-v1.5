@@ -6,6 +6,8 @@ import cn.hutool.http.useragent.UserAgentUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.google.gson.Gson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -39,6 +41,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
+
+    private static Logger LOGGER = LoggerFactory.getLogger(ProjectServiceImpl.class);
 
     @Value("${image.nginx.url.path}")
     private String imgNginxUrl;
@@ -441,5 +445,38 @@ public class ProjectServiceImpl implements ProjectService {
             }
             return JsonResult.succResult(QuestionResult.builder().used(0).questionInfo(questionDetailList).build());
         }
+    }
+
+    @Override
+    public Boolean projectSubmitExamPaper(Integer projectInfoId, Integer studentId, Integer sign) {
+        ProjectInfo projectInfo = projectInfoRepo.findById(projectInfoId).get();
+        projectInfo.setFinished(Boolean.TRUE);
+        Integer finalScore = computeScore(projectInfo.getProjectGroupId(),studentId);
+        if(sign==1) {
+            LOGGER.info("学生[{}]交卷，试卷编号[{}]，备注:主动交卷，成绩 [{}] 分", studentId, projectInfoId, finalScore);
+        }
+        else{
+            LOGGER.info("学生[{}]交卷，试卷编号[{}]，备注:被动交卷，成绩 [{}] 分", studentId, projectInfoId, finalScore);
+        }
+
+        projectInfo.setScore(finalScore);
+        projectInfo = projectInfoRepo.save(projectInfo);
+        return projectInfo!=null;
+    }
+
+    private Integer computeScore(Integer projectGroupId,Integer studentId){
+        Integer projectPaperId = projectInfoRepo.findByProjectGroupIdAndStudentId(projectGroupId, studentId).getProjectPaperId();
+        Integer questionSize = projectPaperRepo.findById(projectPaperId).get().getQuestionSize();
+        double sumScore = 0.0;
+        for(int index = 0; index < questionSize; index++){
+            ProjectSubmit lastSubmit = projectSubmitRepo.getLastSubmit(studentId, projectPaperId, index);
+            if (lastSubmit!=null){
+                Integer score = lastSubmit.getScore();
+                sumScore += score;
+            }
+        }
+        double finalScore = sumScore / questionSize;
+
+        return (int) finalScore;
     }
 }

@@ -23,4 +23,7 @@ public interface ProjectInfoRepo extends JpaRepository<ProjectInfo,Integer> {
     List<ProjectInfo> findByProjectGroupId(Integer homeworkGroupId);
 
     List<ProjectInfo> findByStudentIdOrderByIdDesc(Integer studentId);
+
+    ProjectInfo findByProjectGroupIdAndStudentId(Integer projectGroupId,Integer studentId);
+
 }
