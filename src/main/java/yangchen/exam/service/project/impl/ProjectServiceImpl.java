@@ -479,4 +479,12 @@ public class ProjectServiceImpl implements ProjectService {
 
         return (int) finalScore;
     }
+
+    @Override
+    public long getEndTime(Integer examInfoId) {
+        long time = projectGroupRepo.findById(projectInfoRepo.findById(examInfoId).get().getProjectGroupId()).get().getEndTime().getTime();
+        long nowTime = new Timestamp(System.currentTimeMillis()).getTime();
+        long t = (time - nowTime)/1000;
+        return t >0 ? t : 0;
+    }
 }

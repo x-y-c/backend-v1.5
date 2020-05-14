@@ -107,4 +107,10 @@ public class ProjectController {
         return JsonResult.succResult(aBoolean);
     }
 
+
+    @RequestMapping(value = "/homeworkInfo/getEndDeadline",method = RequestMethod.GET)
+    public JsonResult getEndTime(@RequestParam Integer projectInfoId){
+        long endTime = projectService.getEndTime(projectInfoId);
+        return JsonResult.succResult(endTime);
+    }
 }

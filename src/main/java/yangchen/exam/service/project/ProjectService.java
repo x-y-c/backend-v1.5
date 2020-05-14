@@ -38,4 +38,6 @@ public interface ProjectService {
    JsonResult getProjectPaper(Integer projectInfoId, Integer studentId);
 
    Boolean projectSubmitExamPaper(Integer projectInfoId, Integer studentId, Integer sign);
+
+   long getEndTime(Integer examInfoId);
 }
