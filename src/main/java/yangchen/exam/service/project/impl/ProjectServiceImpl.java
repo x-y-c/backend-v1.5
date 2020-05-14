@@ -7,10 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import yangchen.exam.entity.*;
-import yangchen.exam.model.ExaminationDetail;
-import yangchen.exam.model.JsonResult;
-import yangchen.exam.model.ProjectDetails;
-import yangchen.exam.model.ProjectParam;
+import yangchen.exam.model.*;
 import yangchen.exam.repo.*;
 import yangchen.exam.service.project.ProjectService;
 import yangchen.exam.service.question.QuestionService;
@@ -135,6 +132,25 @@ public class ProjectServiceImpl implements ProjectService {
         projectDetails.setExamTime(projectGroup.getProjectTtl());
 
         return projectDetails;
+    }
+
+    @Override
+    public List<ProjectScoreModel> getScoreByTeacher(Integer homeworkGroupId) {
+        List<ProjectScoreModel> ProjectScoreModelList = new ArrayList<>();
+        List<ProjectInfo> ProjectInfoList = projectInfoRepo.findByProjectGroupId(homeworkGroupId);
+        for(ProjectInfo projectInfo:ProjectInfoList){
+            ProjectScoreModel projectScoreModel = new ProjectScoreModel();
+            projectScoreModel.setFinished(projectInfo.getFinished());
+            projectScoreModel.setScore(projectInfo.getScore());
+            Integer studentId = projectInfo.getStudentId();
+            projectScoreModel.setStudentId(studentId);
+
+            StudentNew student = studentRepo.findByStudentId(studentId);
+            projectScoreModel.setStudentName(student.getStudentName());
+            projectScoreModel.setStudentGrade(student.getStudentGrade());
+            ProjectScoreModelList.add(projectScoreModel);
+        }
+        return ProjectScoreModelList;
     }
 
 

@@ -6,6 +6,7 @@ import yangchen.exam.entity.ProjectGroup;
 import yangchen.exam.model.ExaminationDetail;
 import yangchen.exam.model.ProjectDetails;
 import yangchen.exam.model.ProjectParam;
+import yangchen.exam.model.ProjectScoreModel;
 
 import java.util.List;
 
@@ -18,6 +19,8 @@ public interface ProjectService {
    void deleteProject(Integer homeworkId);
 
    ProjectDetails getProjectDetails(Integer homeworkGroupId);
+
+   List<ProjectScoreModel> getScoreByTeacher(Integer homeworkGroupId);
 
 
 }

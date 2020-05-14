@@ -65,4 +65,10 @@ public class ProjectController {
         return JsonResult.succResult(projectDetailsList);
     }
 
+    @RequestMapping(value = "/homeworkInfo/teacher/getScore",method = RequestMethod.GET)
+    public JsonResult getProjectScoreByTeacher(@RequestParam Integer homeworkGroupId){
+        List<ProjectScoreModel> score = projectService.getScoreByTeacher(homeworkGroupId);
+        return JsonResult.succResult(score);
+    }
+
 }
