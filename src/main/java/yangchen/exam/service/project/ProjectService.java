@@ -2,12 +2,14 @@ package yangchen.exam.service.project;
 
 
 import org.springframework.data.domain.Page;
+import org.springframework.transaction.annotation.Transactional;
 import yangchen.exam.entity.ProjectGroup;
 import yangchen.exam.entity.ProjectSubmit;
 import yangchen.exam.model.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.List;
 
 public interface ProjectService {
@@ -44,4 +46,10 @@ public interface ProjectService {
    long getStartTime(Integer projectInfoId);
 
    Page<ScoreDetail> getScorePage(Integer pageNum, Integer pageLimit, Integer studentId);
+
+   JsonResult isExamStart(Integer examGroupId);
+
+   @Transactional
+   void updateProjectGroup(Integer examGroupId, String examDesc, Integer examTime, Timestamp beginTime);
+
 }

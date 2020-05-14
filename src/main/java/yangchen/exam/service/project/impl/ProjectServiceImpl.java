@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import yangchen.exam.Enum.StageEnum;
@@ -513,4 +514,28 @@ public class ProjectServiceImpl implements ProjectService {
         });
         return new PageImpl<ScoreDetail>(result, pageable, list.size());
     }
+
+    @Override
+    public JsonResult isExamStart(Integer examGroupId) {
+        ProjectGroup projectGroup = projectGroupRepo.findById(examGroupId).get();
+        Timestamp beginTime = new Timestamp(projectGroup.getStartTime().getTime());
+        Timestamp endTime = new Timestamp(projectGroup.getEndTime().getTime());
+        if (new Timestamp(System.currentTimeMillis()).before(beginTime)){
+            return JsonResult.succResult(null);
+        }
+        else if(endTime.before(new Timestamp(System.currentTimeMillis()))) {
+            return JsonResult.errorResult(ResultCode.OVER_ENDTIME, "考试已经结束", null);
+        }
+        else {
+            return JsonResult.errorResult(ResultCode.OVER_ENDTIME, "考试已经开始", null);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void updateProjectGroup(Integer examGroupId, String examDesc, Integer examTime, Timestamp beginTime) {
+        Timestamp endTime = new Timestamp(beginTime.getTime() + examTime * 60 * 1000);
+        projectGroupRepo.updateExamGroup(examDesc,examTime,beginTime,endTime,examGroupId);
+    }
+
 }

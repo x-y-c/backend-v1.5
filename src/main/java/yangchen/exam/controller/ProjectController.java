@@ -13,6 +13,7 @@ import yangchen.exam.service.question.QuestionService;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -122,4 +123,17 @@ public class ProjectController {
         Page<ScoreDetail> scorePage = projectService.getScorePage(page, pageLimit, studentId);
         return JsonResult.succResult(scorePage);
     }
+
+    @RequestMapping(value = "/editHomework",method = RequestMethod.GET)
+    public JsonResult editHomework(@RequestParam Integer homeworkGroupId){
+        return projectService.isExamStart(homeworkGroupId);
+    }
+
+    @RequestMapping(value = "/updateExam",method = RequestMethod.POST)
+    public JsonResult updateExamGroup(@RequestBody ProjectGroup fixExamGroup){
+        projectService.updateProjectGroup(fixExamGroup.getId(),fixExamGroup.getProjectName(),
+                fixExamGroup.getProjectTtl(),new Timestamp(fixExamGroup.getStartTime().getTime()));
+        return JsonResult.succResult(null);
+    }
+
 }
