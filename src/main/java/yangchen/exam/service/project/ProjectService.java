@@ -39,5 +39,7 @@ public interface ProjectService {
 
    Boolean projectSubmitExamPaper(Integer projectInfoId, Integer studentId, Integer sign);
 
-   long getEndTime(Integer examInfoId);
+   long getEndTime(Integer projectInfoId);
+
+   long getStartTime(Integer projectInfoId);
 }

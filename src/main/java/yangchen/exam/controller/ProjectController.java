@@ -113,4 +113,10 @@ public class ProjectController {
         long endTime = projectService.getEndTime(projectInfoId);
         return JsonResult.succResult(endTime);
     }
+
+    @RequestMapping(value = "/getStartDeadline",method = RequestMethod.GET)
+    public JsonResult getStartTime(@RequestParam Integer projectInfoId){
+        long startTime =  projectService.getStartTime(projectInfoId);
+        return JsonResult.succResult(startTime);
+    }
 }

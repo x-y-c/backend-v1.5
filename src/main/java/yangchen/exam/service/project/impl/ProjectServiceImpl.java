@@ -481,8 +481,16 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public long getEndTime(Integer examInfoId) {
-        long time = projectGroupRepo.findById(projectInfoRepo.findById(examInfoId).get().getProjectGroupId()).get().getEndTime().getTime();
+    public long getEndTime(Integer projectInfoId) {
+        long time = projectGroupRepo.findById(projectInfoRepo.findById(projectInfoId).get().getProjectGroupId()).get().getEndTime().getTime();
+        long nowTime = new Timestamp(System.currentTimeMillis()).getTime();
+        long t = (time - nowTime)/1000;
+        return t >0 ? t : 0;
+    }
+
+    @Override
+    public long getStartTime(Integer projectInfoId) {
+        long time = projectGroupRepo.findById(projectInfoRepo.findById(projectInfoId).get().getProjectGroupId()).get().getStartTime().getTime();
         long nowTime = new Timestamp(System.currentTimeMillis()).getTime();
         long t = (time - nowTime)/1000;
         return t >0 ? t : 0;
