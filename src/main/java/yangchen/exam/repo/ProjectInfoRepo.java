@@ -16,4 +16,7 @@ public interface ProjectInfoRepo extends JpaRepository<ProjectInfo,Integer> {
 
     @Query(value = "select project_paper_id from project_info where project_group_id=?",nativeQuery = true)
     List<Integer> searchProjectPaper(Integer homeworkId);
+
+    @Query(value = "select project_paper_id from project_info where project_group_id=?1 order by id asc limit 0,1", nativeQuery = true)
+    Integer getProjectPaperIdByProjectGroupId(Integer homeworkInfo);
 }

@@ -117,5 +117,6 @@ public interface QuestionService {
 
     List<ClassModel> getQuestionsAndId(String stage);
 
+    List<QuestionNew> getProjectPaper(Integer projectPaperId);
 
 }

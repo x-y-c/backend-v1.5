@@ -14,6 +14,7 @@ import yangchen.exam.service.question.QuestionService;
 import yangchen.exam.util.IpUtil;
 import yangchen.exam.util.UserUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -55,4 +56,13 @@ public class ProjectController {
         projectService.deleteProject(homeworkId);
         return JsonResult.succResult(null);
     }
+
+    @RequestMapping(value = "/homeworkInfo/teacher/projectPaper",method = RequestMethod.GET)
+    public JsonResult getExamPaperList(@RequestParam Integer homeworkGroupId){
+        ProjectDetails projectDetails = projectService.getProjectDetails(homeworkGroupId);
+        List<ProjectDetails> projectDetailsList = new ArrayList<>();
+        projectDetailsList.add(projectDetails);
+        return JsonResult.succResult(projectDetailsList);
+    }
+
 }

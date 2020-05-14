@@ -6,14 +6,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import yangchen.exam.entity.ProjectGroup;
-import yangchen.exam.entity.ProjectInfo;
-import yangchen.exam.entity.ProjectPaper;
-import yangchen.exam.entity.StudentNew;
+import yangchen.exam.entity.*;
+import yangchen.exam.model.ExaminationDetail;
 import yangchen.exam.model.JsonResult;
+import yangchen.exam.model.ProjectDetails;
 import yangchen.exam.model.ProjectParam;
 import yangchen.exam.repo.*;
 import yangchen.exam.service.project.ProjectService;
+import yangchen.exam.service.question.QuestionService;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -36,6 +36,9 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Autowired
     private StudentRepo studentRepo;
+
+    @Autowired
+    private QuestionService questionService;
 
     @Override
     public ProjectGroup createProject(ProjectParam projectParam) {
@@ -115,5 +118,24 @@ public class ProjectServiceImpl implements ProjectService {
         projectPaperRepo.deleteProjectPaperByIdIn(projectPapers);
 
     }
+
+    @Override
+    public ProjectDetails getProjectDetails(Integer homeworkGroupId) {
+        ProjectDetails projectDetails = new ProjectDetails();
+        ProjectGroup projectGroup = projectGroupRepo.findById(homeworkGroupId).get();
+
+        Integer projectPaperId = projectInfoRepo.getProjectPaperIdByProjectGroupId(homeworkGroupId);
+
+        List<QuestionNew> questionList = questionService.getProjectPaper(projectPaperId);
+
+        projectDetails.setQuestionList(questionList);
+        projectDetails.setBeginTime(new Timestamp(projectGroup.getStartTime().getTime()));
+        projectDetails.setClassName(projectGroup.getClassName());
+        projectDetails.setProjectName(projectGroup.getProjectName());
+        projectDetails.setExamTime(projectGroup.getProjectTtl());
+
+        return projectDetails;
+    }
+
 
 }

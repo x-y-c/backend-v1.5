@@ -25,6 +25,7 @@ import yangchen.exam.util.UrlImageUtil;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author yc
@@ -49,6 +50,9 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Autowired
     private SubmitPracticeRepo submitPracticeRepo;
+
+    @Autowired
+    private ProjectPaperRepo projectPaperRepo;
 
     public static final Logger LOGGER = LoggerFactory.getLogger(QuestionServiceImpl.class);
 
@@ -543,6 +547,22 @@ public class QuestionServiceImpl implements QuestionService {
         return questionAndIdList;
     }
 
+    @Override
+    public List<QuestionNew> getProjectPaper(Integer projectPaperId){
+        String questions = projectPaperRepo.getQuestions(projectPaperId);
+        List<QuestionNew> questionList = getQuestionList(questions);
+        return questionList;
+    }
+
+    private List<QuestionNew> getQuestionList(String questions){
+        List<String> questionList= Arrays.asList(questions .split(",")).stream().map(s -> (s.trim())).collect(Collectors.toList());
+        List<QuestionNew> questionNewList = new ArrayList<>();
+        for(int i=0; i<questionList.size(); i++) {
+            QuestionNew questionNew = questionRepo.findById(Integer.valueOf(questionList.get(i))).get();
+            questionNewList.add(questionNew);
+        }
+        return questionNewList;
+    }
 
     public String washData(String src){
         int pos = 0;
