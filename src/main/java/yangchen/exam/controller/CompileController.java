@@ -272,4 +272,15 @@ public class CompileController {
         JavaJWTUtil.removeDuplicate(errorNo);
         return JsonResult.succResult(errorNo.toString());
     }
+
+    @RequestMapping(value = {"/project"}, method = RequestMethod.POST)
+    public JsonResult compileProject(@RequestParam String code, @RequestParam Integer projectInfoId,
+                                     @RequestParam Integer index, @RequestParam Integer studentId) {
+
+        CompileFront compileFront = compileService.compileProject(projectInfoId, index, code, studentId);
+        if (compileFront == null) {
+            return JsonResult.errorResult("R0019", "代码填空题初始代码被修改", "");
+        }
+        return JsonResult.succResult(compileFront);
+    }
 }

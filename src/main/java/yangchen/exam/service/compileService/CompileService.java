@@ -11,4 +11,6 @@ public interface CompileService {
 
     CompileFront compileCode(Integer examinationId, Integer index, String src, Integer studentId, String questionBh);
 
+    CompileFront compileProject(Integer projectInfoId, Integer index, String src, Integer studentId);
+
 }

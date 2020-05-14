@@ -256,6 +256,12 @@ public class ProjectServiceImpl implements ProjectService {
         response.getOutputStream().write(zip.toByteArray());
     }
 
+    @Override
+    public ProjectSubmit addSubmit(ProjectSubmit projectSubmit) {
+        projectSubmit.setSubmitTime(new Timestamp(System.currentTimeMillis()));
+        return projectSubmitRepo.save(projectSubmit);
+    }
+
     public void excelScore(HttpServletResponse response,List<ExcelScoreModel> excelScoreModels,String examGroupName) throws IOException{
 
         List<ExcelScoreModel> rows = CollUtil.newArrayList(excelScoreModels);

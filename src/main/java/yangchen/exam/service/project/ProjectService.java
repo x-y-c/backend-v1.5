@@ -3,6 +3,7 @@ package yangchen.exam.service.project;
 
 import org.springframework.data.domain.Page;
 import yangchen.exam.entity.ProjectGroup;
+import yangchen.exam.entity.ProjectSubmit;
 import yangchen.exam.model.ExaminationDetail;
 import yangchen.exam.model.ProjectDetails;
 import yangchen.exam.model.ProjectParam;
@@ -32,4 +33,6 @@ public interface ProjectService {
 
    //导出个人提交记录
    void exportSubmit(HttpServletResponse response, Integer homeworkGroupId) throws IOException;
+
+   ProjectSubmit addSubmit(ProjectSubmit projectSubmit);
 }
