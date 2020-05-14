@@ -25,7 +25,7 @@ public class ProjectSubmit {
     @Column(name = "student_id")
     private Integer studentId;
 
-    @Column(name = "exam_paper_id")
+    @Column(name = "project_paper_id")
     private Integer examPaperId;
 
     @Column(name = "question_index")

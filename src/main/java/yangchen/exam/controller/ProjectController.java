@@ -50,7 +50,7 @@ public class ProjectController {
         return JsonResult.succResult(projectPage);
     }
 
-    @RequestMapping(value = "/homeworkInfo/delete",method = RequestMethod.POST)
+    @RequestMapping(value = "/homeworkInfo/delete",method = RequestMethod.GET)
     public JsonResult deleteHomeworkInfo(@RequestParam Integer homeworkId){
         projectService.deleteProject(homeworkId);
         return JsonResult.succResult(null);
