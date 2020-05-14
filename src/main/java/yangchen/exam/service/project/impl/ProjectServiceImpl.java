@@ -365,4 +365,30 @@ public class ProjectServiceImpl implements ProjectService {
         return excelSubmitModel;
     }
 
+
+    @Override
+    public List<ExaminationDetail> getProjectDetail(Integer studentId){
+        List<ProjectInfo> projectList = projectInfoRepo.findByStudentIdOrderByIdDesc(studentId);
+
+        List<Integer> projectGroupIdList = new ArrayList<>(projectList.size());
+        List<Integer> projectIndfos = new ArrayList<>(projectList.size());
+        for(ProjectInfo projectInfo:projectList){
+            projectGroupIdList.add(projectInfo.getProjectGroupId());
+            projectIndfos.add(projectInfo.getId());
+        }
+
+        List<ProjectGroup> projectGroups = projectGroupRepo.getProjectGroupById(projectGroupIdList);
+        List<ExaminationDetail> projectDetails = new ArrayList<>(projectGroups.size());
+
+        for (int i=0;i<projectGroups.size();i++) {
+            ExaminationDetail examinationDetail = new ExaminationDetail();
+            examinationDetail.setDesc(projectGroups.get(i).getProjectName());
+            examinationDetail.setEnd(new Timestamp(projectGroups.get(i).getEndTime().getTime()));
+            examinationDetail.setStart(new Timestamp(projectGroups.get(i).getStartTime().getTime()));
+            examinationDetail.setTtl(Long.valueOf(projectGroups.get(i).getProjectTtl()));
+            examinationDetail.setId(projectIndfos.get(i));
+            projectDetails.add(examinationDetail);
+        }
+        return projectDetails;
+    }
 }

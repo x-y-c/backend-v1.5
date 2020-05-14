@@ -88,4 +88,9 @@ public class ProjectController {
         projectService.exportSubmitAll(response,homeworkGroupId);
     }
 
+    @RequestMapping(value = "/homeworkInfo/detail",method = RequestMethod.GET)
+    public JsonResult getProjectInfo(@RequestParam Integer studentId){
+        List<ExaminationDetail> projectDetails = projectService.getProjectDetail(studentId);
+        return JsonResult.succResult(projectDetails);
+    }
 }

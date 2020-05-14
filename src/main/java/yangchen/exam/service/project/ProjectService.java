@@ -35,4 +35,6 @@ public interface ProjectService {
    void exportSubmit(HttpServletResponse response, Integer homeworkGroupId) throws IOException;
 
    ProjectSubmit addSubmit(ProjectSubmit projectSubmit);
+
+   List<ExaminationDetail> getProjectDetail(Integer studentId);
 }
