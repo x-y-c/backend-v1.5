@@ -26,7 +26,7 @@ public class TestController {
     private String bucketName = "video";
 
     @GetMapping("test")
-    public String  test2(HttpServletResponse response) throws Exception {
+    public String test2(HttpServletResponse response) throws Exception {
         MinioClientUtil minioClientUtil = new MinioClientUtil();
         String bucketName = "video";
         System.out.println(minioClientUtil.getConn().bucketExists(bucketName));
@@ -34,7 +34,7 @@ public class TestController {
     }
 
     @GetMapping("/video/findAll")
-    public List<Videourl> findAll(){
+    public List<Videourl> findAll() {
         return newvideoRepo.findAll();
     }
 
@@ -58,7 +58,6 @@ public class TestController {
             return "上传失败" + ex.getMessage();
         }
     }
-
     @GetMapping("download")
     public void download(@RequestParam String fileName, HttpServletResponse response) throws UnsupportedEncodingException {
 
@@ -84,6 +83,7 @@ public class TestController {
         }
     }
 }
+
 
 //
 //    @PostMapping("/save")

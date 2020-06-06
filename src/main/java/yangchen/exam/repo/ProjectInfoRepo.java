@@ -26,4 +26,7 @@ public interface ProjectInfoRepo extends JpaRepository<ProjectInfo,Integer> {
 
     ProjectInfo findByProjectGroupIdAndStudentId(Integer projectGroupId,Integer studentId);
 
+    @Query(value = "select avg(score) from project_info where student_id like CONCAT(?1,'%')",nativeQuery = true)
+    Integer getHomeworkScore(Integer student_year);
+
 }

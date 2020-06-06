@@ -36,9 +36,9 @@ public class EngineeringServiceImpl implements EngineeringService{
             Engineering engineering = new Engineering();
             engineering.setStudentId(Integer.valueOf(objects.get(0).toString()));
             engineering.setStudentYear(Integer.valueOf(objects.get(1).toString()));
-            engineering.setStudentGrade(objects.get(3).toString());
-            engineering.setTeacherId(Integer.valueOf(objects.get(4).toString()));
-            engineering.setScore(Integer.valueOf(objects.get(5).toString()));
+            engineering.setStudentGrade(objects.get(2).toString());
+//            engineering.setTeacherId(Integer.valueOf(objects.get(4).toString()));
+            engineering.setScore(Integer.valueOf(objects.get(3).toString()));
             engineeringList.add(engineering);
         }
         //0918 更新学生教师对应关系
@@ -48,14 +48,15 @@ public class EngineeringServiceImpl implements EngineeringService{
     public JsonResult uploadStudentList(String teacherName, List<Engineering> engineeringList) {
         Teacher teacher = teacherRepo.findByTeacherName(teacherName);
         List<Engineering> engineerings = new ArrayList<>(engineeringList.size());
+
         for (Engineering engineering : engineeringList) {
             Engineering student = engineeringRepo.findByStudentId(engineering.getStudentId());
             if (student != null) {
                 //return JsonResult.errorResult(ResultCode.USER_EXIST, "Excel中的学号已存在,请检查后再导入", studentNew.getStudentId());
                 student.setStudentYear(engineering.getStudentYear());
                 student.setStudentGrade(engineering.getStudentGrade());
-                student.setTeacherId(teacher.getId());
                 student.setScore(engineering.getScore());
+                student.setTeacherId(teacher.getId());
                 engineerings.add(student);
 
             } else {
@@ -68,6 +69,7 @@ public class EngineeringServiceImpl implements EngineeringService{
         return JsonResult.succResult("添加成功", engineeringList1.size());
 
     }
+
 
     @Override
     public Engineering getStudentByStudentId(Integer studentId) {
