@@ -42,7 +42,7 @@ public class TestController {
     public String upload(MultipartFile file) {
         try {
             String originalFilename = file.getOriginalFilename();
-            String url = "http://119.3.217.233:10000/video/" + originalFilename;
+            String url = "http://59.64.78.95:9000/video/" + originalFilename;
             newvideoRepo.insertUrl(url);
             MinioClient minioClient = new MinioClientUtil().getConn();
             String bucketName = "video";

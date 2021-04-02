@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration>
-    <property name="LOG_HOME" value="/Users/jintong/Desktop/bitsu2016/backend-v1.5/logs"/>
+    <property name="LOG_HOME" value="/home/bistucadmin/C_exam/exam_logs"/>
     <property name="LOG_FILE" value="exam.log"/>
     <property name="FILE_LOG_PATTERN" value="%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
 

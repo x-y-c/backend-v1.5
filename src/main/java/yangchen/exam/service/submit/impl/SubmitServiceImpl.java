@@ -8,7 +8,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import yangchen.exam.controller.ExamController;
 import yangchen.exam.entity.*;
 import yangchen.exam.model.SubmitPracticeModel;
 import yangchen.exam.repo.*;
